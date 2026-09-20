@@ -1,0 +1,31 @@
+name: Strategy B - ORB
+
+on:
+  schedule:
+    # 每分钟运行（GitHub Actions 实际可能有 1-5 分钟延迟）
+    - cron: '* * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: strategy-b
+  cancel-in-progress: false
+
+jobs:
+  run-orb:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run ORB Strategy
+        env:
+          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
+        run: python main.py
