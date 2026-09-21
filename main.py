@@ -7,9 +7,11 @@ from datetime import datetime, timedelta
 from alpaca.trading.client import TradingClient
 from alpaca.trading.requests import (
     MarketOrderRequest, StopOrderRequest,
+    StopLossRequest, TakeProfitRequest,
+    GetOrdersRequest,
 )
 from alpaca.trading.enums import (
-    OrderSide, TimeInForce,
+    OrderSide, TimeInForce, OrderClass, QueryOrderStatus,
 )
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
@@ -141,9 +143,6 @@ def fetch_avg_volume(data_client, symbol, lookback=20):
 def fetch_today_orders(trading_client, symbol):
     """查询今日该标的的所有订单，用于判断今天是否已交易"""
     try:
-        from alpaca.trading.requests import GetOrdersRequest
-        from alpaca.trading.enums import QueryOrderStatus
-
         req = GetOrdersRequest(
             status=QueryOrderStatus.ALL,
             symbols=[symbol],
@@ -160,49 +159,103 @@ def fetch_today_orders(trading_client, symbol):
 #  订单执行
 # ══════════════════════════════════════════════
 
-def place_entry_order(trading_client, symbol, side, qty, tag):
+def wait_for_cancel(trading_client, order_id, max_wait_sec=5.0, interval=0.5):
+    """
+    轮询确认订单已取消
+    返回 True 表示确认已取消（或订单已不存在）
+    """
+    waited = 0.0
+    while waited < max_wait_sec:
+        try:
+            o = trading_client.get_order_by_id(order_id)
+            if o.status in ("canceled", "expired", "rejected", "filled"):
+                print(f"  ✔️ 旧止损单状态: {o.status}")
+                return True
+        except Exception:
+            # 订单可能已经不存在（已被取消或查询失败），视为已取消
+            return True
+
+        time.sleep(interval)
+        waited += interval
+
+    print(f"  ⚠️ 等待取消超时 ({max_wait_sec}s)，仍尝试继续")
+    return False
+
+
+def place_bracket_order(trading_client, symbol, qty, side, stop_price):
+    """
+    提交 bracket order：市价入场 + 止损
+    Alpaca 将 bracket order 视为复杂订单，不触发反洗售保护
+    """
     order_side = OrderSide.BUY if side == "buy" else OrderSide.SELL
+    stop_loss  = StopLossRequest(stop_price=round(stop_price, 2))
+
     req = MarketOrderRequest(
         symbol=symbol,
         qty=qty,
         side=order_side,
         time_in_force=TimeInForce.DAY,
-        client_order_id=tag,
+        order_class=OrderClass.BRACKET,
+        stop_loss=stop_loss,
     )
     order = trading_client.submit_order(req)
-    print(f"  ✅ 入场: {side} {qty} 股 {symbol} | 订单ID={order.id}")
+    print(f"  ✅ Bracket 入场: {side} {qty} 股 {symbol} | 订单ID={order.id}")
     return order
 
 
-def place_stop_order(trading_client, symbol, side, qty, stop_price, tag):
+def replace_stop_order(trading_client, old_order_id,
+                       symbol, side, qty, new_stop):
+    """
+    取消旧止损单 → 轮询确认取消 → 提交新止损单
+    用于移动止损
+    """
+    # 1. 取消旧止损单
+    try:
+        trading_client.cancel_order_by_id(old_order_id)
+        print(f"  🗑️ 已请求取消旧止损单: {old_order_id}")
+    except Exception as e:
+        print(f"  ⚠️ 取消失败（可能已成交/已取消）: {e}")
+
+    # 2. 轮询确认取消完成
+    wait_for_cancel(trading_client, old_order_id,
+                    max_wait_sec=5.0, interval=0.5)
+
+    # 3. 提交新止损单
     order_side = OrderSide.SELL if side == "buy" else OrderSide.BUY
     req = StopOrderRequest(
         symbol=symbol,
         qty=qty,
         side=order_side,
         time_in_force=TimeInForce.DAY,
-        stop_price=round(stop_price, 2),
-        client_order_id=tag + "_STOP",
+        stop_price=round(new_stop, 2),
     )
-    order = trading_client.submit_order(req)
-    print(f"  🛑 止损单: {order_side} {qty} 股 @ {stop_price:.2f}")
-    return order
-
-
-def replace_stop_order(trading_client, old_order_id,
-                       symbol, side, qty, new_stop, tag):
     try:
-        trading_client.cancel_order_by_id(old_order_id)
-    except Exception:
-        pass
+        order = trading_client.submit_order(req)
+        print(f"  🔄 移动止损更新: {new_stop:.2f} | 新单ID={order.id}")
+        return order
+    except Exception as e:
+        print(f"  ⚠️ 提交新止损单失败: {e}")
+        return None
 
-    return place_stop_order(
-        trading_client, symbol, side, qty, new_stop, tag
-    )
 
-
-def close_position(trading_client, symbol):
+def close_position_safely(trading_client, symbol):
+    """先取消所有未成交订单，再平仓"""
     try:
+        # 1. 取消该标的所有未成交订单（包括止损单）
+        open_orders = trading_client.get_orders(
+            status="open", symbols=[symbol]
+        )
+        for o in open_orders:
+            try:
+                trading_client.cancel_order_by_id(o.id)
+                print(f"  🗑️ 已取消订单: {o.id}")
+            except Exception as e:
+                print(f"  ⚠️ 取消订单失败: {e}")
+
+        # 2. 等待取消生效
+        time.sleep(1.0)
+
+        # 3. 平仓
         trading_client.close_position(symbol)
         print(f"  ⏰ 平仓: {symbol}")
     except Exception as e:
@@ -301,7 +354,7 @@ def main():
             old_stop = strat.position["stop"]
             new_stop = strat.update_trailing_stop(price)
 
-            # 找出现有的止损单
+            # 找出现有的止损单（仅未成交的）
             stop_orders = [
                 o for o in today_orders
                 if o.client_order_id and "_STOP" in o.client_order_id
@@ -309,15 +362,14 @@ def main():
             ]
 
             if new_stop and new_stop != old_stop and stop_orders:
-                tag = f"ORB_{sym}_{now_et().strftime('%Y%m%d')}"
                 replace_stop_order(
                     trading_client, stop_orders[0].id,
-                    sym, side, qty, new_stop, tag
+                    sym, side, qty, new_stop
                 )
 
-            # 检查止损
+            # 检查是否触发出场
             if strat.check_exit(price):
-                close_position(trading_client, sym)
+                close_position_safely(trading_client, sym)
             continue
 
         # ── 无持仓：检查入场 ──
@@ -331,15 +383,12 @@ def main():
                 qty = strat.calc_qty(equity, entry, stop)
 
                 if qty > 0:
-                    tag = f"ORB_{sym}_{now_et().strftime('%Y%m%d')}_{int(time.time())}"
                     print(f"\n🚀 突破信号: {sym} "
                           f"{signal['side'].upper()} @ {entry:.2f}")
 
-                    place_entry_order(
-                        trading_client, sym, signal["side"], qty, tag
-                    )
-                    place_stop_order(
-                        trading_client, sym, signal["side"], qty, stop, tag
+                    place_bracket_order(
+                        trading_client, sym, qty,
+                        signal["side"], stop
                     )
                 else:
                     print("  仓位计算为 0，跳过")
@@ -348,7 +397,7 @@ def main():
 
         # ── 15:50 ET 强制平仓 ──
         if is_eod() and sym in positions:
-            close_position(trading_client, sym)
+            close_position_safely(trading_client, sym)
 
     print("\n本次运行完成")
 
