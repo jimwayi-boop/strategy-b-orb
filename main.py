@@ -38,7 +38,7 @@ def is_after_orb():
     """9:45 ET 之后"""
     n = now_et()
     return (n.hour > ORB_END_HOUR) or (
-        n.hour == ORB_END_HOUR and n.min > ORB_END_MIN
+        n.hour == ORB_END_HOUR and n.minute > ORB_END_MIN
     )
 
 
@@ -46,7 +46,7 @@ def is_eod():
     """15:50 ET 之后"""
     n = now_et()
     return (n.hour > EOD_CLOSE_HOUR) or (
-        n.hour == EOD_CLOSE_HOUR and n.min >= EOD_CLOSE_MIN
+        n.hour == EOD_CLOSE_HOUR and n.minute >= EOD_CLOSE_MIN
     )
 
 
@@ -54,7 +54,7 @@ def is_before_open():
     """9:30 ET 之前"""
     n = now_et()
     return (n.hour < ORB_START_HOUR) or (
-        n.hour == ORB_START_HOUR and n.min < ORB_START_MIN
+        n.hour == ORB_START_HOUR and n.minute < ORB_START_MIN
     )
 
 
