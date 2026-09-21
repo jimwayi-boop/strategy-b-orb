@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from alpaca.trading.client import TradingClient
 from alpaca.trading.requests import (
     MarketOrderRequest, StopOrderRequest,
-    StopLossRequest, TakeProfitRequest,
+    StopLossRequest,
     GetOrdersRequest,
 )
 from alpaca.trading.enums import (
@@ -32,12 +32,10 @@ def now_et():
 
 
 def is_market_day():
-    """周一到周五"""
     return now_et().weekday() < 5
 
 
 def is_after_orb():
-    """9:45 ET 之后"""
     n = now_et()
     return (n.hour > ORB_END_HOUR) or (
         n.hour == ORB_END_HOUR and n.minute > ORB_END_MIN
@@ -45,7 +43,6 @@ def is_after_orb():
 
 
 def is_eod():
-    """15:50 ET 之后"""
     n = now_et()
     return (n.hour > EOD_CLOSE_HOUR) or (
         n.hour == EOD_CLOSE_HOUR and n.minute >= EOD_CLOSE_MIN
@@ -53,7 +50,6 @@ def is_eod():
 
 
 def is_before_open():
-    """9:30 ET 之前"""
     n = now_et()
     return (n.hour < ORB_START_HOUR) or (
         n.hour == ORB_START_HOUR and n.minute < ORB_START_MIN
@@ -65,18 +61,14 @@ def is_before_open():
 # ══════════════════════════════════════════════
 
 def fetch_opening_range_bars(data_client, symbol):
-    """获取今日 9:30–9:45 ET 的 1 分钟 K 线"""
     today = now_et().strftime("%Y-%m-%d")
     start = f"{today}T09:30:00-04:00"
     end   = f"{today}T09:45:00-04:00"
-
     try:
         req = StockBarsRequest(
             symbol_or_symbols=symbol,
             timeframe=TimeFrame.Minute,
-            start=start,
-            end=end,
-            feed="iex",
+            start=start, end=end, feed="iex",
         )
         bars = data_client.get_stock_bars(req)
         df = bars.df
@@ -91,10 +83,8 @@ def fetch_opening_range_bars(data_client, symbol):
 
 
 def fetch_latest_bar(data_client, symbol):
-    """获取最新 1 分钟 K 线"""
     end   = now_et()
     start = end - timedelta(minutes=3)
-
     try:
         req = StockBarsRequest(
             symbol_or_symbols=symbol,
@@ -116,10 +106,8 @@ def fetch_latest_bar(data_client, symbol):
 
 
 def fetch_avg_volume(data_client, symbol, lookback=20):
-    """近 20 根 1 分钟 K 线的平均成交量"""
     end   = now_et()
     start = end - timedelta(minutes=lookback + 5)
-
     try:
         req = StockBarsRequest(
             symbol_or_symbols=symbol,
@@ -141,15 +129,13 @@ def fetch_avg_volume(data_client, symbol, lookback=20):
 
 
 def fetch_today_orders(trading_client, symbol):
-    """查询今日该标的的所有订单，用于判断今天是否已交易"""
     try:
         req = GetOrdersRequest(
             status=QueryOrderStatus.ALL,
             symbols=[symbol],
             after=now_et().strftime("%Y-%m-%dT00:00:00-04:00"),
         )
-        orders = trading_client.get_orders(req)
-        return orders
+        return trading_client.get_orders(req)
     except Exception as e:
         print(f"[{symbol}] 查询订单失败: {e}")
         return []
@@ -160,10 +146,6 @@ def fetch_today_orders(trading_client, symbol):
 # ══════════════════════════════════════════════
 
 def wait_for_cancel(trading_client, order_id, max_wait_sec=5.0, interval=0.5):
-    """
-    轮询确认订单已取消
-    返回 True 表示确认已取消（或订单已不存在）
-    """
     waited = 0.0
     while waited < max_wait_sec:
         try:
@@ -172,21 +154,14 @@ def wait_for_cancel(trading_client, order_id, max_wait_sec=5.0, interval=0.5):
                 print(f"  ✔️ 旧止损单状态: {o.status}")
                 return True
         except Exception:
-            # 订单可能已经不存在（已被取消或查询失败），视为已取消
             return True
-
         time.sleep(interval)
         waited += interval
-
     print(f"  ⚠️ 等待取消超时 ({max_wait_sec}s)，仍尝试继续")
     return False
 
 
 def place_bracket_order(trading_client, symbol, qty, side, stop_price):
-    """
-    提交 bracket order：市价入场 + 止损
-    Alpaca 将 bracket order 视为复杂订单，不触发反洗售保护
-    """
     order_side = OrderSide.BUY if side == "buy" else OrderSide.SELL
     stop_loss  = StopLossRequest(stop_price=round(stop_price, 2))
 
@@ -205,27 +180,17 @@ def place_bracket_order(trading_client, symbol, qty, side, stop_price):
 
 def replace_stop_order(trading_client, old_order_id,
                        symbol, side, qty, new_stop):
-    """
-    取消旧止损单 → 轮询确认取消 → 提交新止损单
-    用于移动止损
-    """
-    # 1. 取消旧止损单
     try:
         trading_client.cancel_order_by_id(old_order_id)
         print(f"  🗑️ 已请求取消旧止损单: {old_order_id}")
     except Exception as e:
-        print(f"  ⚠️ 取消失败（可能已成交/已取消）: {e}")
+        print(f"  ⚠️ 取消失败: {e}")
 
-    # 2. 轮询确认取消完成
-    wait_for_cancel(trading_client, old_order_id,
-                    max_wait_sec=5.0, interval=0.5)
+    wait_for_cancel(trading_client, old_order_id, max_wait_sec=5.0, interval=0.5)
 
-    # 3. 提交新止损单
     order_side = OrderSide.SELL if side == "buy" else OrderSide.BUY
     req = StopOrderRequest(
-        symbol=symbol,
-        qty=qty,
-        side=order_side,
+        symbol=symbol, qty=qty, side=order_side,
         time_in_force=TimeInForce.DAY,
         stop_price=round(new_stop, 2),
     )
@@ -239,9 +204,7 @@ def replace_stop_order(trading_client, old_order_id,
 
 
 def close_position_safely(trading_client, symbol):
-    """先取消所有未成交订单，再平仓"""
     try:
-        # 1. 取消该标的所有未成交订单（包括止损单）
         open_orders = trading_client.get_orders(
             status="open", symbols=[symbol]
         )
@@ -252,10 +215,7 @@ def close_position_safely(trading_client, symbol):
             except Exception as e:
                 print(f"  ⚠️ 取消订单失败: {e}")
 
-        # 2. 等待取消生效
         time.sleep(1.0)
-
-        # 3. 平仓
         trading_client.close_position(symbol)
         print(f"  ⏰ 平仓: {symbol}")
     except Exception as e:
@@ -263,7 +223,7 @@ def close_position_safely(trading_client, symbol):
 
 
 # ══════════════════════════════════════════════
-#  主逻辑（每次运行执行一次）
+#  主逻辑
 # ══════════════════════════════════════════════
 
 def main():
@@ -279,7 +239,6 @@ def main():
         print("开盘前，退出")
         return
 
-    # 初始化客户端
     trading_client = TradingClient(
         ALPACA_API_KEY, ALPACA_SECRET_KEY, paper=ALPACA_PAPER
     )
@@ -287,27 +246,43 @@ def main():
         ALPACA_API_KEY, ALPACA_SECRET_KEY
     )
 
-    # 账户信息
+    # ── 账户信息：打印乘数、现金、购买力 ──
     try:
         account = trading_client.get_account()
-        equity  = float(account.equity)
-        print(f"账户净值: ${equity:,.2f}")
+        print(f"账户乘数 (multiplier): {account.multiplier}")
+        print(f"现金 (cash): ${float(account.cash):,.2f}")
+        print(f"购买力 (buying_power): ${float(account.buying_power):,.2f}")
+        print(f"净值 (equity): ${float(account.equity):,.2f}")
+
+        # 使用现金作为仓位计算基础，而非净值
+        available_cash = float(account.cash)
+
+        if account.multiplier != "1":
+            print(f"⚠️ 警告：账户乘数为 {account.multiplier}，可能仍在使用保证金。"
+                  f"请在 Dashboard 中将 Max Margin Multiplier 设为 1。")
     except Exception as e:
         print(f"获取账户失败: {e}")
         return
 
-    # 获取当前持仓
     try:
         positions = {p.symbol: p for p in trading_client.get_all_positions()}
     except Exception as e:
         print(f"获取持仓失败: {e}")
         positions = {}
 
+    # ── 计算当前持仓总市值，用于剩余现金检查 ──
+    total_position_value = 0.0
+    for p in positions.values():
+        try:
+            total_position_value += abs(float(p.market_value))
+        except Exception:
+            pass
+    print(f"当前持仓总市值: ${total_position_value:,.2f}")
+
     for sym in SYMBOLS:
         print(f"\n── {sym} ──")
         strat = ORBStrategy(sym)
 
-        # ── 获取开盘区间 ──
         if not is_after_orb():
             print("  开盘区间未完成，退出")
             continue
@@ -320,7 +295,6 @@ def main():
         if not strat.set_opening_range(bars):
             continue
 
-        # ── 获取最新价格 ──
         latest = fetch_latest_bar(data_client, sym)
         if latest is None:
             print("  无法获取最新价格")
@@ -328,7 +302,6 @@ def main():
         price = float(latest["close"])
         print(f"  最新价: {price:.2f}")
 
-        # ── 检查今日订单，判断是否已交易 ──
         today_orders = fetch_today_orders(trading_client, sym)
         traded_today = any(
             o.client_order_id and o.client_order_id.startswith(
@@ -354,7 +327,6 @@ def main():
             old_stop = strat.position["stop"]
             new_stop = strat.update_trailing_stop(price)
 
-            # 找出现有的止损单（仅未成交的）
             stop_orders = [
                 o for o in today_orders
                 if o.client_order_id and "_STOP" in o.client_order_id
@@ -367,7 +339,6 @@ def main():
                     sym, side, qty, new_stop
                 )
 
-            # 检查是否触发出场
             if strat.check_exit(price):
                 close_position_safely(trading_client, sym)
             continue
@@ -380,7 +351,16 @@ def main():
             if signal:
                 entry = signal["entry"]
                 stop  = signal["stop"]
-                qty = strat.calc_qty(equity, entry, stop)
+
+                # ★ 关键改动：使用 available_cash 而非 equity 计算仓位
+                qty = strat.calc_qty(available_cash, entry, stop)
+
+                # 额外检查：确保新仓位不超出剩余现金
+                required_cash = qty * entry
+                remaining_cash = available_cash - total_position_value
+                if required_cash > remaining_cash:
+                    qty = int(remaining_cash / entry)
+                    print(f"  ⚠️ 剩余现金不足，调整为 {qty} 股")
 
                 if qty > 0:
                     print(f"\n🚀 突破信号: {sym} "
@@ -390,12 +370,13 @@ def main():
                         trading_client, sym, qty,
                         signal["side"], stop
                     )
+                    # 更新已用现金
+                    total_position_value += qty * entry
                 else:
                     print("  仓位计算为 0，跳过")
             else:
                 print("  无突破信号")
 
-        # ── 15:50 ET 强制平仓 ──
         if is_eod() and sym in positions:
             close_position_safely(trading_client, sym)
 
