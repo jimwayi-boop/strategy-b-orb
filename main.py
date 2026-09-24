@@ -1,17 +1,20 @@
 # main.py
+import os
 import time
+import smtplib
 import pytz
 import pandas as pd
+from email.mime.text import MIMEText
+from email.header import Header
 from datetime import datetime, timedelta
 
 from alpaca.trading.client import TradingClient
 from alpaca.trading.requests import (
-    MarketOrderRequest, StopOrderRequest,
-    StopLossRequest,
+    MarketOrderRequest, TrailingStopOrderRequest,
     GetOrdersRequest,
 )
 from alpaca.trading.enums import (
-    OrderSide, TimeInForce, OrderClass, QueryOrderStatus,
+    OrderSide, TimeInForce, OrderStatus, QueryOrderStatus,
 )
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
@@ -24,16 +27,40 @@ ET = pytz.timezone("America/New_York")
 
 
 # ══════════════════════════════════════════════
+#  邮件通知
+# ══════════════════════════════════════════════
+
+def send_email(subject, body):
+    mail_user = os.getenv("MAIL_USERNAME")
+    mail_pass = os.getenv("MAIL_PASSWORD")
+    if not mail_user or not mail_pass:
+        print("⚠️ 未配置邮箱，跳过邮件发送")
+        return
+
+    msg = MIMEText(body, "plain", "utf-8")
+    msg["Subject"] = Header(subject, "utf-8")
+    msg["From"] = mail_user
+    msg["To"] = mail_user
+
+    try:
+        server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+        server.login(mail_user, mail_pass)
+        server.sendmail(mail_user, [mail_user], msg.as_string())
+        server.quit()
+        print("✅ 邮件通知已发送")
+    except Exception as e:
+        print(f"⚠️ 邮件发送失败: {e}")
+
+
+# ══════════════════════════════════════════════
 #  时间判断
 # ══════════════════════════════════════════════
 
 def now_et():
     return datetime.now(ET)
 
-
 def is_market_day():
     return now_et().weekday() < 5
-
 
 def is_after_orb():
     n = now_et()
@@ -41,13 +68,11 @@ def is_after_orb():
         n.hour == ORB_END_HOUR and n.minute > ORB_END_MIN
     )
 
-
 def is_eod():
     n = now_et()
     return (n.hour > EOD_CLOSE_HOUR) or (
         n.hour == EOD_CLOSE_HOUR and n.minute >= EOD_CLOSE_MIN
     )
-
 
 def is_before_open():
     n = now_et()
@@ -81,7 +106,6 @@ def fetch_opening_range_bars(data_client, symbol):
         print(f"[{symbol}] 获取开盘区间失败: {e}")
         return None
 
-
 def fetch_latest_bar(data_client, symbol):
     end   = now_et()
     start = end - timedelta(minutes=3)
@@ -104,29 +128,57 @@ def fetch_latest_bar(data_client, symbol):
         print(f"[{symbol}] 获取最新 K 线失败: {e}")
         return None
 
-
-def fetch_avg_volume(data_client, symbol, lookback=20):
-    end   = now_et()
-    start = end - timedelta(minutes=lookback + 5)
+def fetch_prev_close_and_open(data_client, symbol):
+    today = now_et().strftime("%Y-%m-%d")
+    yesterday = (now_et() - timedelta(days=1)).strftime("%Y-%m-%d")
     try:
         req = StockBarsRequest(
             symbol_or_symbols=symbol,
-            timeframe=TimeFrame.Minute,
-            start=start.strftime("%Y-%m-%dT%H:%M:%S%z"),
-            end=end.strftime("%Y-%m-%dT%H:%M:%S%z"),
-            feed="iex",
+            timeframe=TimeFrame.Day,
+            start=yesterday, end=today, feed="iex",
         )
         bars = data_client.get_stock_bars(req)
         df = bars.df
         if df.empty:
-            return 0
+            return None, None
         if isinstance(df.index, pd.MultiIndex):
             df = df.xs(symbol, level="symbol")
-        return float(df["volume"].tail(lookback).mean())
-    except Exception as e:
-        print(f"[{symbol}] 获取均量失败: {e}")
-        return 0
 
+        prev_close = None
+        today_open = None
+        for idx, row in df.iterrows():
+            row_date = idx[0] if isinstance(idx, tuple) else idx
+            date_str = str(row_date)[:10]
+            if date_str == yesterday:
+                prev_close = float(row["close"])
+            elif date_str == today:
+                today_open = float(row["open"])
+        return prev_close, today_open
+    except Exception as e:
+        print(f"[{symbol}] 获取前收/今开失败: {e}")
+        return None, None
+
+def fetch_daily_sma(data_client, symbol, lookback=5):
+    end   = now_et()
+    start = end - timedelta(days=lookback + 5)
+    try:
+        req = StockBarsRequest(
+            symbol_or_symbols=symbol,
+            timeframe=TimeFrame.Day,
+            start=start.strftime("%Y-%m-%d"),
+            end=end.strftime("%Y-%m-%d"),
+            feed="iex",
+        )
+        bars = data_client.get_stock_bars(req)
+        df = bars.df
+        if df.empty or len(df) < lookback:
+            return None
+        if isinstance(df.index, pd.MultiIndex):
+            df = df.xs(symbol, level="symbol")
+        return float(df["close"].tail(lookback).mean())
+    except Exception as e:
+        print(f"[{symbol}] 获取日线SMA失败: {e}")
+        return None
 
 def fetch_today_orders(trading_client, symbol):
     try:
@@ -145,63 +197,55 @@ def fetch_today_orders(trading_client, symbol):
 #  订单执行
 # ══════════════════════════════════════════════
 
-def wait_for_cancel(trading_client, order_id, max_wait_sec=5.0, interval=0.5):
-    waited = 0.0
-    while waited < max_wait_sec:
+def wait_for_order_filled(trading_client, order_id, max_wait=10, interval=0.5):
+    waited = 0
+    while waited < max_wait:
         try:
             o = trading_client.get_order_by_id(order_id)
-            if o.status in ("canceled", "expired", "rejected", "filled"):
-                print(f"  ✔️ 旧止损单状态: {o.status}")
+            if o.status == OrderStatus.FILLED:
+                print(f"  ✔️ 订单 {order_id} 已成交")
                 return True
+            if o.status in (OrderStatus.CANCELED, OrderStatus.REJECTED,
+                            OrderStatus.EXPIRED):
+                print(f"  ❌ 订单 {order_id} 状态: {o.status}")
+                return False
         except Exception:
-            return True
+            pass
         time.sleep(interval)
         waited += interval
-    print(f"  ⚠️ 等待取消超时 ({max_wait_sec}s)，仍尝试继续")
+    print(f"  ⚠️ 等待成交超时 ({max_wait}s)")
     return False
 
-
-def place_bracket_order(trading_client, symbol, qty, side, stop_price):
+def place_entry_and_trailing_stop(trading_client, symbol, qty, side, trail_pct):
     order_side = OrderSide.BUY if side == "buy" else OrderSide.SELL
-    stop_loss  = StopLossRequest(stop_price=round(stop_price, 2))
 
-    req = MarketOrderRequest(
-        symbol=symbol,
-        qty=qty,
-        side=order_side,
-        time_in_force=TimeInForce.DAY,
-        order_class=OrderClass.BRACKET,
-        stop_loss=stop_loss,
-    )
-    order = trading_client.submit_order(req)
-    print(f"  ✅ Bracket 入场: {side} {qty} 股 {symbol} | 订单ID={order.id}")
-    return order
-
-
-def replace_stop_order(trading_client, old_order_id,
-                       symbol, side, qty, new_stop):
-    try:
-        trading_client.cancel_order_by_id(old_order_id)
-        print(f"  🗑️ 已请求取消旧止损单: {old_order_id}")
-    except Exception as e:
-        print(f"  ⚠️ 取消失败: {e}")
-
-    wait_for_cancel(trading_client, old_order_id, max_wait_sec=5.0, interval=0.5)
-
-    order_side = OrderSide.SELL if side == "buy" else OrderSide.BUY
-    req = StopOrderRequest(
+    entry_req = MarketOrderRequest(
         symbol=symbol, qty=qty, side=order_side,
         time_in_force=TimeInForce.DAY,
-        stop_price=round(new_stop, 2),
+    )
+    entry_order = trading_client.submit_order(entry_req)
+    print(f"  ✅ 入场: {side} {qty} 股 {symbol} | 订单ID={entry_order.id}")
+
+    filled = wait_for_order_filled(trading_client, entry_order.id)
+    if not filled:
+        print(f"  ⚠️ 入场未成交，取消Trailing Stop步骤")
+        return entry_order, None
+
+    trail_side = OrderSide.SELL if side == "buy" else OrderSide.BUY
+    trail_req = TrailingStopOrderRequest(
+        symbol=symbol,
+        qty=qty,
+        side=trail_side,
+        time_in_force=TimeInForce.DAY,
+        trail_percent=trail_pct,
     )
     try:
-        order = trading_client.submit_order(req)
-        print(f"  🔄 移动止损更新: {new_stop:.2f} | 新单ID={order.id}")
-        return order
+        trail_order = trading_client.submit_order(trail_req)
+        print(f"  🔄 Trailing Stop已挂: 回撤{trail_pct}%触发 | 订单ID={trail_order.id}")
+        return entry_order, trail_order
     except Exception as e:
-        print(f"  ⚠️ 提交新止损单失败: {e}")
-        return None
-
+        print(f"  ⚠️ Trailing Stop提交失败: {e}")
+        return entry_order, None
 
 def close_position_safely(trading_client, symbol):
     try:
@@ -220,6 +264,15 @@ def close_position_safely(trading_client, symbol):
         print(f"  ⏰ 平仓: {symbol}")
     except Exception as e:
         print(f"  ⚠️ 平仓异常: {e}")
+
+def enforce_no_margin(trading_client):
+    try:
+        trading_client.patch_account_configurations(
+            {"max_margin_multiplier": "1"}
+        )
+        print("✅ 已通过API设置 max_margin_multiplier=1")
+    except Exception as e:
+        print(f"⚠️ API设置保证金失败（不影响运行）: {e}")
 
 
 # ══════════════════════════════════════════════
@@ -246,7 +299,8 @@ def main():
         ALPACA_API_KEY, ALPACA_SECRET_KEY
     )
 
-    # ── 账户信息：打印乘数、现金、购买力 ──
+    enforce_no_margin(trading_client)
+
     try:
         account = trading_client.get_account()
         print(f"账户乘数 (multiplier): {account.multiplier}")
@@ -254,14 +308,13 @@ def main():
         print(f"购买力 (buying_power): ${float(account.buying_power):,.2f}")
         print(f"净值 (equity): ${float(account.equity):,.2f}")
 
-        # 使用现金作为仓位计算基础，而非净值
         available_cash = float(account.cash)
 
         if account.multiplier != "1":
-            print(f"⚠️ 警告：账户乘数为 {account.multiplier}，可能仍在使用保证金。"
-                  f"请在 Dashboard 中将 Max Margin Multiplier 设为 1。")
+            print(f"⚠️ 警告：账户乘数为 {account.multiplier}，仍在使用保证金")
     except Exception as e:
         print(f"获取账户失败: {e}")
+        send_email("ORB策略-获取账户失败", str(e))
         return
 
     try:
@@ -270,14 +323,15 @@ def main():
         print(f"获取持仓失败: {e}")
         positions = {}
 
-    # ── 计算当前持仓总市值，用于剩余现金检查 ──
     total_position_value = 0.0
     for p in positions.values():
         try:
             total_position_value += abs(float(p.market_value))
         except Exception:
             pass
-    print(f"当前持仓总市值: ${total_position_value:,.2f}")
+
+    now = now_et()
+    current_minute_index = now.hour * 60 + now.minute
 
     for sym in SYMBOLS:
         print(f"\n── {sym} ──")
@@ -295,6 +349,18 @@ def main():
         if not strat.set_opening_range(bars):
             continue
 
+        prev_close, today_open = fetch_prev_close_and_open(data_client, sym)
+        strat.prev_close = prev_close
+        strat.today_open = today_open
+
+        skip_gap, size_mult = strat.check_gap()
+        if skip_gap:
+            continue
+
+        strat.daily_sma = fetch_daily_sma(
+            data_client, sym, TREND_LOOKBACK_DAYS
+        )
+
         latest = fetch_latest_bar(data_client, sym)
         if latest is None:
             print("  无法获取最新价格")
@@ -311,51 +377,50 @@ def main():
         )
         strat.traded_today = traded_today
 
-        # ── 已有持仓：更新移动止损 ──
         if sym in positions:
             pos = positions[sym]
             side = "buy" if float(pos.qty) > 0 else "sell"
-            qty  = abs(int(float(pos.qty)))
-            entry = float(pos.avg_entry_price)
-            strat.position = {
-                "side":  side,
-                "entry": entry,
-                "stop":  strat.range_low if side == "buy" else strat.range_high,
-                "qty":   qty,
-            }
 
-            old_stop = strat.position["stop"]
-            new_stop = strat.update_trailing_stop(price)
-
-            stop_orders = [
+            trail_orders = [
                 o for o in today_orders
-                if o.client_order_id and "_STOP" in o.client_order_id
-                and o.status in ("new", "accepted", "held")
+                if o.order_type and "trailing" in str(o.order_type).lower()
             ]
+            trail_filled = any(
+                o.status == OrderStatus.FILLED for o in trail_orders
+            )
 
-            if new_stop and new_stop != old_stop and stop_orders:
-                replace_stop_order(
-                    trading_client, stop_orders[0].id,
-                    sym, side, qty, new_stop
+            if trail_filled:
+                print("  ✅ Trailing Stop已触发，持仓已平")
+                continue
+
+            trail_active = any(
+                o.status in (OrderStatus.NEW, OrderStatus.ACCEPTED)
+                for o in trail_orders
+            )
+            if not trail_active:
+                print("  ⚠️ 无活跃Trailing Stop，补挂")
+                qty = abs(int(float(pos.qty)))
+                trail_side = OrderSide.SELL if side == "buy" else OrderSide.BUY
+                trail_req = TrailingStopOrderRequest(
+                    symbol=sym, qty=qty, side=trail_side,
+                    time_in_force=TimeInForce.DAY,
+                    trail_percent=TRAIL_PERCENT,
                 )
-
-            if strat.check_exit(price):
-                close_position_safely(trading_client, sym)
+                try:
+                    trading_client.submit_order(trail_req)
+                    print(f"  🔄 补挂Trailing Stop成功")
+                except Exception as e:
+                    print(f"  ⚠️ 补挂失败: {e}")
             continue
 
-        # ── 无持仓：检查入场 ──
         if not strat.traded_today:
-            avg_vol = fetch_avg_volume(data_client, sym)
-            signal = strat.check_entry(latest, avg_vol)
+            signal = strat.check_entry(latest, current_minute_index)
 
             if signal:
                 entry = signal["entry"]
                 stop  = signal["stop"]
+                qty = strat.calc_qty(available_cash, entry, stop, size_mult)
 
-                # ★ 关键改动：使用 available_cash 而非 equity 计算仓位
-                qty = strat.calc_qty(available_cash, entry, stop)
-
-                # 额外检查：确保新仓位不超出剩余现金
                 required_cash = qty * entry
                 remaining_cash = available_cash - total_position_value
                 if required_cash > remaining_cash:
@@ -366,12 +431,23 @@ def main():
                     print(f"\n🚀 突破信号: {sym} "
                           f"{signal['side'].upper()} @ {entry:.2f}")
 
-                    place_bracket_order(
+                    strat.traded_today = True
+
+                    entry_order, trail_order = place_entry_and_trailing_stop(
                         trading_client, sym, qty,
-                        signal["side"], stop
+                        signal["side"], TRAIL_PERCENT
                     )
-                    # 更新已用现金
-                    total_position_value += qty * entry
+
+                    if entry_order:
+                        total_position_value += qty * entry
+                        send_email(
+                            f"ORB策略-入场通知 {sym}",
+                            f"标的: {sym}\n方向: {signal['side']}\n"
+                            f"数量: {qty}\n入场价: {entry:.2f}\n"
+                            f"止损价: {stop:.2f}\n时间: {now_et()}"
+                        )
+                    else:
+                        strat.traded_today = False
                 else:
                     print("  仓位计算为 0，跳过")
             else:
