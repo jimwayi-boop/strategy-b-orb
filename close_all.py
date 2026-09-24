@@ -14,7 +14,6 @@ ET = pytz.timezone("America/New_York")
 
 
 def send_email(subject, body):
-    """发送邮件通知"""
     mail_user = os.getenv("MAIL_USERNAME")
     mail_pass = os.getenv("MAIL_PASSWORD")
     if not mail_user or not mail_pass:
