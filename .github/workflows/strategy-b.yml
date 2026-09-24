@@ -1,9 +1,6 @@
 name: Strategy B - ORB
 
 on:
-  schedule:
-    # 每分钟运行（GitHub Actions 实际可能有 1-5 分钟延迟）
-    - cron: '* * * * *'
   workflow_dispatch:
 
 concurrency:
@@ -28,4 +25,6 @@ jobs:
         env:
           ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
           ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
         run: python main.py
