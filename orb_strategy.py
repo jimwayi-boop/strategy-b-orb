@@ -5,21 +5,21 @@ from config import *
 
 
 class ORBStrategy:
-    """
-    Opening Range Breakout 策略
-    高回报模式：裸突破 + 移动止损，让利润奔跑
-    """
 
     def __init__(self, symbol):
         self.symbol          = symbol
         self.range_high      = None
         self.range_low       = None
+        self.range_avg_vol   = 0
         self.range_ready     = False
         self.traded_today    = False
+        self.trade_count     = 0
+        self.cooldown_until  = None
         self.position        = None
-        self.trailing_active = False
+        self.daily_sma       = None
+        self.prev_close      = None
+        self.today_open      = None
 
-    # ── 1. 计算开盘区间（9:30–9:45 ET）──
     def set_opening_range(self, bars_df):
         if bars_df is None or bars_df.empty:
             return False
@@ -37,33 +37,78 @@ class ORBStrategy:
             self.range_ready = False
             return False
 
+        self.range_avg_vol = float(bars_df["volume"].mean())
+
         self.range_ready = True
         print(f"[{self.symbol}] ORB 区间锁定: "
               f"{self.range_low:.2f} – {self.range_high:.2f}  "
-              f"宽度={range_width:.2f}")
+              f"宽度={range_width:.2f}  区间均量={self.range_avg_vol:.0f}")
         return True
 
-    # ── 2. 检查入场信号 ──
-    def check_entry(self, latest_bar, avg_volume):
+    def check_gap(self):
+        if self.prev_close is None or self.today_open is None:
+            return False, 1.0
+
+        gap_pct = abs(self.today_open - self.prev_close) / self.prev_close
+        print(f"  开盘缺口: {gap_pct*100:.2f}%")
+
+        if gap_pct > GAP_SKIP_THRESHOLD:
+            print(f"  ⛔ 缺口 > {GAP_SKIP_THRESHOLD*100:.1f}%，跳过今日")
+            return True, 1.0
+        elif gap_pct > GAP_REDUCE_THRESHOLD:
+            print(f"  ⚠️ 缺口 {gap_pct*100:.2f}%，仓位减半")
+            return False, 0.5
+        return False, 1.0
+
+    def check_trend(self, direction):
+        if self.daily_sma is None:
+            return True
+
+        if direction == "buy" and self.today_open > self.daily_sma:
+            return True
+        if direction == "sell" and self.today_open < self.daily_sma:
+            return True
+
+        print(f"  🚫 方向 {direction} 与日线趋势(5日SMA={self.daily_sma:.2f})不对齐，跳过")
+        return False
+
+    def check_cooldown(self, current_minute_index):
+        if self.cooldown_until is None:
+            return True
+        if current_minute_index >= self.cooldown_until:
+            self.cooldown_until = None
+            return True
+        print(f"  ⏸️ 冷却中，还需等待 {self.cooldown_until - current_minute_index} 根K线")
+        return False
+
+    def check_entry(self, latest_bar, current_minute_index):
         if (not self.range_ready) or self.traded_today:
+            return None
+
+        if self.trade_count >= MAX_TRADES_PER_DAY:
+            return None
+
+        if not self.check_cooldown(current_minute_index):
             return None
 
         close  = float(latest_bar["close"])
         volume = float(latest_bar["volume"])
 
-        if avg_volume > 0 and volume < VOLUME_MULTIPLIER * avg_volume:
+        if self.range_avg_vol > 0 and volume < VOLUME_MULTIPLIER * self.range_avg_vol:
             return None
 
-        # 向上突破 → 做多
         if close > self.range_high:
+            if not self.check_trend("buy"):
+                return None
             return {
                 "side":  "buy",
                 "entry": close,
                 "stop":  self.range_low,
             }
 
-        # 向下突破 → 做空
         if close < self.range_low:
+            if not self.check_trend("sell"):
+                return None
             return {
                 "side":  "sell",
                 "entry": close,
@@ -72,54 +117,28 @@ class ORBStrategy:
 
         return None
 
-    # ── 3. 仓位计算 ──
-    def calc_qty(self, equity, entry, stop):
+    def calc_qty(self, available_cash, entry, stop, size_multiplier=1.0):
         risk_per_share = abs(entry - stop)
         if risk_per_share <= 0:
             return 0
-        dollar_risk = equity * RISK_PER_TRADE
+        dollar_risk = available_cash * RISK_PER_TRADE * size_multiplier
         qty = int(dollar_risk / risk_per_share)
         return max(qty, 1)
 
-    # ── 4. 更新移动止损 ──
-    def update_trailing_stop(self, current_price):
-        if self.position is None:
-            return None
+    def on_stop_loss_hit(self, current_minute_index):
+        self.trade_count += 1
+        self.cooldown_until = current_minute_index + COOLDOWN_BARS
+        self.position = None
+        self.traded_today = (self.trade_count >= MAX_TRADES_PER_DAY)
+        print(f"  🛑 止损触发，冷却{COOLDOWN_BARS}根K线，"
+              f"今日已交易{self.trade_count}/{MAX_TRADES_PER_DAY}笔")
 
-        side = self.position["side"]
-
-        if side == "buy":
-            new_stop = current_price * (1 - TRAILING_STOP_PCT)
-            if new_stop > self.position["stop"]:
-                self.position["stop"] = round(new_stop, 2)
-                self.trailing_active = True
-        else:
-            new_stop = current_price * (1 + TRAILING_STOP_PCT)
-            if new_stop < self.position["stop"]:
-                self.position["stop"] = round(new_stop, 2)
-                self.trailing_active = True
-
-        return self.position["stop"]
-
-    # ── 5. 检查是否触发出场 ──
-    def check_exit(self, current_price):
-        if self.position is None:
-            return None
-
-        side = self.position["side"]
-        stop = self.position["stop"]
-
-        if side == "buy" and current_price <= stop:
-            return "stop_loss"
-        if side == "sell" and current_price >= stop:
-            return "stop_loss"
-
-        return None
-
-    def reset(self):
+    def reset_daily(self):
         self.range_high      = None
         self.range_low       = None
+        self.range_avg_vol   = 0
         self.range_ready     = False
         self.traded_today    = False
+        self.trade_count     = 0
+        self.cooldown_until  = None
         self.position        = None
-        self.trailing_active = False
