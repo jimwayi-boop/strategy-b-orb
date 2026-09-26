@@ -3,30 +3,27 @@ import pandas as pd
 import numpy as np
 from config import *
 
-
 class ORBStrategy:
-
     def __init__(self, symbol):
-        self.symbol          = symbol
-        self.range_high      = None
-        self.range_low       = None
-        self.range_avg_vol   = 0
-        self.range_ready     = False
-        self.traded_today    = False
-        self.trade_count     = 0
-        self.cooldown_until  = None
-        self.position        = None
-        self.daily_sma       = None
-        self.prev_close      = None
-        self.today_open      = None
+        self.symbol = symbol
+        self.range_high = None
+        self.range_low = None
+        self.range_avg_vol = 0
+        self.range_ready = False
+        self.traded_today = False
+        self.trade_count = 0
+        self.cooldown_until = None
+        self.position = None
+        self.daily_sma = None
+        self.prev_close = None
+        self.today_open = None
 
     def set_opening_range(self, bars_df):
         if bars_df is None or bars_df.empty:
             return False
-
         self.range_high = float(bars_df["high"].max())
-        self.range_low  = float(bars_df["low"].min())
-        range_width     = self.range_high - self.range_low
+        self.range_low = float(bars_df["low"].min())
+        range_width = self.range_high - self.range_low
 
         if self.range_low <= 0:
             self.range_ready = False
@@ -38,38 +35,36 @@ class ORBStrategy:
             return False
 
         self.range_avg_vol = float(bars_df["volume"].mean())
-
         self.range_ready = True
         print(f"[{self.symbol}] ORB 区间锁定: "
-              f"{self.range_low:.2f} – {self.range_high:.2f}  "
-              f"宽度={range_width:.2f}  区间均量={self.range_avg_vol:.0f}")
+              f"{self.range_low:.2f} – {self.range_high:.2f} "
+              f"宽度={range_width:.2f} 区间均量={self.range_avg_vol:.0f}")
         return True
 
     def check_gap(self):
         if self.prev_close is None or self.today_open is None:
             return False, 1.0
-
         gap_pct = abs(self.today_open - self.prev_close) / self.prev_close
-        print(f"  开盘缺口: {gap_pct*100:.2f}%")
-
+        print(f" 开盘缺口: {gap_pct*100:.2f}%")
         if gap_pct > GAP_SKIP_THRESHOLD:
-            print(f"  ⛔ 缺口 > {GAP_SKIP_THRESHOLD*100:.1f}%，跳过今日")
+            print(f"⛔缺口 > {GAP_SKIP_THRESHOLD*100:.1f}%，跳过今日")
             return True, 1.0
         elif gap_pct > GAP_REDUCE_THRESHOLD:
-            print(f"  ⚠️ 缺口 {gap_pct*100:.2f}%，仓位减半")
+            print(f"⚠️缺口 {gap_pct*100:.2f}%，仓位减半")
             return False, 0.5
         return False, 1.0
 
     def check_trend(self, direction):
         if self.daily_sma is None:
             return True
-
+        if self.today_open is None:
+            print(" 今日开盘价缺失，跳过趋势过滤")
+            return True
         if direction == "buy" and self.today_open > self.daily_sma:
             return True
         if direction == "sell" and self.today_open < self.daily_sma:
             return True
-
-        print(f"  🚫 方向 {direction} 与日线趋势(5日SMA={self.daily_sma:.2f})不对齐，跳过")
+        print(f" 🚫 方向 {direction} 与日线趋势(5 日SMA={self.daily_sma:.2f})不对齐，跳过")
         return False
 
     def check_cooldown(self, current_minute_index):
@@ -78,20 +73,18 @@ class ORBStrategy:
         if current_minute_index >= self.cooldown_until:
             self.cooldown_until = None
             return True
-        print(f"  ⏸️ 冷却中，还需等待 {self.cooldown_until - current_minute_index} 根K线")
+        print(f" ⏸️冷却中，还需等待 {self.cooldown_until - current_minute_index} 根K线")
         return False
 
     def check_entry(self, latest_bar, current_minute_index):
         if (not self.range_ready) or self.traded_today:
             return None
-
         if self.trade_count >= MAX_TRADES_PER_DAY:
             return None
-
         if not self.check_cooldown(current_minute_index):
             return None
 
-        close  = float(latest_bar["close"])
+        close = float(latest_bar["close"])
         volume = float(latest_bar["volume"])
 
         if self.range_avg_vol > 0 and volume < VOLUME_MULTIPLIER * self.range_avg_vol:
@@ -101,20 +94,19 @@ class ORBStrategy:
             if not self.check_trend("buy"):
                 return None
             return {
-                "side":  "buy",
+                "side": "buy",
                 "entry": close,
-                "stop":  self.range_low,
+                "stop": self.range_low,
             }
 
         if close < self.range_low:
             if not self.check_trend("sell"):
                 return None
             return {
-                "side":  "sell",
+                "side": "sell",
                 "entry": close,
-                "stop":  self.range_high,
+                "stop": self.range_high,
             }
-
         return None
 
     def calc_qty(self, available_cash, entry, stop, size_multiplier=1.0):
@@ -130,15 +122,15 @@ class ORBStrategy:
         self.cooldown_until = current_minute_index + COOLDOWN_BARS
         self.position = None
         self.traded_today = (self.trade_count >= MAX_TRADES_PER_DAY)
-        print(f"  🛑 止损触发，冷却{COOLDOWN_BARS}根K线，"
+        print(f" 🛑 止损触发，冷却{COOLDOWN_BARS}根K线，"
               f"今日已交易{self.trade_count}/{MAX_TRADES_PER_DAY}笔")
 
     def reset_daily(self):
-        self.range_high      = None
-        self.range_low       = None
-        self.range_avg_vol   = 0
-        self.range_ready     = False
-        self.traded_today    = False
-        self.trade_count     = 0
-        self.cooldown_until  = None
-        self.position        = None
+        self.range_high = None
+        self.range_low = None
+        self.range_avg_vol = 0
+        self.range_ready = False
+        self.traded_today = False
+        self.trade_count = 0
+        self.cooldown_until = None
+        self.position = None
