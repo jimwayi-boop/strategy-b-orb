@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORB 策略交易日面板</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #0d1117;
+            color: #c9d1d9;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 4px;
+            color: #f0f6fc;
+        }
+        h2 {
+            font-size: 18px;
+            margin: 24px 0 12px;
+            color: #f0f6fc;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 8px;
+        }
+        .subtitle {
+            color: #8b949e;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .card-label { font-size: 12px; color: #8b949e; text-transform: uppercase; }
+        .card-value { font-size: 22px; font-weight: 600; color: #f0f6fc; margin-top: 4px; }
+        .card-value.green { color: #3fb950; }
+        .card-value.red { color: #f85149; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        th {
+            text-align: left;
+            padding: 10px 12px;
+            background: #161b22;
+            color: #8b949e;
+            font-weight: 500;
+            border-bottom: 1px solid #30363d;
+        }
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #21262d;
+        }
+        tr:hover td { background: #161b22; }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-buy { background: #1f6feb33; color: #58a6ff; }
+        .badge-sell { background: #da363333; color: #f85149; }
+        .badge-shadow { background: #8957e533; color: #a371f7; }
+        .badge-tp { background: #23863633; color: #3fb950; }
+        .badge-trail { background: #9e6a0333; color: #d29922; }
+
+        .pl-positive { color: #3fb950; }
+        .pl-negative { color: #f85149; }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #484f58;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 16px;
+            border-top: 1px solid #30363d;
+            font-size: 12px;
+            color: #484f58;
+            text-align: center;
+        }
+        .refresh-note {
+            font-size: 12px;
+            color: #8b949e;
+            margin-bottom: 16px;
+        }
+        .shadow-banner {
+            background: #8957e522;
+            border: 1px solid #8957e5;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        @media (max-width: 600px) {
+            .cards { grid-template-columns: 1fr 1fr; }
+            th, td { padding: 8px 6px; font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 ORB 策略交易日面板</h1>
+        <p class="subtitle" id="date-display">加载中...</p>
+        <p class="refresh-note" id="refresh-note"></p>
+
+        <!-- 影子模式提示 -->
+        <div id="shadow-banner" style="display:none;" class="shadow-banner">
+            👻 <strong>影子模式已开启</strong> — 策略只记录信号，不提交订单
+        </div>
+
+        <!-- 账户概览 -->
+        <h2>账户概览</h2>
+        <div class="cards" id="account-cards">
+            <div class="card"><div class="card-label">现金</div><div class="card-value" id="cash">--</div></div>
+            <div class="card"><div class="card-label">净值</div><div class="card-value" id="equity">--</div></div>
+            <div class="card"><div class="card-label">购买力</div><div class="card-value" id="buying-power">--</div></div>
+            <div class="card"><div class="card-label">今日已实现盈亏</div><div class="card-value" id="realized-pl">--</div></div>
+        </div>
+
+        <!-- 当前持仓 -->
+        <h2>当前持仓</h2>
+        <div id="positions-container">
+            <div class="empty-state">加载中...</div>
+        </div>
+
+        <!-- 今日成交 -->
+        <h2>今日成交</h2>
+        <div id="trades-container">
+            <div class="empty-state">加载中...</div>
+        </div>
+
+        <!-- 影子信号 -->
+        <h2 id="shadow-section-title" style="display:none;">👻 影子信号</h2>
+        <div id="shadow-container" style="display:none;"></div>
+
+        <div class="footer">
+            <p>数据来源: Alpaca Paper Trading | 市场数据: IEX | VIX: Data by Convex</p>
+            <p style="margin-top:4px;">页面数据由策略每次运行后自动更新</p>
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════
+        // 配置
+        // ═══════════════════════════════════════════
+        const DATA_URL = 'dashboard_data.json';
+        const AUTO_REFRESH_MS = 5 * 60 * 1000; // 5分钟自动刷新
+
+        // ═══════════════════════════════════════════
+        // 工具函数
+        // ═══════════════════════════════════════════
+        function formatMoney(v) {
+            if (v == null || isNaN(v)) return '--';
+            return '$' + Number(v).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+
+        function formatPct(v) {
+            if (v == null || isNaN(v)) return '--';
+            return Number(v).toFixed(2) + '%';
+        }
+
+        function formatQty(v) {
+            if (v == null || isNaN(v)) return '--';
+            return Number(v).toLocaleString('en-US');
+        }
+
+        function sideBadge(side) {
+            const s = (side || '').toLowerCase();
+            if (s.includes('buy')) return '<span class="badge badge-buy">做多</span>';
+            if (s.includes('sell')) return '<span class="badge badge-sell">做空</span>';
+            return '<span class="badge">' + side + '</span>';
+        }
+
+        function tagBadge(tag) {
+            if (!tag) return '';
+            if (tag.includes('_TP')) return '<span class="badge badge-tp">止盈</span>';
+            if (tag.includes('_TRAIL') || tag.includes('_BE')) return '<span class="badge badge-trail">止损</span>';
+            if (tag.includes('_SHADOW')) return '<span class="badge badge-shadow">影子</span>';
+            return '';
+        }
+
+        function plClass(v) {
+            if (v > 0) return 'pl-positive';
+            if (v < 0) return 'pl-negative';
+            return '';
+        }
+
+        // ═══════════════════════════════════════════
+        // 渲染
+        // ═══════════════════════════════════════════
+        function renderAccount(data) {
+            const acc = data.account || {};
+            document.getElementById('cash').textContent = formatMoney(acc.cash);
+            document.getElementById('equity').textContent = formatMoney(acc.equity);
+            document.getElementById('buying-power').textContent = formatMoney(acc.buying_power);
+
+            // 已实现盈亏（今日成交中的卖出盈亏）
+            const trades = data.today_trades || [];
+            let realized = 0;
+            // 简单估算：如果有卖出成交，按加权平均成本计算
+            // 这里只做展示，精确的已实现盈亏需要从 Alpaca Activities 获取
+            const el = document.getElementById('realized-pl');
+            el.textContent = realized > 0 ? '+' + formatMoney(realized) : formatMoney(realized);
+            el.className = 'card-value ' + plClass(realized);
+        }
+
+        function renderPositions(data) {
+            const container = document.getElementById('positions-container');
+            const positions = data.positions || [];
+
+            if (positions.length === 0) {
+                container.innerHTML = '<div class="empty-state">当前无持仓</div>';
+                return;
+            }
+
+            let html = `<table>
+                <thead><tr>
+                    <th>标的</th><th>数量</th><th>成本</th><th>现价</th>
+                    <th>市值</th><th>未实现盈亏</th><th>盈亏%</th>
+                </tr></thead><tbody>`;
+
+            positions.forEach(p => {
+                const plCls = plClass(p.unrealized_pl);
+                html += `<tr>
+                    <td><strong>${p.symbol}</strong></td>
+                    <td>${formatQty(p.qty)}</td>
+                    <td>${formatMoney(p.avg_entry)}</td>
+                    <td>${p.current_price ? formatMoney(p.current_price) : '--'}</td>
+                    <td>${formatMoney(p.market_value)}</td>
+                    <td class="${plCls}">${formatMoney(p.unrealized_pl)}</td>
+                    <td class="${plCls}">${formatPct(p.unrealized_plpc)}</td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function renderTrades(data) {
+            const container = document.getElementById('trades-container');
+            const trades = data.today_trades || [];
+
+            if (trades.length === 0) {
+                container.innerHTML = '<div class="empty-state">今日无成交</div>';
+                return;
+            }
+
+            let html = `<table>
+                <thead><tr>
+                    <th>时间</th><th>标的</th><th>方向</th><th>数量</th><th>成交价</th><th>类型</th>
+                </tr></thead><tbody>`;
+
+            trades.sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+
+            trades.forEach(t => {
+                html += `<tr>
+                    <td>${t.time || '--'}</td>
+                    <td><strong>${t.symbol}</strong></td>
+                    <td>${sideBadge(t.side)}</td>
+                    <td>${formatQty(t.qty)}</td>
+                    <td>${formatMoney(t.price)}</td>
+                    <td>${tagBadge(t.client_order_id)}</td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function renderShadow(data) {
+            const title = document.getElementById('shadow-section-title');
+            const container = document.getElementById('shadow-container');
+            const banner = document.getElementById('shadow-banner');
+
+            if (data.shadow_mode) {
+                banner.style.display = 'block';
+            } else {
+                banner.style.display = 'none';
+            }
+
+            const signals = data.shadow_signals || [];
+            if (signals.length === 0) {
+                title.style.display = 'none';
+                container.style.display = 'none';
+                return;
+            }
+
+            title.style.display = 'block';
+            container.style.display = 'block';
+
+            let html = `<table>
+                <thead><tr>
+                    <th>时间</th><th>标的</th><th>方向</th><th>数量</th><th>假设入场价</th>
+                </tr></thead><tbody>`;
+
+            signals.forEach(s => {
+                html += `<tr>
+                    <td>${(s.timestamp || '').slice(11, 19)}</td>
+                    <td><strong>${s.symbol || '--'}</strong></td>
+                    <td>${sideBadge(s.side)}</td>
+                    <td>${formatQty(s.qty)}</td>
+                    <td>${formatMoney(s.price)}</td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // ═══════════════════════════════════════════
+        // 主加载
+        // ═══════════════════════════════════════════
+        async function loadDashboard() {
+            try {
+                const resp = await fetch(DATA_URL + '?t=' + Date.now());
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                const data = await resp.json();
+
+                document.getElementById('date-display').textContent =
+                    '日期: ' + (data.date || '--') +
+                    '  |  生成时间: ' + (data.generated_at || '').slice(11, 19) + ' ET';
+                document.getElementById('refresh-note').textContent =
+                    '数据自动刷新 · 最后更新: ' + new Date().toLocaleTimeString();
+
+                renderAccount(data);
+                renderPositions(data);
+                renderTrades(data);
+                renderShadow(data);
+
+            } catch (e) {
+                console.error('加载失败:', e);
+                document.getElementById('positions-container').innerHTML =
+                    '<div class="empty-state">数据加载失败: ' + e.message + '<br>请确认 dashboard_data.json 已生成</div>';
+                document.getElementById('trades-container').innerHTML = '';
+            }
+        }
+
+        // 初始加载
+        loadDashboard();
+
+        // 自动刷新
+        setInterval(loadDashboard, AUTO_REFRESH_MS);
+    </script>
+</body>
+</html>
