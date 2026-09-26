@@ -21,6 +21,8 @@ class ORBStrategy:
         self.atr = None
         self.initial_stop = None
         self.risk_per_share = None
+        self.vix_value = None
+        self.market_regime = "bullish"  # bullish / bearish
 
     def set_opening_range(self, bars_df):
         if bars_df is None or bars_df.empty:
@@ -40,9 +42,9 @@ class ORBStrategy:
 
         self.range_avg_vol = float(bars_df["volume"].mean())
         self.range_ready = True
-        print(f"[{self.symbol}] ORB 区间锁定: "
+        print(f"[{self.symbol}] ORB 区间: "
               f"{self.range_low:.2f} – {self.range_high:.2f} "
-              f"宽度={range_width:.2f} 区间均量={self.range_avg_vol:.0f}")
+              f"宽度={range_width:.2f} 均量={self.range_avg_vol:.0f}")
         return True
 
     def check_gap(self):
@@ -62,18 +64,15 @@ class ORBStrategy:
         if self.daily_ema is None:
             return True
         if self.today_open is None:
-            print(" 今日开盘价缺失，跳过趋势过滤")
             return True
 
-        # 基础方向检查
         if direction == "buy" and self.today_open <= self.daily_ema:
-            print(f" 🚫 方向 buy 与EMA{TREND_EMA_PERIOD}={self.daily_ema:.2f}不对齐，跳过")
+            print(f" 🚫 buy 与EMA{TREND_EMA_PERIOD}={self.daily_ema:.2f}不对齐，跳过")
             return False
         if direction == "sell" and self.today_open >= self.daily_ema:
-            print(f" 🚫 方向 sell 与EMA{TREND_EMA_PERIOD}={self.daily_ema:.2f}不对齐，跳过")
+            print(f" 🚫 sell 与EMA{TREND_EMA_PERIOD}={self.daily_ema:.2f}不对齐，跳过")
             return False
 
-        # EMA斜率检查
         if self.daily_ema_slope is not None:
             slope_pct = self.daily_ema_slope / self.daily_ema
             if direction == "buy" and slope_pct < -TREND_EMA_SLOPE_THRESHOLD:
@@ -85,13 +84,25 @@ class ORBStrategy:
 
         return True
 
+    def check_vix(self, direction):
+        """VIX 过滤：高VIX只做空，低VIX只做多"""
+        if not VIX_FILTER_ENABLED or self.vix_value is None:
+            return True
+        if self.vix_value > VIX_HIGH_THRESHOLD and direction == "buy":
+            print(f" 🚫 VIX={self.vix_value:.1f} > {VIX_HIGH_THRESHOLD}，只做空")
+            return False
+        if self.vix_value < VIX_LOW_THRESHOLD and direction == "sell":
+            print(f" 🚫 VIX={self.vix_value:.1f} < {VIX_LOW_THRESHOLD}，只做多")
+            return False
+        return True
+
     def check_cooldown(self, current_minute_index):
         if self.cooldown_until is None:
             return True
         if current_minute_index >= self.cooldown_until:
             self.cooldown_until = None
             return True
-        print(f" ⏸️冷却中，还需等待 {self.cooldown_until - current_minute_index} 根K线")
+        print(f" ⏸️冷却中，还需 {self.cooldown_until - current_minute_index} 根K线")
         return False
 
     def check_entry(self, latest_bar, current_minute_index):
@@ -102,12 +113,9 @@ class ORBStrategy:
         if not self.check_cooldown(current_minute_index):
             return None
 
-        # 日内交易时段限制
-        now_h = current_minute_index // 60
-        now_m = current_minute_index % 60
         cutoff_min = TRADE_CUTOFF_HOUR * 60 + TRADE_CUTOFF_MIN
         if current_minute_index >= cutoff_min:
-            print(f" ⏰ 已过交易截止时间 {TRADE_CUTOFF_HOUR}:{TRADE_CUTOFF_MIN:02d}，不再开新仓")
+            print(f" ⏰ 已过交易截止时间，不再开新仓")
             return None
 
         close = float(latest_bar["close"])
@@ -119,20 +127,16 @@ class ORBStrategy:
         if close > self.range_high:
             if not self.check_trend("buy"):
                 return None
-            return {
-                "side": "buy",
-                "entry": close,
-                "stop": self.range_low,
-            }
+            if not self.check_vix("buy"):
+                return None
+            return {"side": "buy", "entry": close, "stop": self.range_low}
 
         if close < self.range_low:
             if not self.check_trend("sell"):
                 return None
-            return {
-                "side": "sell",
-                "entry": close,
-                "stop": self.range_high,
-            }
+            if not self.check_vix("sell"):
+                return None
+            return {"side": "sell", "entry": close, "stop": self.range_high}
         return None
 
     def calc_qty(self, available_cash, entry, stop, size_multiplier=1.0, atr=None):
@@ -140,14 +144,16 @@ class ORBStrategy:
         if risk_per_share <= 0:
             return 0
 
-        # 波动率调整
         vol_mult = 1.0
         if VOL_ADJUST_ENABLED and atr is not None and entry > 0:
             current_vol = atr / entry
             if current_vol > 0:
-                vol_mult = min(VOL_TARGET / current_vol, 2.0)  # 上限2倍
+                vol_mult = min(VOL_TARGET / current_vol, 2.0)
 
-        dollar_risk = available_cash * RISK_PER_TRADE * size_multiplier * vol_mult
+        # 市场状态调整
+        regime_mult = MARKET_REGIME_BEARISH_SIZE_MULT if self.market_regime == "bearish" else 1.0
+
+        dollar_risk = available_cash * RISK_PER_TRADE * size_multiplier * vol_mult * regime_mult
         qty_by_risk = int(dollar_risk / risk_per_share)
         qty_by_notional = int((available_cash * MAX_NOTIONAL_PCT) / entry)
 
@@ -159,8 +165,8 @@ class ORBStrategy:
         self.cooldown_until = current_minute_index + COOLDOWN_BARS
         self.position = None
         self.traded_today = (self.trade_count >= MAX_TRADES_PER_DAY)
-        print(f" 🛑 止损触发，冷却{COOLDOWN_BARS}根K线，"
-              f"今日已交易{self.trade_count}/{MAX_TRADES_PER_DAY}笔")
+        print(f" 🛑 止损，冷却{COOLDOWN_BARS}根K线，"
+              f"已交易{self.trade_count}/{MAX_TRADES_PER_DAY}笔")
 
     def reset_daily(self):
         self.range_high = None
