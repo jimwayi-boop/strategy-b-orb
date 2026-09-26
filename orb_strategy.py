@@ -15,8 +15,12 @@ class ORBStrategy:
         self.cooldown_until = None
         self.position = None
         self.daily_ema = None
+        self.daily_ema_slope = None
         self.prev_close = None
         self.today_open = None
+        self.atr = None
+        self.initial_stop = None
+        self.risk_per_share = None
 
     def set_opening_range(self, bars_df):
         if bars_df is None or bars_df.empty:
@@ -60,12 +64,26 @@ class ORBStrategy:
         if self.today_open is None:
             print(" 今日开盘价缺失，跳过趋势过滤")
             return True
-        if direction == "buy" and self.today_open > self.daily_ema:
-            return True
-        if direction == "sell" and self.today_open < self.daily_ema:
-            return True
-        print(f" 🚫 方向 {direction} 与日线趋势(EMA{TREND_EMA_PERIOD}={self.daily_ema:.2f})不对齐，跳过")
-        return False
+
+        # 基础方向检查
+        if direction == "buy" and self.today_open <= self.daily_ema:
+            print(f" 🚫 方向 buy 与EMA{TREND_EMA_PERIOD}={self.daily_ema:.2f}不对齐，跳过")
+            return False
+        if direction == "sell" and self.today_open >= self.daily_ema:
+            print(f" 🚫 方向 sell 与EMA{TREND_EMA_PERIOD}={self.daily_ema:.2f}不对齐，跳过")
+            return False
+
+        # EMA斜率检查
+        if self.daily_ema_slope is not None:
+            slope_pct = self.daily_ema_slope / self.daily_ema
+            if direction == "buy" and slope_pct < -TREND_EMA_SLOPE_THRESHOLD:
+                print(f" 🚫 EMA斜率向下 ({slope_pct*100:.3f}%)，跳过做多")
+                return False
+            if direction == "sell" and slope_pct > TREND_EMA_SLOPE_THRESHOLD:
+                print(f" 🚫 EMA斜率向上 ({slope_pct*100:.3f}%)，跳过做空")
+                return False
+
+        return True
 
     def check_cooldown(self, current_minute_index):
         if self.cooldown_until is None:
@@ -82,6 +100,14 @@ class ORBStrategy:
         if self.trade_count >= MAX_TRADES_PER_DAY:
             return None
         if not self.check_cooldown(current_minute_index):
+            return None
+
+        # 日内交易时段限制
+        now_h = current_minute_index // 60
+        now_m = current_minute_index % 60
+        cutoff_min = TRADE_CUTOFF_HOUR * 60 + TRADE_CUTOFF_MIN
+        if current_minute_index >= cutoff_min:
+            print(f" ⏰ 已过交易截止时间 {TRADE_CUTOFF_HOUR}:{TRADE_CUTOFF_MIN:02d}，不再开新仓")
             return None
 
         close = float(latest_bar["close"])
@@ -109,14 +135,20 @@ class ORBStrategy:
             }
         return None
 
-    def calc_qty(self, available_cash, entry, stop, size_multiplier=1.0):
+    def calc_qty(self, available_cash, entry, stop, size_multiplier=1.0, atr=None):
         risk_per_share = abs(entry - stop)
         if risk_per_share <= 0:
             return 0
-        dollar_risk = available_cash * RISK_PER_TRADE * size_multiplier
-        qty_by_risk = int(dollar_risk / risk_per_share)
 
-        # 名义仓位上限
+        # 波动率调整
+        vol_mult = 1.0
+        if VOL_ADJUST_ENABLED and atr is not None and entry > 0:
+            current_vol = atr / entry
+            if current_vol > 0:
+                vol_mult = min(VOL_TARGET / current_vol, 2.0)  # 上限2倍
+
+        dollar_risk = available_cash * RISK_PER_TRADE * size_multiplier * vol_mult
+        qty_by_risk = int(dollar_risk / risk_per_share)
         qty_by_notional = int((available_cash * MAX_NOTIONAL_PCT) / entry)
 
         qty = min(qty_by_risk, qty_by_notional)
@@ -139,3 +171,5 @@ class ORBStrategy:
         self.trade_count = 0
         self.cooldown_until = None
         self.position = None
+        self.initial_stop = None
+        self.risk_per_share = None
