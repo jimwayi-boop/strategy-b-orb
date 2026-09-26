@@ -14,7 +14,7 @@ class ORBStrategy:
         self.trade_count = 0
         self.cooldown_until = None
         self.position = None
-        self.daily_sma = None
+        self.daily_ema = None
         self.prev_close = None
         self.today_open = None
 
@@ -55,16 +55,16 @@ class ORBStrategy:
         return False, 1.0
 
     def check_trend(self, direction):
-        if self.daily_sma is None:
+        if self.daily_ema is None:
             return True
         if self.today_open is None:
             print(" 今日开盘价缺失，跳过趋势过滤")
             return True
-        if direction == "buy" and self.today_open > self.daily_sma:
+        if direction == "buy" and self.today_open > self.daily_ema:
             return True
-        if direction == "sell" and self.today_open < self.daily_sma:
+        if direction == "sell" and self.today_open < self.daily_ema:
             return True
-        print(f" 🚫 方向 {direction} 与日线趋势(5 日SMA={self.daily_sma:.2f})不对齐，跳过")
+        print(f" 🚫 方向 {direction} 与日线趋势(EMA{TREND_EMA_PERIOD}={self.daily_ema:.2f})不对齐，跳过")
         return False
 
     def check_cooldown(self, current_minute_index):
@@ -114,7 +114,12 @@ class ORBStrategy:
         if risk_per_share <= 0:
             return 0
         dollar_risk = available_cash * RISK_PER_TRADE * size_multiplier
-        qty = int(dollar_risk / risk_per_share)
+        qty_by_risk = int(dollar_risk / risk_per_share)
+
+        # 名义仓位上限
+        qty_by_notional = int((available_cash * MAX_NOTIONAL_PCT) / entry)
+
+        qty = min(qty_by_risk, qty_by_notional)
         return max(qty, 1)
 
     def on_stop_loss_hit(self, current_minute_index):
