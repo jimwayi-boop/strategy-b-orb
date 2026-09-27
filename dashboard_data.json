@@ -1,0 +1,13 @@
+{
+  "date": "2026-09-26",
+  "generated_at": "2026-09-26T20:41:20.046619-04:00",
+  "account": {
+    "cash": 100410.66,
+    "equity": 100410.66,
+    "buying_power": 100410.66
+  },
+  "positions": [],
+  "today_trades": [],
+  "shadow_signals": [],
+  "shadow_mode": false
+}
