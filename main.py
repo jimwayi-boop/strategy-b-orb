@@ -30,7 +30,7 @@ from orb_strategy import ORBStrategy
 ET = pytz.timezone("America/New_York")
 
 # ══════════════════════════════════════════════
-# API 重试
+# 工具
 # ══════════════════════════════════════════════
 def api_call_with_retry(func, *args, max_retries=API_MAX_RETRIES,
                         base_delay=API_RETRY_BASE_DELAY, **kwargs):
@@ -44,9 +44,7 @@ def api_call_with_retry(func, *args, max_retries=API_MAX_RETRIES,
             print(f"API 调用失败 (尝试 {attempt+1}/{max_retries}): {e}，{delay:.1f}秒后重试")
             time.sleep(delay)
 
-# ══════════════════════════════════════════════
-# 邮件
-# ══════════════════════════════════════════════
+
 def send_email(subject, body, html=False):
     mail_user = os.getenv("MAIL_USERNAME")
     mail_pass = os.getenv("MAIL_PASSWORD")
@@ -66,9 +64,7 @@ def send_email(subject, body, html=False):
     except Exception as e:
         print(f" ⚠️邮件失败: {e}")
 
-# ══════════════════════════════════════════════
-# 参数版本化
-# ══════════════════════════════════════════════
+
 def log_params():
     params = {
         "RISK_PER_TRADE": RISK_PER_TRADE,
@@ -83,33 +79,32 @@ def log_params():
     }
     print(f"📋 参数: {json.dumps(params, ensure_ascii=False)}")
 
-# ══════════════════════════════════════════════
-# 时间
-# ══════════════════════════════════════════════
+
 def now_et():
     return datetime.now(ET)
 
+
 def is_market_day():
     return now_et().weekday() < 5
+
 
 def is_after_orb():
     n = now_et()
     return (n.hour > ORB_END_HOUR) or (n.hour == ORB_END_HOUR and n.minute > ORB_END_MIN)
 
+
 def is_eod():
     n = now_et()
     return (n.hour > EOD_CLOSE_HOUR) or (n.hour == EOD_CLOSE_HOUR and n.minute >= EOD_CLOSE_MIN)
+
 
 def is_before_open():
     n = now_et()
     return (n.hour < ORB_START_HOUR) or (n.hour == ORB_START_HOUR and n.minute < ORB_START_MIN)
 
-def is_past_cutoff():
-    n = now_et()
-    return (n.hour * 60 + n.minute) >= (TRADE_CUTOFF_HOUR * 60 + TRADE_CUTOFF_MIN)
 
 # ══════════════════════════════════════════════
-# VIX 获取
+# VIX / 市场状态
 # ══════════════════════════════════════════════
 def fetch_vix():
     if not VIX_FILTER_ENABLED:
@@ -122,14 +117,11 @@ def fetch_vix():
             if vix is not None:
                 print(f"📊 VIX = {vix:.2f}")
                 return float(vix)
-        print(f" ⚠️VIX API 返回 {resp.status_code}")
     except Exception as e:
         print(f" ⚠️获取 VIX 失败: {e}")
     return None
 
-# ══════════════════════════════════════════════
-# 市场状态（QQQ EMA200）
-# ══════════════════════════════════════════════
+
 def fetch_market_regime(data_client):
     if not MARKET_REGIME_ENABLED:
         return "bullish"
@@ -146,7 +138,6 @@ def fetch_market_regime(data_client):
         bars = api_call_with_retry(data_client.get_stock_bars, req)
         df = bars.df
         if df.empty or len(df) < MARKET_REGIME_EMA_PERIOD:
-            print(f" ⚠️QQQ 数据不足，默认看多")
             return "bullish"
         if isinstance(df.index, pd.MultiIndex):
             df = df.xs(MARKET_REGIME_SYMBOL, level="symbol")
@@ -161,6 +152,7 @@ def fetch_market_regime(data_client):
     except Exception as e:
         print(f" ⚠️市场状态获取失败: {e}")
         return "bullish"
+
 
 # ══════════════════════════════════════════════
 # 数据获取
@@ -186,6 +178,7 @@ def fetch_opening_range_bars(data_client, symbol):
         print(f"[{symbol}] 开盘区间失败: {e}")
         return None
 
+
 def fetch_latest_bar(data_client, symbol):
     end = now_et()
     start = end - timedelta(minutes=3)
@@ -207,6 +200,7 @@ def fetch_latest_bar(data_client, symbol):
     except Exception as e:
         print(f"[{symbol}] 最新K线失败: {e}")
         return None
+
 
 def fetch_prev_close_and_open(data_client, symbol):
     today = now_et().strftime("%Y-%m-%d")
@@ -237,6 +231,7 @@ def fetch_prev_close_and_open(data_client, symbol):
         print(f"[{symbol}] 前收/今开失败: {e}")
         return None, None
 
+
 def fetch_daily_ema(data_client, symbol, period=TREND_EMA_PERIOD):
     end = now_et()
     start = end - timedelta(days=period + 30)
@@ -266,6 +261,7 @@ def fetch_daily_ema(data_client, symbol, period=TREND_EMA_PERIOD):
         print(f"[{symbol}] EMA失败: {e}")
         return None, None
 
+
 def fetch_atr(data_client, symbol, period=ATR_LOOKBACK_DAYS):
     end = now_et()
     start = end - timedelta(days=period + 10)
@@ -286,11 +282,16 @@ def fetch_atr(data_client, symbol, period=ATR_LOOKBACK_DAYS):
         high = df["high"].astype(float)
         low = df["low"].astype(float)
         close = df["close"].astype(float)
-        tr = pd.concat([high - low, (high - close.shift(1)).abs(), (low - close.shift(1)).abs()], axis=1).max(axis=1)
+        tr = pd.concat([
+            high - low,
+            (high - close.shift(1)).abs(),
+            (low - close.shift(1)).abs()
+        ], axis=1).max(axis=1)
         return float(tr.rolling(window=period).mean().iloc[-1])
     except Exception as e:
         print(f"[{symbol}] ATR失败: {e}")
         return None
+
 
 def fetch_today_orders(trading_client, symbol):
     try:
@@ -304,6 +305,7 @@ def fetch_today_orders(trading_client, symbol):
         print(f"[{symbol}] 订单查询失败: {e}")
         return []
 
+
 # ══════════════════════════════════════════════
 # 订单执行
 # ══════════════════════════════════════════════
@@ -314,11 +316,9 @@ def wait_for_order_filled(trading_client, order_id, max_wait=10, interval=0.5):
         try:
             o = api_call_with_retry(trading_client.get_order_by_id, order_id)
             if o.status == OrderStatus.FILLED:
-                print(f" ✔️订单 {order_id} 完全成交")
                 return True, int(float(o.filled_qty))
             if o.status == OrderStatus.PARTIALLY_FILLED:
                 last_status = o
-                print(f" 🔶部分成交: {o.filled_qty}/{o.qty}")
             if o.status in (OrderStatus.CANCELED, OrderStatus.REJECTED, OrderStatus.EXPIRED):
                 filled = int(float(o.filled_qty)) if o.filled_qty else 0
                 return False, filled
@@ -326,12 +326,10 @@ def wait_for_order_filled(trading_client, order_id, max_wait=10, interval=0.5):
             pass
         time.sleep(interval)
         waited += interval
-
     if last_status:
-        filled_qty = int(float(last_status.filled_qty))
-        print(f" ⚠️超时，部分成交 {filled_qty} 股")
-        return False, filled_qty
+        return False, int(float(last_status.filled_qty))
     return False, 0
+
 
 def place_entry_and_trailing_stop(trading_client, symbol, qty, side, trail_pct, tag, entry_price):
     order_side = OrderSide.BUY if side == "buy" else OrderSide.SELL
@@ -376,18 +374,21 @@ def place_entry_and_trailing_stop(trading_client, symbol, qty, side, trail_pct, 
         print(f" ⚠️Trailing Stop 失败: {e}")
         return entry_order, None
 
+
 def log_shadow_trade(symbol, side, qty, price, tag):
     record = {
         "timestamp": now_et().isoformat(),
+        "date": now_et().strftime("%Y-%m-%d"),
         "symbol": symbol, "side": side, "qty": qty,
         "price": price, "tag": tag,
     }
     try:
-        with open("shadow_trades.jsonl", "a") as f:
+        with open(SHADOW_TRADES_FILE, "a") as f:
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
         print(f" 👻 影子记录已写入")
     except Exception as e:
         print(f" ⚠️影子写入失败: {e}")
+
 
 def close_position_safely(trading_client, symbol):
     try:
@@ -404,6 +405,7 @@ def close_position_safely(trading_client, symbol):
     except Exception as e:
         print(f" ⚠️平仓异常: {e}")
 
+
 def enforce_no_margin(trading_client):
     try:
         if hasattr(trading_client, "patch_account_configurations"):
@@ -414,27 +416,20 @@ def enforce_no_margin(trading_client):
     except Exception as e:
         print(f"⚠️ 保证金设置失败: {e}")
 
-# ══════════════════════════════════════════════
-# 组合层风险
-# ══════════════════════════════════════════════
+
 def check_portfolio_risk(positions, available_cash, new_risk_dollar, new_direction, current_risks):
     if len(positions) >= MAX_CONCURRENT_POSITIONS:
-        print(f" 🚫 持仓已达 {MAX_CONCURRENT_POSITIONS} 个上限")
         return False
     risk_pct = new_risk_dollar / available_cash
     current_total = sum(current_risks.values()) if current_risks else 0
     if (current_total + risk_pct) > MAX_TOTAL_RISK_PCT:
-        print(f" 🚫 总风险超限")
         return False
     same_dir = sum(r for d, r in current_risks.items() if d == new_direction) if current_risks else 0
     if (same_dir + risk_pct) > MAX_SAME_DIRECTION_RISK:
-        print(f" 🚫 {new_direction} 方向风险超限")
         return False
     return True
 
-# ══════════════════════════════════════════════
-# 多级止盈
-# ══════════════════════════════════════════════
+
 def check_scale_out(trading_client, symbol, position, price, entry, initial_stop, today_orders, date_str):
     if not SCALE_OUT_ENABLED:
         return False
@@ -474,125 +469,294 @@ def check_scale_out(trading_client, symbol, position, price, entry, initial_stop
             return True
     return False
 
+
 # ══════════════════════════════════════════════
-# 交易日面板数据生成
+# 净值历史
 # ══════════════════════════════════════════════
-def generate_dashboard_data(trading_client, data_client, shadow_signals=None):
+def load_equity_history():
+    if not os.path.exists(EQUITY_HISTORY_FILE):
+        return {}
+    try:
+        with open(EQUITY_HISTORY_FILE) as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def save_equity_history(history):
+    # 只保留最近 EQUITY_HISTORY_DAYS 个交易日
+    dates = sorted(history.keys())
+    if len(dates) > EQUITY_HISTORY_DAYS:
+        for old_date in dates[:-EQUITY_HISTORY_DAYS]:
+            del history[old_date]
+    with open(EQUITY_HISTORY_FILE, "w") as f:
+        json.dump(history, f, ensure_ascii=False, indent=2)
+
+
+def append_equity_snapshot(equity):
+    history = load_equity_history()
+    today = now_et().strftime("%Y-%m-%d")
+    now_str = now_et().strftime("%H:%M")
+
+    if today not in history:
+        history[today] = []
+
+    # 如果最后一分钟已经有了，就不重复记录
+    if history[today] and history[today][-1]["time"] == now_str:
+        history[today][-1]["equity"] = equity
+    else:
+        history[today].append({"time": now_str, "equity": equity})
+
+    save_equity_history(history)
+    return history
+
+
+# ══════════════════════════════════════════════
+# 今日状态重建（用于面板）
+# ══════════════════════════════════════════════
+def classify_order_type(order):
+    """从 client_order_id 判断订单类型"""
+    cid = order.client_order_id or ""
+    if "_TP1" in cid:
+        return "TP1 止盈"
+    if "_TP2" in cid:
+        return "TP2 止盈"
+    if "_BE_TRAIL" in cid:
+        return "保本移动"
+    if "_TRAIL_RE" in cid:
+        return "补挂 Trailing"
+    if "_TRAIL" in cid:
+        return "Trailing 止损"
+    if cid.startswith("ORB_"):
+        return "入场"
+    return "其他"
+
+
+def rebuild_today_state(trading_client, symbols):
+    """从今日订单重建：每笔成交、已实现盈亏、FIFO 配对"""
+    today_str = now_et().strftime("%Y-%m-%d")
+    today_compact = now_et().strftime("%Y%m%d")
+
+    all_orders = []
+    for sym in symbols:
+        orders = fetch_today_orders(trading_client, sym)
+        for o in orders:
+            if o.status == OrderStatus.FILLED:
+                all_orders.append(o)
+
+    # 按成交时间排序
+    all_orders.sort(key=lambda o: o.filled_at if o.filled_at else now_et())
+
+    # FIFO 配对
+    symbol_lots = {}  # symbol -> list of {qty, price, time}
+    realized_trades = []
+    today_trades = []
+
+    for o in all_orders:
+        sym = o.symbol
+        side = str(o.side).replace("OrderSide.", "").lower()
+        qty = int(float(o.filled_qty)) if o.filled_qty else 0
+        price = float(o.filled_avg_price) if o.filled_avg_price else 0
+        amount = qty * price
+        filled_et = o.filled_at.astimezone(ET) if o.filled_at else now_et()
+        order_type = classify_order_type(o)
+
+        today_trades.append({
+            "time": filled_et.strftime("%H:%M:%S"),
+            "symbol": sym,
+            "side": side,
+            "qty": qty,
+            "price": round(price, 2),
+            "amount": round(amount, 2),
+            "order_type": order_type,
+            "client_order_id": o.client_order_id or "",
+        })
+
+        if sym not in symbol_lots:
+            symbol_lots[sym] = []
+
+        if side == "buy":
+            symbol_lots[sym].append({
+                "qty": qty,
+                "price": price,
+                "time": filled_et,
+            })
+        elif side == "sell":
+            remaining = qty
+            cost_basis_total = 0
+            matched_qty = 0
+            while remaining > 0 and symbol_lots[sym]:
+                lot = symbol_lots[sym][0]
+                take = min(remaining, lot["qty"])
+                cost_basis_total += take * lot["price"]
+                matched_qty += take
+                lot["qty"] -= take
+                remaining -= take
+                if lot["qty"] <= 0:
+                    symbol_lots[sym].pop(0)
+
+            if matched_qty > 0:
+                avg_cost = cost_basis_total / matched_qty
+                pnl = (price - avg_cost) * matched_qty
+                pnl_pct = (price - avg_cost) / avg_cost * 100
+                holding_minutes = 0
+                if symbol_lots.get(sym + "_last_entry"):
+                    pass
+
+                # 找对应的入场时间
+                entry_time = None
+                for t in today_trades:
+                    if t["symbol"] == sym and t["side"] == "buy":
+                        entry_time = t["time"]
+                        break
+
+                holding_minutes = 0
+                if entry_time:
+                    try:
+                        entry_dt = datetime.strptime(
+                            f"{today_str} {entry_time}", "%Y-%m-%d %H:%M:%S"
+                        ).replace(tzinfo=ET)
+                        holding_minutes = int((filled_et - entry_dt).total_seconds() / 60)
+                    except Exception:
+                        pass
+
+                realized_trades.append({
+                    "symbol": sym,
+                    "entry_price": round(avg_cost, 2),
+                    "exit_price": round(price, 2),
+                    "qty": matched_qty,
+                    "reason": order_type,
+                    "pnl": round(pnl, 2),
+                    "pnl_pct": round(pnl_pct, 2),
+                    "holding_minutes": holding_minutes,
+                })
+
+    return today_trades, realized_trades
+
+
+# ══════════════════════════════════════════════
+# 生成 dashboard_data.json
+# ══════════════════════════════════════════════
+def generate_dashboard_data(trading_client, data_client, decisions_log,
+                             shadow_signals, market_info, equity_history):
     try:
         account = api_call_with_retry(trading_client.get_account)
         positions = api_call_with_retry(trading_client.get_all_positions)
 
+        today_trades, realized_trades = rebuild_today_state(trading_client, SYMBOLS)
+
+        # 统计
+        wins = [t for t in realized_trades if t["pnl"] > 0]
+        losses = [t for t in realized_trades if t["pnl"] <= 0]
+        total_pnl = sum(t["pnl"] for t in realized_trades)
+        gross_profit = sum(t["pnl"] for t in wins) if wins else 0
+        gross_loss = abs(sum(t["pnl"] for t in losses)) if losses else 0
+        profit_factor = round(gross_profit / gross_loss, 2) if gross_loss > 0 else None
+
+        stats = {
+            "total_trades": len(realized_trades),
+            "win_count": len(wins),
+            "loss_count": len(losses),
+            "win_rate": round(len(wins) / len(realized_trades) * 100, 2) if realized_trades else 0,
+            "total_pnl": round(total_pnl, 2),
+            "avg_pnl": round(total_pnl / len(realized_trades), 2) if realized_trades else 0,
+            "max_win": round(max([t["pnl"] for t in wins]), 2) if wins else 0,
+            "max_loss": round(min([t["pnl"] for t in losses]), 2) if losses else 0,
+            "profit_factor": profit_factor,
+        }
+
+        # 当前持仓
+        position_list = []
+        for p in positions:
+            entry = float(p.avg_entry_price)
+            current = float(p.current_price) if p.current_price else entry
+            qty = abs(int(float(p.qty)))
+            side = "buy" if float(p.qty) > 0 else "sell"
+
+            # 从今日订单里找入场时间
+            entry_time = None
+            for t in today_trades:
+                if t["symbol"] == p.symbol and t["side"] == "buy":
+                    entry_time = t["time"]
+                    break
+
+            holding_minutes = 0
+            if entry_time:
+                try:
+                    entry_dt = datetime.strptime(
+                        f"{now_et().strftime('%Y-%m-%d')} {entry_time}",
+                        "%Y-%m-%d %H:%M:%S"
+                    ).replace(tzinfo=ET)
+                    holding_minutes = int((now_et() - entry_dt).total_seconds() / 60)
+                except Exception:
+                    pass
+
+            # 找活跃 Trailing Stop 的止损价
+            stop_price = None
+            for sym_orders in [fetch_today_orders(trading_client, p.symbol)]:
+                for o in sym_orders:
+                    if (o.client_order_id and "TRAIL" in o.client_order_id
+                            and o.status in (OrderStatus.NEW, OrderStatus.ACCEPTED)
+                            and o.stop_price):
+                        stop_price = float(o.stop_price)
+                        break
+
+            distance_to_stop_pct = None
+            if stop_price and current > 0:
+                distance_to_stop_pct = round(abs(current - stop_price) / current * 100, 2)
+
+            position_list.append({
+                "symbol": p.symbol,
+                "qty": qty,
+                "avg_entry": round(entry, 2),
+                "current_price": round(current, 2),
+                "market_value": round(float(p.market_value), 2),
+                "unrealized_pl": round(float(p.unrealized_pl), 2) if p.unrealized_pl else 0,
+                "unrealized_plpc": round(float(p.unrealized_plpc) * 100, 2) if p.unrealized_plpc else 0,
+                "stop_price": round(stop_price, 2) if stop_price else None,
+                "distance_to_stop_pct": distance_to_stop_pct,
+                "holding_minutes": holding_minutes,
+                "side": side,
+            })
+
+        # 影子信号（今天的）
+        today_str = now_et().strftime("%Y-%m-%d")
+        today_shadow = [s for s in (shadow_signals or []) if s.get("date") == today_str]
+
+        # 净值历史
+        equity_chart = {}
+        for d, points in equity_history.items():
+            equity_chart[d] = points
+
         data = {
-            "date": now_et().strftime("%Y-%m-%d"),
+            "date": today_str,
             "generated_at": now_et().isoformat(),
             "account": {
-                "cash": float(account.cash),
-                "equity": float(account.equity),
-                "buying_power": float(account.buying_power),
+                "cash": round(float(account.cash), 2),
+                "equity": round(float(account.equity), 2),
+                "buying_power": round(float(account.buying_power), 2),
             },
-            "positions": [],
-            "today_trades": [],
-            "shadow_signals": shadow_signals or [],
+            "market": market_info,
+            "equity_history": equity_chart,
+            "positions": position_list,
+            "today_trades": today_trades,
+            "realized_pnl": realized_trades,
+            "stats": stats,
+            "decisions": decisions_log,
+            "shadow_signals": today_shadow,
             "shadow_mode": SHADOW_MODE,
         }
 
-        for p in positions:
-            data["positions"].append({
-                "symbol": p.symbol,
-                "qty": int(float(p.qty)),
-                "avg_entry": float(p.avg_entry_price),
-                "current_price": float(p.current_price) if p.current_price else None,
-                "market_value": float(p.market_value),
-                "unrealized_pl": float(p.unrealized_pl) if p.unrealized_pl else 0,
-                "unrealized_plpc": float(p.unrealized_plpc) * 100 if p.unrealized_plpc else 0,
-            })
-
-        for sym in SYMBOLS:
-            orders = fetch_today_orders(trading_client, sym)
-            for o in orders:
-                if o.status == OrderStatus.FILLED:
-                    data["today_trades"].append({
-                        "symbol": o.symbol,
-                        "side": str(o.side).replace("OrderSide.", ""),
-                        "qty": int(float(o.filled_qty)) if o.filled_qty else 0,
-                        "price": float(o.filled_avg_price) if o.filled_avg_price else 0,
-                        "time": o.filled_at.astimezone(ET).strftime("%H:%M:%S") if o.filled_at else "",
-                        "client_order_id": o.client_order_id or "",
-                    })
-
-        with open("dashboard_data.json", "w") as f:
+        with open(DASHBOARD_DATA_FILE, "w") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
-        print("📊 dashboard_data.json 已生成")
-
+        print(f"📊 {DASHBOARD_DATA_FILE} 已生成")
         return data
     except Exception as e:
         print(f"面板数据生成失败: {e}")
+        import traceback
+        traceback.print_exc()
         return None
 
-def format_panel_html(data):
-    if not data:
-        return "<p>无数据</p>"
-
-    shadow_block = ""
-    if data.get("shadow_mode"):
-        shadow_block = f"""
-        <h3>👻 影子模式</h3>
-        <p><strong>状态：</strong>开启（只记录信号，不提交订单）</p>
-        <p>今日影子信号数：{len(data.get('shadow_signals', []))}</p>
-        """
-        if data.get("shadow_signals"):
-            shadow_block += """
-            <table border="1" cellpadding="5">
-                <tr><th>时间</th><th>标的</th><th>方向</th><th>数量</th><th>假设入场价</th></tr>
-            """
-            for s in data["shadow_signals"]:
-                shadow_block += f"""
-                <tr>
-                    <td>{s.get('timestamp', '')}</td>
-                    <td>{s.get('symbol', '')}</td>
-                    <td>{s.get('side', '')}</td>
-                    <td>{s.get('qty', '')}</td>
-                    <td>${s.get('price', 0):.2f}</td>
-                </tr>
-                """
-            shadow_block += "</table>"
-
-    pos_rows = ""
-    for p in data.get("positions", []):
-        color = "green" if p["unrealized_pl"] >= 0 else "red"
-        pos_rows += f"""
-        <tr>
-            <td>{p['symbol']}</td><td>{p['qty']}</td>
-            <td>${p['avg_entry']:.2f}</td><td>${p['current_price']:.2f}</td>
-            <td>${p['market_value']:,.2f}</td>
-            <td style="color:{color}">${p['unrealized_pl']:,.2f}</td>
-            <td style="color:{color}">{p['unrealized_plpc']:.2f}%</td>
-        </tr>"""
-
-    trade_rows = ""
-    for t in data.get("today_trades", []):
-        trade_rows += f"""
-        <tr>
-            <td>{t['symbol']}</td><td>{t['side']}</td><td>{t['qty']}</td>
-            <td>${t['price']:.2f}</td><td>{t['time']}</td>
-        </tr>"""
-
-    html = f"""
-    <h2>📊 ORB 交易日面板 — {data['date']}</h2>
-    <h3>账户概览</h3>
-    <table border="1" cellpadding="5">
-        <tr><td>现金</td><td>${data['account']['cash']:,.2f}</td></tr>
-        <tr><td>净值</td><td>${data['account']['equity']:,.2f}</td></tr>
-        <tr><td>购买力</td><td>${data['account']['buying_power']:,.2f}</td></tr>
-    </table>
-    {shadow_block}
-    <h3>当前持仓</h3>
-    {f"<table border='1' cellpadding='5'><tr><th>标的</th><th>数量</th><th>成本</th><th>现价</th><th>市值</th><th>未实现盈亏</th><th>盈亏%</th></tr>{pos_rows}</table>" if pos_rows else "<p>无持仓</p>"}
-    <h3>今日成交</h3>
-    {f"<table border='1' cellpadding='5'><tr><th>标的</th><th>方向</th><th>数量</th><th>价格</th><th>时间</th></tr>{trade_rows}</table>" if trade_rows else "<p>无成交</p>"}
-    <hr><p style="color:gray;font-size:12px;">数据来源: Alpaca | 市场数据: IEX | VIX: Data by Convex</p>
-    """
-    return html
 
 # ══════════════════════════════════════════════
 # 主逻辑
@@ -607,7 +771,6 @@ def main():
     if SHADOW_MODE:
         print(" 👻 影子模式已启用")
 
-    # ══ 恢复正式逻辑：非交易日退出 ══
     if not is_market_day():
         print("非交易日，退出")
         return
@@ -621,42 +784,36 @@ def main():
 
     enforce_no_margin(trading_client)
 
-    # ══ 恢复正式逻辑：收盘后平仓并生成面板 ══
-    if is_eod():
-        try:
-            positions = api_call_with_retry(trading_client.get_all_positions)
-            if positions:
-                print("⏰ 已过平仓时间，补平仓")
-                for p in positions:
-                    close_position_safely(trading_client, p.symbol)
-        except Exception as e:
-            print(f"补平仓失败: {e}")
-
-        shadow_signals = []
-        if SHADOW_MODE and os.path.exists("shadow_trades.jsonl"):
-            with open("shadow_trades.jsonl") as f:
-                shadow_signals = [json.loads(line) for line in f if line.strip()]
-
-        data = generate_dashboard_data(trading_client, data_client, shadow_signals)
-        if data:
-            html = format_panel_html(data)
-            send_email(f"📊 ORB 面板 {data['date']}", html, html=True)
-        return
-
-    # 正常交易时段逻辑
-    vix = fetch_vix()
-    market_regime = fetch_market_regime(data_client)
-
+    # 获取账户信息
     try:
         account = api_call_with_retry(trading_client.get_account)
-        print(f"乘数: {account.multiplier}")
-        print(f"现金: ${float(account.cash):,.2f}")
+        equity = float(account.equity)
         available_cash = float(account.cash)
+        print(f"乘数: {account.multiplier}")
+        print(f"现金: ${available_cash:,.2f}")
+        print(f"净值: ${equity:,.2f}")
     except Exception as e:
         print(f"账户失败: {e}")
         send_email("ORB 账户失败", str(e))
         return
 
+    # 记录净值快照
+    equity_history = append_equity_snapshot(equity)
+    print(f"📈 已记录净值快照 ({len(equity_history)} 个交易日)")
+
+    # 获取市场信息
+    vix = fetch_vix()
+    market_regime = fetch_market_regime(data_client)
+
+    market_info = {
+        "regime": market_regime,
+        "vix": vix,
+        "data_source": "IEX",
+        "multiplier": account.multiplier,
+        "eod_close": f"{EOD_CLOSE_HOUR}:{EOD_CLOSE_MIN:02d}",
+    }
+
+    # 获取持仓
     try:
         positions = {p.symbol: p for p in api_call_with_retry(trading_client.get_all_positions)}
     except Exception as e:
@@ -676,6 +833,30 @@ def main():
     current_minute_index = now.hour * 60 + now.minute
     date_str = now_et().strftime('%Y%m%d')
 
+    # 决策日志
+    decisions_log = []
+
+    # EOD 特殊处理
+    if is_eod():
+        try:
+            if positions:
+                print("⏰ 已过平仓时间，补平仓")
+                for p in positions:
+                    close_position_safely(trading_client, p.symbol)
+        except Exception as e:
+            print(f"补平仓失败: {e}")
+
+        # 生成面板
+        shadow_signals = []
+        if SHADOW_MODE and os.path.exists(SHADOW_TRADES_FILE):
+            with open(SHADOW_TRADES_FILE) as f:
+                shadow_signals = [json.loads(line) for line in f if line.strip()]
+
+        data = generate_dashboard_data(trading_client, data_client, [],
+                                        shadow_signals, market_info, equity_history)
+        return
+
+    # 正常交易时段
     for sym in SYMBOLS:
         print(f"\n── {sym} ──")
         strat = ORBStrategy(sym)
@@ -683,38 +864,101 @@ def main():
         strat.market_regime = market_regime
 
         if not is_after_orb():
-            print(" 区间未完成")
+            strat.log_step(False, "开盘区间未完成")
+            decisions_log.append({
+                "symbol": sym,
+                "range_high": None, "range_low": None,
+                "range_width": None, "range_avg_vol": None,
+                "atr": None, "gap_pct": None,
+                "ema": None, "ema_slope": None,
+                "vix": vix, "market_regime": market_regime,
+                "steps": strat.decision_steps,
+                "action": "skip", "reason": "开盘区间未完成",
+            })
             continue
 
         bars = fetch_opening_range_bars(data_client, sym)
         if bars is None or bars.empty:
-            print(" 无区间数据")
-            continue
-        if not strat.set_opening_range(bars):
+            strat.log_step(False, "无法获取开盘区间数据")
+            decisions_log.append({
+                "symbol": sym, "range_high": None, "range_low": None,
+                "range_width": None, "range_avg_vol": None,
+                "atr": None, "gap_pct": None, "ema": None, "ema_slope": None,
+                "vix": vix, "market_regime": market_regime,
+                "steps": strat.decision_steps,
+                "action": "skip", "reason": "无区间数据",
+            })
             continue
 
+        if not strat.set_opening_range(bars):
+            decisions_log.append({
+                "symbol": sym,
+                "range_high": strat.range_high, "range_low": strat.range_low,
+                "range_width": (strat.range_high - strat.range_low) if strat.range_high else None,
+                "range_avg_vol": strat.range_avg_vol,
+                "atr": None, "gap_pct": None, "ema": None, "ema_slope": None,
+                "vix": vix, "market_regime": market_regime,
+                "steps": strat.decision_steps,
+                "action": "skip", "reason": "区间过滤未通过",
+            })
+            continue
+
+        # ATR 过滤
         atr = fetch_atr(data_client, sym)
         strat.atr = atr
-        if atr is not None:
-            rw = strat.range_high - strat.range_low
-            if rw > MAX_RANGE_ATR_MULTIPLIER * atr:
-                print(f" ⛔区间过宽，跳过")
-                continue
+        if not strat.check_atr_filter():
+            decisions_log.append({
+                "symbol": sym,
+                "range_high": strat.range_high, "range_low": strat.range_low,
+                "range_width": strat.range_high - strat.range_low,
+                "range_avg_vol": strat.range_avg_vol,
+                "atr": atr, "gap_pct": None, "ema": None, "ema_slope": None,
+                "vix": vix, "market_regime": market_regime,
+                "steps": strat.decision_steps,
+                "action": "skip", "reason": "区间过宽",
+            })
+            continue
 
+        # 缺口过滤
         prev_close, today_open = fetch_prev_close_and_open(data_client, sym)
         strat.prev_close = prev_close
         strat.today_open = today_open
+        gap_pct = None
+        if prev_close and today_open:
+            gap_pct = abs(today_open - prev_close) / prev_close
         skip_gap, size_mult = strat.check_gap()
         if skip_gap:
+            decisions_log.append({
+                "symbol": sym,
+                "range_high": strat.range_high, "range_low": strat.range_low,
+                "range_width": strat.range_high - strat.range_low,
+                "range_avg_vol": strat.range_avg_vol,
+                "atr": atr, "gap_pct": gap_pct, "ema": None, "ema_slope": None,
+                "vix": vix, "market_regime": market_regime,
+                "steps": strat.decision_steps,
+                "action": "skip", "reason": "缺口过大",
+            })
             continue
 
+        # EMA 过滤
         ema, ema_slope = fetch_daily_ema(data_client, sym)
         strat.daily_ema = ema
         strat.daily_ema_slope = ema_slope
 
+        # 获取最新价格
         latest = fetch_latest_bar(data_client, sym)
         if latest is None:
-            print(" 无最新价")
+            strat.log_step(False, "无法获取最新价格")
+            decisions_log.append({
+                "symbol": sym,
+                "range_high": strat.range_high, "range_low": strat.range_low,
+                "range_width": strat.range_high - strat.range_low,
+                "range_avg_vol": strat.range_avg_vol,
+                "atr": atr, "gap_pct": gap_pct, "ema": ema, "ema_slope": ema_slope,
+                "vix": vix, "market_regime": market_regime,
+                "steps": strat.decision_steps,
+                "action": "skip", "reason": "无最新价",
+            })
             continue
         price = float(latest["close"])
         print(f" 最新价: {price:.2f}")
@@ -725,6 +969,8 @@ def main():
             o for o in today_orders
             if o.client_order_id and o.client_order_id.startswith(f"ORB_{sym}_{date_str}")
             and o.status == OrderStatus.FILLED
+            and "_TRAIL" not in (o.client_order_id or "")
+            and "_TP" not in (o.client_order_id or "")
         ]
         strat.trade_count = len(entry_filled)
 
@@ -743,6 +989,7 @@ def main():
                 if current_minute_index < lm + COOLDOWN_BARS:
                     strat.cooldown_until = lm + COOLDOWN_BARS
 
+        # ── 已有持仓 ──
         if sym in positions:
             pos = positions[sym]
             side = "buy" if float(pos.qty) > 0 else "sell"
@@ -820,6 +1067,7 @@ def main():
                     print(f" ⚠️补挂失败: {e}")
             continue
 
+        # ── 无持仓：检查入场 ──
         if not strat.traded_today:
             signal = strat.check_entry(latest, current_minute_index)
             if signal:
@@ -829,6 +1077,17 @@ def main():
 
                 risk_dollar = qty * abs(entry - stop)
                 if not check_portfolio_risk(positions, available_cash, risk_dollar, signal["side"], current_risks):
+                    strat.log_step(False, "组合风险超限")
+                    decisions_log.append({
+                        "symbol": sym,
+                        "range_high": strat.range_high, "range_low": strat.range_low,
+                        "range_width": strat.range_high - strat.range_low,
+                        "range_avg_vol": strat.range_avg_vol,
+                        "atr": atr, "gap_pct": gap_pct, "ema": ema, "ema_slope": ema_slope,
+                        "vix": vix, "market_regime": market_regime,
+                        "steps": strat.decision_steps,
+                        "action": "skip", "reason": "组合风险超限",
+                    })
                     continue
 
                 remaining = available_cash - total_position_value
@@ -846,17 +1105,52 @@ def main():
                         current_risks[sym] = risk_dollar / available_cash
                         send_email(f"ORB 入场 {sym}",
                                    f"标的: {sym}\n方向: {signal['side']}\n数量: {qty}\n入场价: {entry:.2f}\n止损价: {stop:.2f}")
+                        strat.decision_action = "entry"
+                        strat.decision_reason = f"入场 {signal['side']} {qty} 股 @ {entry:.2f}"
                     else:
                         strat.traded_today = False
+                        strat.decision_action = "skip"
+                        strat.decision_reason = "下单失败"
                 else:
-                    print(" 仓位为0")
+                    strat.decision_action = "skip"
+                    strat.decision_reason = "仓位为0"
             else:
-                print(" 无信号")
+                strat.decision_action = "skip"
+                strat.decision_reason = "无突破信号"
 
-        if is_eod() and sym in positions:
-            close_position_safely(trading_client, sym)
+        # 记录决策日志
+        if strat.decision_action == "pending":
+            strat.decision_action = "hold"
+            strat.decision_reason = "持仓管理中"
+
+        decisions_log.append({
+            "symbol": sym,
+            "range_high": strat.range_high,
+            "range_low": strat.range_low,
+            "range_width": (strat.range_high - strat.range_low) if strat.range_high and strat.range_low else None,
+            "range_avg_vol": strat.range_avg_vol,
+            "atr": atr,
+            "gap_pct": gap_pct,
+            "ema": ema,
+            "ema_slope": ema_slope,
+            "vix": vix,
+            "market_regime": market_regime,
+            "steps": strat.decision_steps,
+            "action": strat.decision_action,
+            "reason": strat.decision_reason,
+        })
+
+    # 生成面板
+    shadow_signals = []
+    if SHADOW_MODE and os.path.exists(SHADOW_TRADES_FILE):
+        with open(SHADOW_TRADES_FILE) as f:
+            shadow_signals = [json.loads(line) for line in f if line.strip()]
+
+    generate_dashboard_data(trading_client, data_client, decisions_log,
+                             shadow_signals, market_info, equity_history)
 
     print("\n 本次运行完成")
+
 
 if __name__ == "__main__":
     main()
