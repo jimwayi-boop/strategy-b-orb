@@ -32,6 +32,8 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add dashboard_data.json shadow_trades.jsonl 2>/dev/null || true
+          git add -f dashboard_data.json || true
+          git add -f shadow_trades.jsonl || true
+          git status
           git diff --staged --quiet || git commit -m "Update dashboard data"
           git push
