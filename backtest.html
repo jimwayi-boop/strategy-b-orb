@@ -1,725 +1,89 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ORB 策略回测面板</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
-    background: #e8f5e9;
-    color: #1f2d24;
-    padding: 12px 10px;
-    line-height: 1.4;
-    font-size: 14px;
-  }
-  .container { max-width: 1400px; margin: 0 auto; }
-
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  h1 { font-size: 18px; color: #14321d; font-weight: 700; }
-  .subtitle { color: #4a6b52; font-size: 11px; margin-top: 1px; }
-  .nav-link {
-    font-size: 11px;
-    padding: 4px 10px;
-    background: #2e7d32;
-    color: #ffffff;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: 600;
-  }
-
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 6px;
-    margin-bottom: 8px;
-  }
-  .card {
-    background: #ffffff;
-    border: 1px solid #c8e6c9;
-    border-radius: 5px;
-    padding: 7px 10px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 1px 2px rgba(27,94,32,0.05);
-  }
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 3px; height: 100%;
-    background: #a5d6a7;
-  }
-  .card.green::before { background: #2e7d32; }
-  .card.red::before { background: #c62828; }
-  .card.blue::before { background: #1565c0; }
-  .card.purple::before { background: #6a1b9a; }
-  .card.orange::before { background: #e65100; }
-  .card-label { font-size: 9px; color: #5a7a63; text-transform: uppercase; font-weight: 700; }
-  .card-value { font-size: 17px; font-weight: 700; color: #14321d; margin-top: 1px; }
-  .card-sub { font-size: 10px; color: #5a7a63; }
-  .green-text { color: #2e7d32; }
-  .red-text { color: #c62828; }
-
-  h2 {
-    font-size: 13px;
-    color: #14321d;
-    margin: 10px 0 5px;
-    padding-bottom: 3px;
-    border-bottom: 2px solid #a5d6a7;
-    font-weight: 700;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  h2 .count {
-    font-size: 10px;
-    color: #5a7a63;
-    font-weight: 500;
-  }
-
-  .charts-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 6px;
-    margin-bottom: 6px;
-  }
-  .charts-grid-3 {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 6px;
-    margin-bottom: 6px;
-  }
-  .chart-box {
-    background: #ffffff;
-    border: 1px solid #c8e6c9;
-    border-radius: 5px;
-    padding: 7px 10px;
-    box-shadow: 0 1px 2px rgba(27,94,32,0.05);
-  }
-  .chart-title {
-    font-size: 11px;
-    color: #4a6b52;
-    margin-bottom: 4px;
-    font-weight: 600;
-  }
-  .chart-box canvas { max-height: 180px; }
-
-  @media (max-width: 900px) {
-    .charts-grid, .charts-grid-3 { grid-template-columns: 1fr; }
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-    background: #ffffff;
-    border: 1px solid #c8e6c9;
-    border-radius: 5px;
-    overflow: hidden;
-    box-shadow: 0 1px 2px rgba(27,94,32,0.05);
-  }
-  th {
-    text-align: left;
-    padding: 5px 8px;
-    background: #dcedc8;
-    color: #33691e;
-    font-weight: 700;
-    font-size: 10px;
-    text-transform: uppercase;
-    border-bottom: 1px solid #a5d6a7;
-  }
-  td {
-    padding: 5px 8px;
-    border-bottom: 1px solid #e8f5e9;
-    vertical-align: middle;
-  }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #f1f8e9; }
-
-  .pill {
-    display: inline-block;
-    padding: 1px 6px;
-    border-radius: 8px;
-    font-size: 10px;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-  .pill-buy { background: #bbdefb; color: #0d47a1; }
-  .pill-sell { background: #ffcdd2; color: #b71c1c; }
-  .pill-tp { background: #c8e6c9; color: #1b5e20; }
-  .pill-trail { background: #fff9c4; color: #827717; }
-  .pill-be { background: #e1bee7; color: #4a148c; }
-  .pill-time { background: #b3e5fc; color: #01579b; }
-  .pill-eod { background: #dcedc8; color: #33691e; }
-
-  .footer {
-    margin-top: 12px;
-    padding-top: 6px;
-    border-top: 1px solid #c8e6c9;
-    font-size: 10px;
-    color: #7a9a83;
-    text-align: center;
-  }
-
-  .heatmap {
-    display: grid;
-    grid-template-columns: 60px repeat(12, 1fr);
-    gap: 2px;
-    font-size: 10px;
-  }
-  .heatmap-cell {
-    aspect-ratio: 1.5;
-    border-radius: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    color: #14321d;
-  }
-  .heatmap-label {
-    display: flex;
-    align-items: center;
-    font-weight: 700;
-    color: #5a7a63;
-    font-size: 10px;
-  }
-  .heatmap-header {
-    text-align: center;
-    font-weight: 700;
-    color: #5a7a63;
-    padding: 4px 0;
-  }
-  .empty { text-align: center; padding: 24px; color: #7a9a83; font-size: 12px; }
-</style>
-</head>
-<body>
-<div class="container">
-
-  <div class="header">
-    <div>
-      <h1>📊 ORB 策略回测面板</h1>
-      <div class="subtitle" id="subtitle">加载中...</div>
-    </div>
-    <a class="nav-link" href="https://jimwayi-boop.github.io/strategy-b-orb/">← 返回交易日面板</a>
-  </div>
-
-  <h2>结果概览</h2>
-  <div class="cards" id="overview-cards"></div>
-
-  <h2>净值与回撤</h2>
-  <div class="charts-grid">
-    <div class="chart-box">
-      <div class="chart-title">📈 账户净值曲线</div>
-      <canvas id="equityChart"></canvas>
-    </div>
-    <div class="chart-box">
-      <div class="chart-title">📉 回撤曲线</div>
-      <canvas id="drawdownChart"></canvas>
-    </div>
-  </div>
-
-  <h2>月度收益热力图 <span class="count">单位：$</span></h2>
-  <div class="chart-box">
-    <div class="heatmap" id="heatmap"></div>
-  </div>
-
-  <h2>收益分析</h2>
-  <div class="charts-grid-3">
-    <div class="chart-box">
-      <div class="chart-title">🎯 各标的收益</div>
-      <canvas id="symbolChart"></canvas>
-    </div>
-    <div class="chart-box">
-      <div class="chart-title">📊 单笔盈亏分布</div>
-      <canvas id="distributionChart"></canvas>
-    </div>
-    <div class="chart-box">
-      <div class="chart-title">🎲 出场原因分布</div>
-      <canvas id="exitReasonChart"></canvas>
-    </div>
-  </div>
-
-  <h2>各标的统计</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>标的</th><th>交易次数</th><th>胜率</th><th>总盈亏</th>
-        <th>平均盈亏</th><th>最大盈利</th><th>最大亏损</th><th>盈亏比</th>
-      </tr>
-    </thead>
-    <tbody id="symbol-tbody"></tbody>
-  </table>
-
-  <h2>年度收益</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>年份</th><th>交易次数</th><th>胜率</th><th>总盈亏</th>
-        <th>收益率</th><th>最大盈利</th><th>最大亏损</th>
-      </tr>
-    </thead>
-    <tbody id="yearly-tbody"></tbody>
-  </table>
-
-  <h2>交易明细 <span class="count" id="trade-count-label"></span></h2>
-  <table>
-    <thead>
-      <tr>
-        <th>日期</th><th>标的</th><th>方向</th><th>入场价</th><th>出场价</th>
-        <th>数量</th><th>盈亏</th><th>盈亏%</th><th>出场原因</th>
-        <th>入场时间</th><th>出场时间</th>
-      </tr>
-    </thead>
-    <tbody id="trades-tbody"></tbody>
-  </table>
-
-  <div class="footer">
-    <p id="config-info">回测使用 Alpaca IEX 历史数据 · 已扣除滑点</p>
-    <p style="margin-top:2px;">仅供技术研究，不构成投资建议</p>
-  </div>
-
-</div>
-
-<script>
-const RESULT_URL = 'backtest_results.json';
-let equityChart, drawdownChart, symbolChart, distributionChart, exitReasonChart;
-
-const gridColor = '#dcedc8';
-const textColor = '#4a6b52';
-
-Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif';
-Chart.defaults.font.size = 10;
-Chart.defaults.color = textColor;
-
-function fmtMoney(v) {
-  if (v == null || isNaN(v)) return '--';
-  return '$' + Number(v).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-}
-function fmtMoneySigned(v) {
-  if (v == null || isNaN(v)) return '--';
-  const sign = v >= 0 ? '+' : '';
-  return sign + '$' + Math.abs(Number(v)).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-}
-function fmtPct(v) {
-  if (v == null || isNaN(v)) return '--';
-  const sign = v >= 0 ? '+' : '';
-  return sign + Number(v).toFixed(2) + '%';
-}
-function plClass(v) { return v > 0 ? 'green-text' : (v < 0 ? 'red-text' : ''); }
-
-function renderOverview(data) {
-  const m = data.metrics || {};
-  const grid = document.getElementById('overview-cards');
-  grid.innerHTML = `
-    <div class="card green">
-      <div class="card-label">总收益</div>
-      <div class="card-value ${plClass(m.total_pnl)}">${fmtMoneySigned(m.total_pnl)}</div>
-      <div class="card-sub ${plClass(m.total_return_pct)}">${fmtPct(m.total_return_pct)}</div>
-    </div>
-    <div class="card green">
-      <div class="card-label">年化收益</div>
-      <div class="card-value ${plClass(m.cagr_pct)}">${fmtPct(m.cagr_pct)}</div>
-      <div class="card-sub">${m.trading_days} 个交易日</div>
-    </div>
-    <div class="card red">
-      <div class="card-label">最大回撤</div>
-      <div class="card-value red-text">${m.max_drawdown_pct != null ? m.max_drawdown_pct.toFixed(2) + '%' : '--'}</div>
-      <div class="card-sub">从峰值</div>
-    </div>
-    <div class="card blue">
-      <div class="card-label">夏普比率</div>
-      <div class="card-value">${m.sharpe != null ? m.sharpe.toFixed(2) : '--'}</div>
-      <div class="card-sub">年化</div>
-    </div>
-    <div class="card green">
-      <div class="card-label">胜率</div>
-      <div class="card-value">${m.win_rate != null ? m.win_rate.toFixed(1) + '%' : '--'}</div>
-      <div class="card-sub">${m.win_count || 0} / ${m.total_trades || 0}</div>
-    </div>
-    <div class="card purple">
-      <div class="card-label">盈亏比</div>
-      <div class="card-value">${m.profit_factor != null ? m.profit_factor.toFixed(2) : '--'}</div>
-      <div class="card-sub">总盈利/总亏损</div>
-    </div>
-    <div class="card">
-      <div class="card-label">总交易</div>
-      <div class="card-value">${m.total_trades || 0}</div>
-      <div class="card-sub">共 ${m.trading_days || 0} 天</div>
-    </div>
-    <div class="card orange">
-      <div class="card-label">最大连续</div>
-      <div class="card-value">
-        <span class="green-text">${m.max_win_streak || 0}胜</span>
-        <span style="color:#999;">/</span>
-        <span class="red-text">${m.max_loss_streak || 0}负</span>
-      </div>
-      <div class="card-sub">连续盈亏</div>
-    </div>
-  `;
-
-  const info = data.backtest_info || {};
-  document.getElementById('subtitle').textContent =
-    `${info.start} ~ ${info.end} · 初始资金 $${(info.capital || 0).toLocaleString()} · ${(info.symbols || []).join(', ')}`;
-
-  document.getElementById('config-info').textContent =
-    `回测参数快照：风险 ${(info.config_snapshot?.RISK_PER_TRADE || 0) * 100}% · 每日上限 ${info.config_snapshot?.MAX_TRADES_PER_DAY} 笔 · 生成于 ${(info.generated_at || '').slice(0, 19)}`;
-}
-
-function renderEquity(data) {
-  const eq = data.equity_curve || [];
-  if (equityChart) equityChart.destroy();
-
-  const labels = eq.map(e => e.date.slice(5));
-  const values = eq.map(e => e.equity);
-
-  equityChart = new Chart(document.getElementById('equityChart'), {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: '账户净值',
-        data: values,
-        borderColor: '#2e7d32',
-        backgroundColor: 'rgba(46,125,50,0.10)',
-        borderWidth: 2, fill: true, tension: 0.3,
-        pointRadius: 0, pointHoverRadius: 4,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: (ctx) => '$' + ctx.parsed.y.toLocaleString() } }
-      },
-      scales: {
-        x: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, maxTicksLimit: 10 } },
-        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, callback: (v) => '$' + (v/1000).toFixed(1) + 'k' } }
-      }
-    }
-  });
-
-  // 回撤
-  let peak = -Infinity;
-  const dd = values.map(v => {
-    if (v > peak) peak = v;
-    return ((v - peak) / peak * 100).toFixed(2);
-  });
-
-  if (drawdownChart) drawdownChart.destroy();
-  drawdownChart = new Chart(document.getElementById('drawdownChart'), {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: '回撤%',
-        data: dd,
-        borderColor: '#c62828',
-        backgroundColor: 'rgba(198,40,40,0.15)',
-        borderWidth: 1.5, fill: true, tension: 0.3,
-        pointRadius: 0,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: (ctx) => ctx.parsed.y + '%' } }
-      },
-      scales: {
-        x: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, maxTicksLimit: 6 } },
-        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, callback: (v) => v + '%' } }
-      }
-    }
-  });
-}
-
-function renderHeatmap(data) {
-  const monthly = data.monthly || {};
-  const years = [...new Set(Object.keys(monthly).map(k => k.slice(0, 4)))].sort();
-  const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
-
-  let maxAbs = 0;
-  Object.values(monthly).forEach(v => {
-    if (Math.abs(v) > maxAbs) maxAbs = Math.abs(v);
-  });
-  if (maxAbs === 0) maxAbs = 1;
-
-  function getColor(v) {
-    const intensity = Math.min(Math.abs(v) / maxAbs, 1);
-    if (v > 0) {
-      const alpha = 0.2 + intensity * 0.8;
-      return `rgba(46, 125, 50, ${alpha})`;
-    } else if (v < 0) {
-      const alpha = 0.2 + intensity * 0.8;
-      return `rgba(198, 40, 40, ${alpha})`;
-    }
-    return '#f1f8e9';
-  }
-
-  const heatmap = document.getElementById('heatmap');
-  let html = '<div></div>';
-  months.forEach(m => html += `<div class="heatmap-header">${m}</div>`);
-
-  years.forEach(y => {
-    html += `<div class="heatmap-label">${y}</div>`;
-    months.forEach((m, i) => {
-      const key = `${y}-${String(i + 1).padStart(2, '0')}`;
-      const v = monthly[key] || 0;
-      html += `<div class="heatmap-cell" style="background:${getColor(v)}" title="${key}: $${v.toFixed(2)}">${v !== 0 ? '$' + Math.round(v) : '—'}</div>`;
-    });
-  });
-
-  heatmap.innerHTML = html;
-}
-
-function renderSymbolChart(data) {
-  const per = data.per_symbol || {};
-  const symbols = Object.keys(per);
-
-  if (symbolChart) symbolChart.destroy();
-  symbolChart = new Chart(document.getElementById('symbolChart'), {
-    type: 'bar',
-    data: {
-      labels: symbols,
-      datasets: [{
-        data: symbols.map(s => per[s].total_pnl),
-        backgroundColor: symbols.map(s => per[s].total_pnl >= 0 ? '#2e7d32' : '#c62828'),
-        borderRadius: 3,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: (ctx) => '$' + ctx.parsed.y.toLocaleString() } }
-      },
-      scales: {
-        x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 } } },
-        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, callback: (v) => '$' + v } }
-      }
-    }
-  });
-}
-
-function renderDistribution(data) {
-  const trades = data.trades || [];
-  const buckets = {
-    '<-2%': 0, '-2~-1%': 0, '-1~0%': 0, '0~1%': 0,
-    '1~2%': 0, '2~3%': 0, '3~5%': 0, '>5%': 0,
-  };
-
-  trades.forEach(t => {
-    const p = t.pnl_pct || 0;
-    if (p < -2) buckets['<-2%']++;
-    else if (p < -1) buckets['-2~-1%']++;
-    else if (p < 0) buckets['-1~0%']++;
-    else if (p < 1) buckets['0~1%']++;
-    else if (p < 2) buckets['1~2%']++;
-    else if (p < 3) buckets['2~3%']++;
-    else if (p < 5) buckets['3~5%']++;
-    else buckets['>5%']++;
-  });
-
-  const labels = Object.keys(buckets);
-  const values = labels.map(l => buckets[l]);
-
-  if (distributionChart) distributionChart.destroy();
-  distributionChart = new Chart(document.getElementById('distributionChart'), {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [{
-        data: values,
-        backgroundColor: ['#c62828', '#ef5350', '#ffcdd2', '#dcedc8', '#c8e6c9', '#81c784', '#4caf50', '#2e7d32'],
-        borderRadius: 2,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { display: false }, ticks: { color: textColor, font: { size: 9 } } },
-        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 } } }
-      }
-    }
-  });
-}
-
-function renderExitReason(data) {
-  const reasons = data.exit_reasons || {};
-  const labels = Object.keys(reasons);
-  const values = labels.map(l => reasons[l]);
-
-  if (exitReasonChart) exitReasonChart.destroy();
-  exitReasonChart = new Chart(document.getElementById('exitReasonChart'), {
-    type: 'doughnut',
-    data: {
-      labels: labels,
-      datasets: [{
-        data: values,
-        backgroundColor: ['#2e7d32', '#1b5e20', '#6a1b9a', '#9a6700', '#1565c0', '#57606a'],
-        borderWidth: 2,
-        borderColor: '#ffffff',
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'right', labels: { boxWidth: 8, padding: 4, font: { size: 10 } } } },
-      cutout: '60%',
-    }
-  });
-}
-
-function renderSymbolTable(data) {
-  const per = data.per_symbol || {};
-  const tbody = document.getElementById('symbol-tbody');
-  const symbols = Object.keys(per);
-
-  if (symbols.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" class="empty">无数据</td></tr>';
-    return;
-  }
-
-  let totalTrades = 0;
-  let totalPnl = 0;
-  let totalWins = 0;
-  let symTotalWin = 0;
-  let symTotalLoss = 0;
-
-  let html = symbols.map(s => {
-    const d = per[s];
-    totalTrades += d.trades;
-    totalPnl += d.total_pnl;
-    totalWins += Math.round(d.trades * d.win_rate / 100);
-    symTotalWin += Math.max(d.total_pnl, 0);
-    symTotalLoss += Math.min(d.total_pnl, 0);
-
-    return `
-      <tr>
-        <td><strong>${s}</strong></td>
-        <td>${d.trades}</td>
-        <td>${d.win_rate}%</td>
-        <td class="${plClass(d.total_pnl)}">${fmtMoneySigned(d.total_pnl)}</td>
-        <td class="${plClass(d.avg_pnl)}">${fmtMoneySigned(d.avg_pnl)}</td>
-        <td class="green-text">${fmtMoney(d.max_win)}</td>
-        <td class="red-text">${fmtMoney(d.max_loss)}</td>
-        <td>${d.profit_factor || '--'}</td>
-      </tr>`;
-  }).join('');
-
-  const overallPf = symTotalLoss !== 0 ? (symTotalWin / Math.abs(symTotalLoss)).toFixed(2) : '--';
-  html += `
-    <tr style="background:#dcedc8;">
-      <td><strong>合计</strong></td>
-      <td>${totalTrades}</td>
-      <td>${totalTrades > 0 ? (totalWins / totalTrades * 100).toFixed(1) : 0}%</td>
-      <td class="${plClass(totalPnl)}">${fmtMoneySigned(totalPnl)}</td>
-      <td colspan="3"></td>
-      <td>${overallPf}</td>
-    </tr>`;
-
-  tbody.innerHTML = html;
-}
-
-function renderYearlyTable(data) {
-  const yearly = data.yearly || {};
-  const tbody = document.getElementById('yearly-tbody');
-  const years = Object.keys(yearly).sort();
-
-  if (years.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="7" class="empty">无数据</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = years.map(y => {
-    const d = yearly[y];
-    return `
-      <tr>
-        <td><strong>${y}</strong></td>
-        <td>${d.trades}</td>
-        <td>${d.win_rate}%</td>
-        <td class="${plClass(d.total_pnl)}">${fmtMoneySigned(d.total_pnl)}</td>
-        <td class="${plClass(d.return_pct)}">${fmtPct(d.return_pct)}</td>
-        <td class="green-text">${fmtMoney(d.max_win)}</td>
-        <td class="red-text">${fmtMoney(d.max_loss)}</td>
-      </tr>`;
-  }).join('');
-}
-
-function renderTrades(data) {
-  const trades = data.trades || [];
-  const tbody = document.getElementById('trades-tbody');
-  document.getElementById('trade-count-label').textContent = `共 ${trades.length} 笔，显示最近 200 笔`;
-
-  if (trades.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="11" class="empty">无交易记录</td></tr>';
-    return;
-  }
-
-  const sorted = [...trades].sort((a, b) => (b.date + b.entry_time).localeCompare(a.date + a.entry_time));
-  const recent = sorted.slice(0, 200);
-
-  tbody.innerHTML = recent.map(t => {
-    const sideLabel = t.side === 'buy' ? '<span class="pill pill-buy">做多</span>' : '<span class="pill pill-sell">做空</span>';
-    let reasonPill = '';
-    const reasonMap = {
-      'TP1': 'pill-tp', 'TP2': 'pill-tp',
-      'Trailing': 'pill-trail', '保本移动': 'pill-be',
-      'TimeStop': 'pill-time', 'EOD': 'pill-eod',
-    };
-    reasonPill = `<span class="pill ${reasonMap[t.exit_reason] || 'pill-eod'}">${t.exit_reason}</span>`;
-
-    return `
-      <tr>
-        <td>${t.date}</td>
-        <td><strong>${t.symbol}</strong></td>
-        <td>${sideLabel}</td>
-        <td>${fmtMoney(t.entry_price)}</td>
-        <td>${fmtMoney(t.exit_price)}</td>
-        <td>${t.qty}</td>
-        <td class="${plClass(t.pnl)}">${fmtMoneySigned(t.pnl)}</td>
-        <td class="${plClass(t.pnl_pct)}">${fmtPct(t.pnl_pct)}</td>
-        <td>${reasonPill}</td>
-        <td>${t.entry_time}</td>
-        <td>${t.exit_time}</td>
-      </tr>`;
-  }).join('');
-}
-
-async function loadBacktest() {
-  try {
-    const resp = await fetch(RESULT_URL + '?t=' + Date.now());
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    const data = await resp.json();
-
-    renderOverview(data);
-    renderEquity(data);
-    renderHeatmap(data);
-    renderSymbolChart(data);
-    renderDistribution(data);
-    renderExitReason(data);
-    renderSymbolTable(data);
-    renderYearlyTable(data);
-    renderTrades(data);
-
-  } catch (e) {
-    console.error('加载失败:', e);
-    document.getElementById('subtitle').textContent = '数据加载失败: ' + e.message;
-    document.getElementById('config-info').textContent = '请先在本地运行 python backtest.py 生成 backtest_results.json';
-  }
-}
-
-loadBacktest();
-</script>
-</body>
-</html>
+name: Backtest - ORB Strategy
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_date:
+        description: '回测开始日期 (YYYY-MM-DD)'
+        required: false
+        default: '2023-01-01'
+        type: string
+      end_date:
+        description: '回测结束日期 (YYYY-MM-DD)'
+        required: false
+        default: '2025-12-31'
+        type: string
+      capital:
+        description: '初始资金'
+        required: false
+        default: '100000'
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: backtest
+  cancel-in-progress: false
+
+jobs:
+  run-backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Restore backtest data cache
+        uses: actions/cache@v4
+        with:
+          path: backtest_cache
+          key: backtest-data-${{ github.event.inputs.start_date }}-${{ github.event.inputs.end_date }}-v1
+          restore-keys: |
+            backtest-data-${{ github.event.inputs.start_date }}-
+            backtest-data-
+
+      - name: Run backtest
+        env:
+          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
+          BACKTEST_START: ${{ github.event.inputs.start_date }}
+          BACKTEST_END: ${{ github.event.inputs.end_date }}
+          BACKTEST_CAPITAL: ${{ github.event.inputs.capital }}
+        run: python backtest.py
+
+      - name: Show cache size
+        if: always()
+        run: |
+          echo "===== 缓存目录 ====="
+          du -sh backtest_cache 2>/dev/null || echo "无缓存"
+          echo "===== 结果文件 ====="
+          ls -lh backtest_results.json 2>/dev/null || echo "无结果文件"
+
+      - name: Commit backtest results
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+          if [ -f backtest_results.json ]; then
+            git add -f backtest_results.json
+            echo "✅ 已暂存 backtest_results.json"
+          else
+            echo "❌ 未找到 backtest_results.json"
+            exit 1
+          fi
+
+          if git diff --staged --quiet; then
+            echo "ℹ️ 没有变化，跳过提交"
+          else
+            git commit -m "Update backtest results [skip ci]"
+            git push
+            echo "✅ 已推送到远程"
+          fi
