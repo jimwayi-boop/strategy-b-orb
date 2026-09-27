@@ -1,0 +1,12 @@
+# 回测缓存（不提交到仓库）
+backtest_cache/
+backtest_progress.json
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# 系统
+.DS_Store
+Thumbs.db
