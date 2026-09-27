@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write  # 必须加上这个，否则无法提交数据
+  contents: write
 
 concurrency:
   group: strategy-b-close
@@ -15,12 +15,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
       - name: Install dependencies
         run: pip install -r requirements.txt
+
       - name: Force Close All Positions
         env:
           ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
@@ -28,11 +31,13 @@ jobs:
           MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
           MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
         run: python close_all.py
+
       - name: Commit dashboard data
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add -f dashboard_data.json || true
+          git add -f equity_history.json || true
           git add -f shadow_trades.jsonl || true
           git status
           git diff --staged --quiet || git commit -m "Update dashboard data"
