@@ -1,13 +1,6 @@
 # backtest.py
 """
 ORB 策略回测脚本（在 GitHub Actions 上运行）
-
-参数通过环境变量传入：
-  BACKTEST_START    起始日期，默认 2023-01-01
-  BACKTEST_END      结束日期，默认 2025-12-31
-  BACKTEST_CAPITAL  初始资金，默认 100000
-  ALPACA_API_KEY    Alpaca API Key（必填）
-  ALPACA_SECRET_KEY Alpaca Secret Key（必填）
 """
 import os
 import sys
@@ -27,9 +20,6 @@ from config import *
 
 ET = pytz.timezone("America/New_York")
 
-# ══════════════════════════════════════════════
-# 参数（支持环境变量覆盖）
-# ══════════════════════════════════════════════
 BACKTEST_START = os.getenv("BACKTEST_START", "2023-01-01")
 BACKTEST_END = os.getenv("BACKTEST_END", "2025-12-31")
 BACKTEST_CAPITAL = int(os.getenv("BACKTEST_CAPITAL", "100000"))
@@ -45,7 +35,30 @@ def ensure_cache_dir():
 
 
 # ══════════════════════════════════════════════
-# 数据拉取 + 缓存
+# 时区转换（新增）
+# ══════════════════════════════════════════════
+def convert_index_to_et(df):
+    """把 DataFrame 的索引转成美东时区"""
+    if df is None or df.empty:
+        return df
+    idx = df.index
+    try:
+        if isinstance(idx, pd.MultiIndex):
+            # 一般不会走到这里，多级索引在调用前已 xs 处理
+            df.index = pd.DatetimeIndex(idx).tz_convert(ET)
+        else:
+            if idx.tz is None:
+                # 无时区，假设是 UTC
+                df.index = pd.DatetimeIndex(idx).tz_localize("UTC").tz_convert(ET)
+            else:
+                df.index = idx.tz_convert(ET)
+    except Exception as e:
+        print(f"  ⚠️ 时区转换失败: {e}")
+    return df
+
+
+# ══════════════════════════════════════════════
+# 数据拉取
 # ══════════════════════════════════════════════
 def fetch_minute_bars(data_client, symbol, start_date, end_date):
     ensure_cache_dir()
@@ -66,8 +79,7 @@ def fetch_minute_bars(data_client, symbol, start_date, end_date):
                 with open(cache_file, "rb") as f:
                     df = pickle.load(f)
                 print(f"  📦 缓存: {symbol} {month_str} ({len(df)} 条)")
-            except Exception as e:
-                print(f"  ⚠️ 缓存读取失败，重新拉取: {e}")
+            except Exception:
                 df = None
         else:
             df = None
@@ -76,7 +88,6 @@ def fetch_minute_bars(data_client, symbol, start_date, end_date):
             month_end = month_start + pd.offsets.MonthEnd(0)
             if month_end > end_ts:
                 month_end = end_ts
-
             print(f"  📥 拉取: {symbol} {month_str}")
             try:
                 req = StockBarsRequest(
@@ -97,8 +108,8 @@ def fetch_minute_bars(data_client, symbol, start_date, end_date):
             try:
                 with open(cache_file, "wb") as f:
                     pickle.dump(df, f)
-            except Exception as e:
-                print(f"  ⚠️ 缓存写入失败: {e}")
+            except Exception:
+                pass
             time.sleep(0.3)
 
         if df is not None and not df.empty:
@@ -109,6 +120,10 @@ def fetch_minute_bars(data_client, symbol, start_date, end_date):
 
     result = pd.concat(all_dfs).sort_index()
     result = result[~result.index.duplicated(keep="first")]
+
+    # ⚠️ 关键：转成美东时区
+    result = convert_index_to_et(result)
+
     return result
 
 
@@ -124,7 +139,7 @@ def fetch_daily_bars(data_client, symbol, start_date, end_date):
                 df = pickle.load(f)
             if not df.empty:
                 print(f"  📦 日线缓存: {symbol} ({len(df)} 条)")
-                return df
+                return convert_index_to_et(df)
         except Exception:
             pass
 
@@ -149,10 +164,10 @@ def fetch_daily_bars(data_client, symbol, start_date, end_date):
     try:
         with open(cache_file, "wb") as f:
             pickle.dump(df, f)
-    except Exception as e:
-        print(f"  ⚠️ 日线缓存写入失败: {e}")
+    except Exception:
+        pass
 
-    return df
+    return convert_index_to_et(df)
 
 
 # ══════════════════════════════════════════════
@@ -163,15 +178,17 @@ def compute_daily_indicators(daily_df):
         return pd.DataFrame()
 
     df = daily_df.sort_index().copy()
-    df["date"] = pd.to_datetime(df.index).strftime("%Y-%m-%d")
+    df["date"] = df.index.strftime("%Y-%m-%d")
     df["close"] = df["close"].astype(float)
     df["open"] = df["open"].astype(float)
+    df["high"] = df["high"].astype(float)
+    df["low"] = df["low"].astype(float)
     df["ema200"] = df["close"].ewm(span=200, adjust=False).mean()
     df["ema200_prev"] = df["ema200"].shift(TREND_EMA_SLOPE_LOOKBACK)
     df["ema_slope"] = df["ema200"] - df["ema200_prev"]
 
-    high = df["high"].astype(float)
-    low = df["low"].astype(float)
+    high = df["high"]
+    low = df["low"]
     close = df["close"]
     tr = pd.concat([
         high - low,
@@ -187,7 +204,7 @@ def compute_daily_indicators(daily_df):
 # ══════════════════════════════════════════════
 # 单标的回测
 # ══════════════════════════════════════════════
-def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
+def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital, debug=False):
     if minute_df is None or minute_df.empty:
         return [], []
 
@@ -196,9 +213,34 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
     minute_df["time"] = minute_df.index.strftime("%H:%M")
 
     trade_dates = sorted(minute_df["date"].unique())
+
+    # 🔍 调试输出
+    if debug:
+        print(f"\n  🔍 [{symbol}] 调试信息:")
+        print(f"     索引时区: {minute_df.index.tz}")
+        print(f"     日期数量: {len(trade_dates)}")
+        print(f"     首日: {trade_dates[0]}")
+        print(f"     末日: {trade_dates[-1]}")
+        first_day = minute_df[minute_df["date"] == trade_dates[0]]
+        print(f"     首日时间范围: {first_day['time'].min()} ~ {first_day['time'].max()}")
+        orb_first = first_day[(first_day["time"] >= "09:30") & (first_day["time"] < "09:45")]
+        print(f"     首日 9:30-9:45 分钟数: {len(orb_first)}")
+
     trades = []
     equity_curve = []
     equity = capital
+
+    skip_reasons = {
+        "no_orb_bars": 0,
+        "range_too_narrow": 0,
+        "no_daily_data": 0,
+        "atr_filter": 0,
+        "gap_skip": 0,
+        "no_trade_bars": 0,
+        "no_breakout": 0,
+        "ema_filter": 0,
+        "volume_filter": 0,
+    }
 
     for date in trade_dates:
         day_bars = minute_df[minute_df["date"] == date].sort_index()
@@ -208,6 +250,7 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
 
         orb_bars = day_bars[(day_bars["time"] >= "09:30") & (day_bars["time"] < "09:45")]
         if len(orb_bars) < 5:
+            skip_reasons["no_orb_bars"] += 1
             equity_curve.append({"date": date, "equity": round(equity, 2)})
             continue
 
@@ -217,14 +260,17 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
         range_avg_vol = float(orb_bars["volume"].mean())
 
         if range_low <= 0 or range_width / range_low < MIN_RANGE_PCT:
+            skip_reasons["range_too_narrow"] += 1
             equity_curve.append({"date": date, "equity": round(equity, 2)})
             continue
 
-        if date not in daily_ind.index:
+        try:
+            d = daily_ind.loc[date]
+        except KeyError:
+            skip_reasons["no_daily_data"] += 1
             equity_curve.append({"date": date, "equity": round(equity, 2)})
             continue
 
-        d = daily_ind.loc[date]
         atr = float(d["atr14"]) if pd.notna(d["atr14"]) else None
         ema200 = float(d["ema200"]) if pd.notna(d["ema200"]) else None
         ema_slope = float(d["ema_slope"]) if pd.notna(d["ema_slope"]) else None
@@ -232,6 +278,7 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
         prev_close = float(d["prev_close"]) if pd.notna(d["prev_close"]) else None
 
         if atr is not None and range_width > MAX_RANGE_ATR_MULTIPLIER * atr:
+            skip_reasons["atr_filter"] += 1
             equity_curve.append({"date": date, "equity": round(equity, 2)})
             continue
 
@@ -239,6 +286,7 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
         if prev_close and prev_close > 0:
             gap_pct = abs(today_open - prev_close) / prev_close
             if gap_pct > GAP_SKIP_THRESHOLD:
+                skip_reasons["gap_skip"] += 1
                 equity_curve.append({"date": date, "equity": round(equity, 2)})
                 continue
             elif gap_pct > GAP_REDUCE_THRESHOLD:
@@ -247,6 +295,7 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
         cutoff_min = TRADE_CUTOFF_HOUR * 60 + TRADE_CUTOFF_MIN
         trade_bars = day_bars[(day_bars["time"] >= "09:45") & (day_bars["time"] <= "15:43")]
         if trade_bars.empty:
+            skip_reasons["no_trade_bars"] += 1
             equity_curve.append({"date": date, "equity": round(equity, 2)})
             continue
 
@@ -284,15 +333,11 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
 
                 r_mult = favorable / rps if rps > 0 else 0
 
-                # TP1
                 if SCALE_OUT_ENABLED and not position["tp1_done"] and r_mult >= SCALE_OUT_LEVELS[0]["r_multiple"]:
                     exit_qty = max(int(qty * SCALE_OUT_LEVELS[0]["exit_pct"]), 1)
                     exit_qty = min(exit_qty, qty)
                     exit_price = entry + SCALE_OUT_LEVELS[0]["r_multiple"] * rps
-                    if side == "buy":
-                        exit_price *= (1 - BACKTEST_SLIPPAGE_EXIT)
-                    else:
-                        exit_price *= (1 + BACKTEST_SLIPPAGE_EXIT)
+                    exit_price = exit_price * (1 - BACKTEST_SLIPPAGE_EXIT) if side == "buy" else exit_price * (1 + BACKTEST_SLIPPAGE_EXIT)
                     pnl = (exit_price - entry) * exit_qty if side == "buy" else (entry - exit_price) * exit_qty
                     trades.append({
                         "date": date, "symbol": symbol, "side": side,
@@ -306,15 +351,11 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
                     position["qty"] = qty
                     position["tp1_done"] = True
 
-                # TP2
                 if SCALE_OUT_ENABLED and not position["tp2_done"] and r_mult >= SCALE_OUT_LEVELS[1]["r_multiple"]:
                     exit_qty = max(int(qty * SCALE_OUT_LEVELS[1]["exit_pct"]), 1)
                     exit_qty = min(exit_qty, qty)
                     exit_price = entry + SCALE_OUT_LEVELS[1]["r_multiple"] * rps
-                    if side == "buy":
-                        exit_price *= (1 - BACKTEST_SLIPPAGE_EXIT)
-                    else:
-                        exit_price *= (1 + BACKTEST_SLIPPAGE_EXIT)
+                    exit_price = exit_price * (1 - BACKTEST_SLIPPAGE_EXIT) if side == "buy" else exit_price * (1 + BACKTEST_SLIPPAGE_EXIT)
                     pnl = (exit_price - entry) * exit_qty if side == "buy" else (entry - exit_price) * exit_qty
                     trades.append({
                         "date": date, "symbol": symbol, "side": side,
@@ -328,12 +369,10 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
                     position["qty"] = qty
                     position["tp2_done"] = True
 
-                # 自动保本
                 if AUTO_BE_ENABLED and not position["be_done"] and r_mult >= AUTO_BE_TRIGGER_R:
                     position["be_done"] = True
                     position["trail_pct"] = AUTO_BE_TRAIL_PERCENT
 
-                # Trailing Stop
                 trail_pct = position.get("trail_pct", TRAIL_PERCENT)
                 if side == "buy":
                     trail_stop = highest * (1 - trail_pct / 100)
@@ -368,7 +407,6 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
                         trades_today += 1
                         continue
 
-                # 时间止损
                 if TIME_STOP_MINUTES > 0 and qty > 0:
                     try:
                         entry_dt = pd.Timestamp(f"{date} {entry_time}").tz_localize(ET)
@@ -376,10 +414,7 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
                         elapsed = (now_dt - entry_dt).total_seconds() / 60
                         if elapsed >= TIME_STOP_MINUTES and r_mult < AUTO_BE_TRIGGER_R:
                             exit_price = price_close
-                            if side == "buy":
-                                exit_price *= (1 - BACKTEST_SLIPPAGE_EXIT)
-                            else:
-                                exit_price *= (1 + BACKTEST_SLIPPAGE_EXIT)
+                            exit_price = exit_price * (1 - BACKTEST_SLIPPAGE_EXIT) if side == "buy" else exit_price * (1 + BACKTEST_SLIPPAGE_EXIT)
                             pnl = (exit_price - entry) * qty if side == "buy" else (entry - exit_price) * qty
                             trades.append({
                                 "date": date, "symbol": symbol, "side": side,
@@ -397,12 +432,13 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
 
                 continue
 
-            # 无持仓：检查入场
             if trades_today >= MAX_TRADES_PER_DAY:
                 continue
             if current_min >= cutoff_min:
                 continue
+
             if volume < VOLUME_MULTIPLIER * range_avg_vol:
+                skip_reasons["volume_filter"] += 1
                 continue
 
             signal_side = None
@@ -411,21 +447,26 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
                 signal_side = "buy"
                 signal_stop = range_low
                 if ema200 is not None and today_open <= ema200:
+                    skip_reasons["ema_filter"] += 1
                     continue
                 if ema_slope is not None and ema200 > 0:
                     slope_pct = ema_slope / ema200
                     if slope_pct < -TREND_EMA_SLOPE_THRESHOLD:
+                        skip_reasons["ema_filter"] += 1
                         continue
             elif price_close < range_low:
                 signal_side = "sell"
                 signal_stop = range_high
                 if ema200 is not None and today_open >= ema200:
+                    skip_reasons["ema_filter"] += 1
                     continue
                 if ema_slope is not None and ema200 > 0:
                     slope_pct = ema_slope / ema200
                     if slope_pct > TREND_EMA_SLOPE_THRESHOLD:
+                        skip_reasons["ema_filter"] += 1
                         continue
             else:
+                skip_reasons["no_breakout"] += 1
                 continue
 
             rps = abs(price_close - signal_stop)
@@ -444,10 +485,7 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
             if qty <= 0:
                 continue
 
-            if signal_side == "buy":
-                entry_price = price_close * (1 + BACKTEST_SLIPPAGE_ENTRY)
-            else:
-                entry_price = price_close * (1 - BACKTEST_SLIPPAGE_ENTRY)
+            entry_price = price_close * (1 + BACKTEST_SLIPPAGE_ENTRY) if signal_side == "buy" else price_close * (1 - BACKTEST_SLIPPAGE_ENTRY)
 
             position = {
                 "side": signal_side,
@@ -464,7 +502,6 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
                 "entry_time": time_str,
             }
 
-        # 收盘平仓
         if position is not None and position["qty"] > 0:
             last_bar = trade_bars.iloc[-1]
             exit_price = float(last_bar["close"])
@@ -486,17 +523,22 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
                 "entry_time": position["entry_time"],
                 "exit_time": last_bar["time"],
             })
-            position = None
 
         day_pnl = sum(t["pnl"] for t in trades if t["date"] == date)
         equity += day_pnl
         equity_curve.append({"date": date, "equity": round(equity, 2)})
 
+    # 🔍 打印跳过原因统计
+    print(f"  📊 [{symbol}] 跳过原因统计:")
+    for reason, count in skip_reasons.items():
+        if count > 0:
+            print(f"     {reason}: {count} 天")
+
     return trades, equity_curve
 
 
 # ══════════════════════════════════════════════
-# 指标计算
+# 指标
 # ══════════════════════════════════════════════
 def compute_metrics(trades, equity_curve, capital):
     if not trades:
@@ -505,7 +547,6 @@ def compute_metrics(trades, equity_curve, capital):
     pnls = [t["pnl"] for t in trades]
     wins = [p for p in pnls if p > 0]
     losses = [p for p in pnls if p <= 0]
-
     total_pnl = sum(pnls)
     total_return = total_pnl / capital * 100
 
@@ -524,23 +565,23 @@ def compute_metrics(trades, equity_curve, capital):
         sharpe = daily_returns.mean() / daily_returns.std() * np.sqrt(252)
 
     win_rate = len(wins) / len(pnls) * 100 if pnls else 0
-    gross_profit = sum(wins) if wins else 0
-    gross_loss = abs(sum(losses)) if losses else 0
-    pf = gross_profit / gross_loss if gross_loss > 0 else 0
+    gp = sum(wins) if wins else 0
+    gl = abs(sum(losses)) if losses else 0
+    pf = gp / gl if gl > 0 else 0
 
     max_win_streak = 0
     max_loss_streak = 0
-    cur_win = 0
-    cur_loss = 0
+    cw = 0
+    cl = 0
     for p in pnls:
         if p > 0:
-            cur_win += 1
-            cur_loss = 0
-            max_win_streak = max(max_win_streak, cur_win)
+            cw += 1
+            cl = 0
+            max_win_streak = max(max_win_streak, cw)
         else:
-            cur_loss += 1
-            cur_win = 0
-            max_loss_streak = max(max_loss_streak, cur_loss)
+            cl += 1
+            cw = 0
+            max_loss_streak = max(max_loss_streak, cl)
 
     return {
         "capital": capital,
@@ -578,7 +619,6 @@ def main():
     print(f" ORB 回测 | {BACKTEST_START} ~ {BACKTEST_END}")
     print(f" 标的: {SYMBOLS}")
     print(f" 初始资金: ${BACKTEST_CAPITAL:,}")
-    print(f" 滑点: 入场 {BACKTEST_SLIPPAGE_ENTRY*100:.2f}% / 出场 {BACKTEST_SLIPPAGE_EXIT*100:.2f}%")
     print("=" * 60)
 
     data_client = StockHistoricalDataClient(api_key, api_secret)
@@ -586,8 +626,9 @@ def main():
     all_trades = []
     per_symbol_stats = {}
 
-    for symbol in SYMBOLS:
+    for idx, symbol in enumerate(SYMBOLS):
         print(f"\n━━━ {symbol} ━━━")
+        debug = (idx == 0)  # 只对第一个标的输出调试
         minute_df = fetch_minute_bars(data_client, symbol, BACKTEST_START, BACKTEST_END)
         if minute_df is None or minute_df.empty:
             print(f" ⚠️ {symbol} 无分钟数据，跳过")
@@ -601,7 +642,7 @@ def main():
         daily_ind = compute_daily_indicators(daily_df)
         print(f"  📊 分钟 {len(minute_df):,} 条 / 日线 {len(daily_df)} 条")
 
-        trades, _ = run_backtest_for_symbol(symbol, minute_df, daily_ind, BACKTEST_CAPITAL)
+        trades, _ = run_backtest_for_symbol(symbol, minute_df, daily_ind, BACKTEST_CAPITAL, debug=debug)
         print(f"  ✅ {len(trades)} 笔交易")
 
         if trades:
@@ -626,10 +667,24 @@ def main():
         all_trades.extend(trades)
 
     if not all_trades:
-        print("❌ 无交易")
+        print("\n❌ 无交易")
+        result = {
+            "backtest_info": {
+                "start": BACKTEST_START, "end": BACKTEST_END,
+                "capital": BACKTEST_CAPITAL, "symbols": SYMBOLS,
+                "generated_at": datetime.now().isoformat(),
+                "note": "无交易生成",
+            },
+            "metrics": {},
+            "per_symbol": per_symbol_stats,
+            "yearly": {}, "monthly": {}, "exit_reasons": {},
+            "equity_curve": [], "trades": [],
+        }
+        with open(RESULT_FILE, "w") as f:
+            json.dump(result, f, ensure_ascii=False, indent=2)
+        print(f"⚠️ 已生成空结果文件 {RESULT_FILE}")
         return
 
-    # 组合净值曲线
     trades_by_date = {}
     for t in all_trades:
         trades_by_date.setdefault(t["date"], []).append(t["pnl"])
@@ -644,7 +699,6 @@ def main():
     metrics = compute_metrics(all_trades, combined_equity, BACKTEST_CAPITAL)
 
     print("\n" + "=" * 60)
-    print(" 回测完成")
     print(f" 总交易: {metrics['total_trades']}")
     print(f" 总收益: ${metrics['total_pnl']:,.2f} ({metrics['total_return_pct']:.2f}%)")
     print(f" 年化: {metrics['cagr_pct']:.2f}%")
@@ -681,10 +735,8 @@ def main():
 
     result = {
         "backtest_info": {
-            "start": BACKTEST_START,
-            "end": BACKTEST_END,
-            "capital": BACKTEST_CAPITAL,
-            "symbols": SYMBOLS,
+            "start": BACKTEST_START, "end": BACKTEST_END,
+            "capital": BACKTEST_CAPITAL, "symbols": SYMBOLS,
             "slippage_entry": BACKTEST_SLIPPAGE_ENTRY,
             "slippage_exit": BACKTEST_SLIPPAGE_EXIT,
             "generated_at": datetime.now().isoformat(),
