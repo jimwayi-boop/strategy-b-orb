@@ -104,4 +104,4 @@ SYMBOLS = ["TSLA", "NVDA", "META", "AMD"]
 DASHBOARD_DATA_FILE = "dashboard_data.json"
 EQUITY_HISTORY_FILE = "equity_history.json"
 SHADOW_TRADES_FILE = "shadow_trades.jsonl"
-EQUITY_HISTORY_DAYS = 5  # 保留最近 5 个交易日
+EQUITY_HISTORY_DAYS = 5
