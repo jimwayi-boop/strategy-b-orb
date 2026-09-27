@@ -112,7 +112,6 @@ def is_past_cutoff():
 # VIX 获取
 # ══════════════════════════════════════════════
 def fetch_vix():
-    """从 Convex Public API 获取 VIX 当前值"""
     if not VIX_FILTER_ENABLED:
         return None
     try:
@@ -132,7 +131,6 @@ def fetch_vix():
 # 市场状态（QQQ EMA200）
 # ══════════════════════════════════════════════
 def fetch_market_regime(data_client):
-    """用 QQQ 日线 EMA200 判断市场状态"""
     if not MARKET_REGIME_ENABLED:
         return "bullish"
     end = now_et()
@@ -480,7 +478,6 @@ def check_scale_out(trading_client, symbol, position, price, entry, initial_stop
 # 交易日面板数据生成
 # ══════════════════════════════════════════════
 def generate_dashboard_data(trading_client, data_client, shadow_signals=None):
-    """生成 dashboard_data.json"""
     try:
         account = api_call_with_retry(trading_client.get_account)
         positions = api_call_with_retry(trading_client.get_all_positions)
@@ -533,7 +530,6 @@ def generate_dashboard_data(trading_client, data_client, shadow_signals=None):
         return None
 
 def format_panel_html(data):
-    """生成邮件HTML"""
     if not data:
         return "<p>无数据</p>"
 
@@ -611,7 +607,9 @@ def main():
     if SHADOW_MODE:
         print(" 👻 影子模式已启用")
 
-    if not is_market_day():
+    # ⚠️ 临时改动：周末测试时改成 if False:
+    # if not is_market_day():
+    if False:
         print("非交易日，退出")
         return
 
@@ -624,8 +622,10 @@ def main():
 
     enforce_no_margin(trading_client)
 
-    # 补平仓兜底
-    if is_eod():
+    # 补平仓兜底 + 生成面板
+    # ⚠️ 临时改动：周末测试时改成 if True:
+    # if is_eod():
+    if True:
         try:
             positions = api_call_with_retry(trading_client.get_all_positions)
             if positions:
@@ -635,7 +635,6 @@ def main():
         except Exception as e:
             print(f"补平仓失败: {e}")
 
-        # 读取影子记录
         shadow_signals = []
         if SHADOW_MODE and os.path.exists("shadow_trades.jsonl"):
             with open("shadow_trades.jsonl") as f:
@@ -647,10 +646,8 @@ def main():
             send_email(f"📊 ORB 面板 {data['date']}", html, html=True)
         return
 
-    # 获取 VIX
+    # 以下为正常交易时段逻辑（周末测试时不会执行到）
     vix = fetch_vix()
-
-    # 获取市场状态
     market_regime = fetch_market_regime(data_client)
 
     try:
