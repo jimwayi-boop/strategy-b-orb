@@ -38,7 +38,7 @@ jobs:
           git config user.email "actions@github.com"
 
           FILES_ADDED=0
-          for f in dashboard_data.json equity_history.json shadow_trades.jsonl; do
+          for f in dashboard_data.json equity_history.json period_pnl.json shadow_trades.jsonl; do
             if [ -f "$f" ]; then
               git add -f "$f"
               echo "✅ 已暂存: $f"
