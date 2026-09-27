@@ -2,12 +2,10 @@
 """
 ORB 策略回测脚本（在 GitHub Actions 上运行）
 
-参数通过环境变量传入：
-  BACKTEST_START    起始日期，默认 2023-01-01
-  BACKTEST_END      结束日期，默认 2025-12-31
-  BACKTEST_CAPITAL  初始资金，默认 100000
-  ALPACA_API_KEY    Alpaca API Key（必填）
-  ALPACA_SECRET_KEY Alpaca Secret Key（必填）
+v3 改动：
+  1. 初始止损改为区间中位线（原来是对侧区间）
+  2. 量能过滤从 1.5× 改为 2.0×
+  3. 交易时段截止从 11:30 改为 10:30
 """
 import os
 import sys
@@ -33,20 +31,26 @@ BACKTEST_CAPITAL = int(os.getenv("BACKTEST_CAPITAL", "100000"))
 BACKTEST_SLIPPAGE_ENTRY = 0.0005
 BACKTEST_SLIPPAGE_EXIT = 0.0010
 
-# ── 结构化 Trailing Stop 参数 ──
-STRUCTURED_TRAIL = True          # 使用结构化阶梯（推荐）
-TRAIL_STEP_R = 1.0               # 每增加 1R 浮盈，止损上移 1R
-TIME_STOP_MINUTES_BT = 120       # 时间止损 120 分钟
-TIME_STOP_R_THRESHOLD = 0.5      # 只有浮盈 < 0.5R 才时间止损
+# ── 回测专用参数（v3 改动）──
+BT_VOLUME_MULTIPLIER = 2.0         # 改动2：量能从 1.5× 改为 2.0×
+BT_TRADE_CUTOFF_HOUR = 10          # 改动3：10:30 停止开新仓
+BT_TRADE_CUTOFF_MIN = 30
+BT_INITIAL_STOP_MODE = "midpoint"  # 改动1：初始止损=区间中位线
 
-# ── 多级止盈参数（回测专用，不覆盖实盘 config）──
+# ── 结构化 Trailing Stop 参数 ──
+STRUCTURED_TRAIL = True
+TRAIL_STEP_R = 1.0
+TIME_STOP_MINUTES_BT = 120
+TIME_STOP_R_THRESHOLD = 0.5
+
+# ── 多级止盈 ──
 BT_SCALE_OUT_LEVELS = [
     {"r_multiple": 2.0, "exit_pct": 0.33},
     {"r_multiple": 3.0, "exit_pct": 0.33},
 ]
 
 # ── 单日亏损熔断 ──
-DAILY_LOSS_LIMIT_R = 3.0         # 当天亏损 3R 后停止交易
+DAILY_LOSS_LIMIT_R = 3.0
 
 CACHE_DIR = "backtest_cache"
 RESULT_FILE = "backtest_results.json"
@@ -218,24 +222,19 @@ def compute_daily_indicators(daily_df):
 
 
 # ══════════════════════════════════════════════
-# 结构化 Trailing Stop 计算
+# 结构化 Trailing Stop
 # ══════════════════════════════════════════════
 def compute_structured_trail_stop(side, entry, rps, current_r):
     """
-    根据当前 R 倍数返回结构化止损价：
-      - R < 1:    返回 None（用初始止损，不追踪）
-      - 1 <= R < 2: 止损 = 入场价（保本）
-      - 2 <= R < 3: 止损 = 入场价 + 1R
-      - 3 <= R < 4: 止损 = 入场价 + 2R
-      - 一般规则： 止损 = 入场价 + floor(R - 1) * R
+    R < 1:    返回 None（用初始止损）
+    1 <= R < 2: 止损 = 入场价
+    2 <= R < 3: 止损 = 入场价 + 1R
+    一般规则：止损 = 入场价 + floor(R - 1) * R
     """
     if current_r < 1.0:
         return None
-
-    # 阶梯：每 1R 上移一次
-    steps = int(current_r - 1.0)  # 0, 1, 2, 3...
-    locked_r = steps * 1.0  # 锁定的 R 数
-
+    steps = int(current_r - 1.0)
+    locked_r = steps * 1.0
     if side == "buy":
         return entry + locked_r * rps
     else:
@@ -261,10 +260,6 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital, debug=False):
         print(f"     日期数量: {len(trade_dates)}")
         print(f"     首日: {trade_dates[0]}")
         print(f"     末日: {trade_dates[-1]}")
-        first_day = minute_df[minute_df["date"] == trade_dates[0]]
-        print(f"     首日时间范围: {first_day['time'].min()} ~ {first_day['time'].max()}")
-        orb_first = first_day[(first_day["time"] >= "09:30") & (first_day["time"] < "09:45")]
-        print(f"     首日 9:30-9:45 分钟数: {len(orb_first)}")
 
     trades = []
     equity_curve = []
@@ -282,10 +277,12 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital, debug=False):
         "ema_filter": 0,
         "volume_filter": 0,
         "daily_loss_limit": 0,
+        "past_cutoff": 0,
     }
 
+    cutoff_min = BT_TRADE_CUTOFF_HOUR * 60 + BT_TRADE_CUTOFF_MIN
+
     for date in trade_dates:
-        # ⚠️ 破产检查
         if equity <= 0:
             skip_reasons["account_blown"] += 1
             break
@@ -304,6 +301,7 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital, debug=False):
         range_high = float(orb_bars["high"].max())
         range_low = float(orb_bars["low"].min())
         range_width = range_high - range_low
+        range_mid = (range_high + range_low) / 2.0  # 改动1：中位线
         range_avg_vol = float(orb_bars["volume"].mean())
 
         if range_low <= 0 or range_width / range_low < MIN_RANGE_PCT:
@@ -339,7 +337,7 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital, debug=False):
             elif gap_pct > GAP_REDUCE_THRESHOLD:
                 size_mult = 0.5
 
-        cutoff_min = TRADE_CUTOFF_HOUR * 60 + TRADE_CUTOFF_MIN
+        # 改动3：9:45 到 10:30 之间交易
         trade_bars = day_bars[(day_bars["time"] >= "09:45") & (day_bars["time"] <= "15:43")]
         if trade_bars.empty:
             skip_reasons["no_trade_bars"] += 1
@@ -348,7 +346,7 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital, debug=False):
 
         position = None
         trades_today = 0
-        daily_pnl_r = 0.0  # 当天累计的 R 盈亏
+        daily_pnl_r = 0.0
 
         for ts, bar in trade_bars.iterrows():
             time_str = bar["time"]
@@ -382,7 +380,7 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital, debug=False):
 
                 r_mult = favorable / rps if rps > 0 else 0
 
-                # ── TP1 (2R) ──
+                # TP1 (2R)
                 if SCALE_OUT_ENABLED and not position["tp1_done"] and r_mult >= BT_SCALE_OUT_LEVELS[0]["r_multiple"]:
                     exit_qty = max(int(qty * BT_SCALE_OUT_LEVELS[0]["exit_pct"]), 1)
                     exit_qty = min(exit_qty, qty)
@@ -402,7 +400,7 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital, debug=False):
                     position["qty"] = qty
                     position["tp1_done"] = True
 
-                # ── TP2 (3R) ──
+                # TP2 (3R)
                 if SCALE_OUT_ENABLED and not position["tp2_done"] and r_mult >= BT_SCALE_OUT_LEVELS[1]["r_multiple"]:
                     exit_qty = max(int(qty * BT_SCALE_OUT_LEVELS[1]["exit_pct"]), 1)
                     exit_qty = min(exit_qty, qty)
@@ -422,14 +420,13 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital, debug=False):
                     position["qty"] = qty
                     position["tp2_done"] = True
 
-                # ── 结构化 Trailing Stop ──
+                # 结构化 Trailing
                 trail_stop = None
                 if STRUCTURED_TRAIL:
                     trail_stop = compute_structured_trail_stop(side, entry, rps, r_mult)
                     if trail_stop is None:
                         trail_stop = initial_stop
                 else:
-                    # 旧逻辑：固定百分比
                     trail_pct = TRAIL_PERCENT
                     if side == "buy":
                         trail_stop = highest * (1 - trail_pct / 100)
@@ -474,7 +471,7 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital, debug=False):
                         trades_today += 1
                         continue
 
-                # ── 时间止损：120 分钟且浮盈 < 0.5R ──
+                # 时间止损
                 if TIME_STOP_MINUTES_BT > 0 and qty > 0:
                     try:
                         entry_dt = pd.Timestamp(f"{date} {entry_time}").tz_localize(ET)
@@ -503,17 +500,21 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital, debug=False):
 
                 continue
 
-            # ── 单日亏损熔断 ──
+            # ── 新入场检查 ──
             if daily_pnl_r <= -DAILY_LOSS_LIMIT_R:
                 skip_reasons["daily_loss_limit"] += 1
                 continue
 
             if trades_today >= MAX_TRADES_PER_DAY:
                 continue
+
+            # 改动3：过了 10:30 不再开新仓
             if current_min >= cutoff_min:
+                skip_reasons["past_cutoff"] += 1
                 continue
 
-            if volume < VOLUME_MULTIPLIER * range_avg_vol:
+            # 改动2：量能过滤 2.0×
+            if volume < BT_VOLUME_MULTIPLIER * range_avg_vol:
                 skip_reasons["volume_filter"] += 1
                 continue
 
@@ -521,7 +522,8 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital, debug=False):
             signal_stop = None
             if price_close > range_high:
                 signal_side = "buy"
-                signal_stop = range_low
+                # 改动1：止损改为区间中位线
+                signal_stop = range_mid
                 if ema200 is not None and today_open <= ema200:
                     skip_reasons["ema_filter"] += 1
                     continue
@@ -532,7 +534,7 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital, debug=False):
                         continue
             elif price_close < range_low:
                 signal_side = "sell"
-                signal_stop = range_high
+                signal_stop = range_mid
                 if ema200 is not None and today_open >= ema200:
                     skip_reasons["ema_filter"] += 1
                     continue
@@ -545,6 +547,7 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital, debug=False):
                 skip_reasons["no_breakout"] += 1
                 continue
 
+            # 用中位线做止损时，R 距离减半
             rps = abs(price_close - signal_stop)
             if rps <= 0:
                 continue
@@ -558,7 +561,6 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital, debug=False):
             dollar_risk = equity * RISK_PER_TRADE * size_mult * vol_mult
             qty = int(dollar_risk / rps)
 
-            # ⚠️ 关键修复：确保 qty * price <= equity
             max_qty_by_cash = int(equity / price_close)
             qty = min(qty, max_qty_by_cash)
 
@@ -666,7 +668,6 @@ def compute_metrics(trades, equity_curve, capital):
             cw = 0
             max_loss_streak = max(max_loss_streak, cl)
 
-    # R 倍数分布
     r_multiples = [t.get("r_multiple", 0) for t in trades]
     r_dist = {
         "r_lt_neg1": sum(1 for r in r_multiples if r <= -1.0),
@@ -713,12 +714,12 @@ def main():
         sys.exit(1)
 
     print("=" * 60)
-    print(f" ORB 回测 | {BACKTEST_START} ~ {BACKTEST_END}")
+    print(f" ORB 回测 v3 | {BACKTEST_START} ~ {BACKTEST_END}")
     print(f" 标的: {SYMBOLS}")
     print(f" 初始资金: ${BACKTEST_CAPITAL:,}")
-    print(f" 结构化 Trailing: {STRUCTURED_TRAIL}")
-    print(f" 时间止损: {TIME_STOP_MINUTES_BT} 分钟 / R < {TIME_STOP_R_THRESHOLD}")
-    print(f" 单日亏损熔断: {DAILY_LOSS_LIMIT_R}R")
+    print(f" 改动1: 初始止损 = 区间中位线")
+    print(f" 改动2: 量能过滤 {BT_VOLUME_MULTIPLIER}×")
+    print(f" 改动3: 交易时段截止 {BT_TRADE_CUTOFF_HOUR}:{BT_TRADE_CUTOFF_MIN:02d}")
     print("=" * 60)
 
     data_client = StockHistoricalDataClient(api_key, api_secret)
@@ -843,7 +844,7 @@ def main():
             "slippage_entry": BACKTEST_SLIPPAGE_ENTRY,
             "slippage_exit": BACKTEST_SLIPPAGE_EXIT,
             "generated_at": datetime.now().isoformat(),
-            "strategy_version": "v2_structured_trail",
+            "strategy_version": "v3_midpoint_stop",
             "config_snapshot": {
                 "RISK_PER_TRADE": RISK_PER_TRADE,
                 "MAX_TRADES_PER_DAY": MAX_TRADES_PER_DAY,
@@ -854,7 +855,9 @@ def main():
                 "TIME_STOP_MINUTES": TIME_STOP_MINUTES_BT,
                 "TIME_STOP_R_THRESHOLD": TIME_STOP_R_THRESHOLD,
                 "DAILY_LOSS_LIMIT_R": DAILY_LOSS_LIMIT_R,
-                "VOLUME_MULTIPLIER": VOLUME_MULTIPLIER,
+                "BT_VOLUME_MULTIPLIER": BT_VOLUME_MULTIPLIER,
+                "BT_TRADE_CUTOFF": f"{BT_TRADE_CUTOFF_HOUR}:{BT_TRADE_CUTOFF_MIN:02d}",
+                "BT_INITIAL_STOP_MODE": BT_INITIAL_STOP_MODE,
                 "MIN_RANGE_PCT": MIN_RANGE_PCT,
                 "MAX_RANGE_ATR_MULTIPLIER": MAX_RANGE_ATR_MULTIPLIER,
                 "TREND_EMA_PERIOD": TREND_EMA_PERIOD,
