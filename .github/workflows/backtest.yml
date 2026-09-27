@@ -1,0 +1,89 @@
+name: Backtest - ORB Strategy
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_date:
+        description: '回测开始日期 (YYYY-MM-DD)'
+        required: false
+        default: '2023-01-01'
+        type: string
+      end_date:
+        description: '回测结束日期 (YYYY-MM-DD)'
+        required: false
+        default: '2025-12-31'
+        type: string
+      capital:
+        description: '初始资金'
+        required: false
+        default: '100000'
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: backtest
+  cancel-in-progress: false
+
+jobs:
+  run-backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Restore backtest data cache
+        uses: actions/cache@v4
+        with:
+          path: backtest_cache
+          key: backtest-data-${{ github.event.inputs.start_date }}-${{ github.event.inputs.end_date }}-v1
+          restore-keys: |
+            backtest-data-${{ github.event.inputs.start_date }}-
+            backtest-data-
+
+      - name: Run backtest
+        env:
+          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
+          BACKTEST_START: ${{ github.event.inputs.start_date }}
+          BACKTEST_END: ${{ github.event.inputs.end_date }}
+          BACKTEST_CAPITAL: ${{ github.event.inputs.capital }}
+        run: python backtest.py
+
+      - name: Show cache size
+        if: always()
+        run: |
+          echo "===== 缓存目录 ====="
+          du -sh backtest_cache 2>/dev/null || echo "无缓存"
+          echo "===== 结果文件 ====="
+          ls -lh backtest_results.json 2>/dev/null || echo "无结果文件"
+
+      - name: Commit backtest results
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+          if [ -f backtest_results.json ]; then
+            git add -f backtest_results.json
+            echo "✅ 已暂存 backtest_results.json"
+          else
+            echo "❌ 未找到 backtest_results.json"
+            exit 1
+          fi
+
+          if git diff --staged --quiet; then
+            echo "ℹ️ 没有变化，跳过提交"
+          else
+            git commit -m "Update backtest results [skip ci]"
+            git push
+            echo "✅ 已推送到远程"
+          fi
