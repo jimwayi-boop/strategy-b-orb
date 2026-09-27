@@ -36,9 +36,30 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add -f dashboard_data.json || true
-          git add -f equity_history.json || true
-          git add -f shadow_trades.jsonl || true
+
+          FILES_ADDED=0
+          for f in dashboard_data.json equity_history.json shadow_trades.jsonl; do
+            if [ -f "$f" ]; then
+              git add -f "$f"
+              echo "✅ 已暂存: $f"
+              FILES_ADDED=$((FILES_ADDED+1))
+            else
+              echo "ℹ️ 文件不存在，跳过: $f"
+            fi
+          done
+
+          if [ $FILES_ADDED -eq 0 ]; then
+            echo "⚠️ 没有可提交的文件，退出"
+            exit 0
+          fi
+
+          echo "───── git status ─────"
           git status
-          git diff --staged --quiet || git commit -m "Update dashboard data"
-          git push
+
+          if git diff --staged --quiet; then
+            echo "ℹ️ 没有变化，跳过提交"
+          else
+            git commit -m "Update dashboard data [skip ci]"
+            git push
+            echo "✅ 已推送到远程"
+          fi
