@@ -9,236 +9,273 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
-    background: #f6f8fa;
-    color: #24292f;
-    padding: 24px 16px;
-    line-height: 1.6;
+    background: #e8f5e9;
+    color: #1f2d24;
+    padding: 12px 10px;
+    line-height: 1.4;
     font-size: 14px;
   }
-  .container { max-width: 1280px; margin: 0 auto; }
+  .container { max-width: 1400px; margin: 0 auto; }
 
   .header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 24px;
+    align-items: center;
+    margin-bottom: 8px;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 6px;
   }
-  h1 { font-size: 22px; color: #24292f; font-weight: 600; }
-  .subtitle { color: #57606a; font-size: 13px; margin-top: 4px; }
-  .badges { display: flex; gap: 8px; flex-wrap: wrap; }
+  h1 { font-size: 18px; color: #14321d; font-weight: 700; }
+  .subtitle { color: #4a6b52; font-size: 11px; margin-top: 1px; }
+  .badges { display: flex; gap: 5px; flex-wrap: wrap; }
   .badge {
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 9px;
+    font-size: 10px;
+    font-weight: 600;
   }
-  .badge-bull { background: #dafbe1; color: #1a7f37; border: 1px solid #aceebb; }
-  .badge-bear { background: #ffebe9; color: #cf222e; border: 1px solid #ffcecb; }
-  .badge-neutral { background: #eaeef2; color: #57606a; border: 1px solid #d0d7de; }
-  .badge-info { background: #ddf4ff; color: #0969da; border: 1px solid #b6e3ff; }
-  .badge-warn { background: #fff8c5; color: #9a6700; border: 1px solid #f5e6a8; }
+  .badge-bull { background: #c8e6c9; color: #1b5e20; border: 1px solid #a5d6a7; }
+  .badge-bear { background: #ffcdd2; color: #b71c1c; border: 1px solid #ef9a9a; }
+  .badge-neutral { background: #dcedc8; color: #33691e; border: 1px solid #c5e1a5; }
+  .badge-info { background: #b3e5fc; color: #01579b; border: 1px solid #81d4fa; }
+  .badge-warn { background: #fff9c4; color: #827717; border: 1px solid #fff59d; }
 
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-    margin-bottom: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 6px;
+    margin-bottom: 8px;
   }
   .card {
     background: #ffffff;
-    border: 1px solid #d0d7de;
-    border-radius: 8px;
-    padding: 14px 16px;
+    border: 1px solid #c8e6c9;
+    border-radius: 5px;
+    padding: 7px 10px;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 1px 0 rgba(27,31,36,0.04);
+    box-shadow: 0 1px 2px rgba(27,94,32,0.05);
   }
   .card::before {
     content: '';
     position: absolute;
     top: 0; left: 0;
     width: 3px; height: 100%;
-    background: #d0d7de;
+    background: #a5d6a7;
   }
-  .card.green::before { background: #1a7f37; }
-  .card.red::before { background: #cf222e; }
-  .card.blue::before { background: #0969da; }
-  .card.purple::before { background: #8250df; }
-  .card-label { font-size: 11px; color: #57606a; text-transform: uppercase; letter-spacing: 0.5px; }
-  .card-value { font-size: 20px; font-weight: 600; color: #24292f; margin-top: 6px; }
-  .card-sub { font-size: 12px; color: #57606a; margin-top: 2px; }
-  .green-text { color: #1a7f37; }
-  .red-text { color: #cf222e; }
-  .purple-text { color: #8250df; }
+  .card.green::before { background: #2e7d32; }
+  .card.red::before { background: #c62828; }
+  .card.blue::before { background: #1565c0; }
+  .card.purple::before { background: #6a1b9a; }
+  .card-label { font-size: 9px; color: #5a7a63; text-transform: uppercase; letter-spacing: 0.3px; font-weight: 700; }
+  .card-value { font-size: 17px; font-weight: 700; color: #14321d; margin-top: 1px; }
+  .card-sub { font-size: 10px; color: #5a7a63; margin-top: 0; }
+  .green-text { color: #2e7d32; }
+  .red-text { color: #c62828; }
+  .purple-text { color: #6a1b9a; }
 
   h2 {
-    font-size: 16px;
-    color: #24292f;
-    margin: 28px 0 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #d8dee4;
-    font-weight: 600;
+    font-size: 13px;
+    color: #14321d;
+    margin: 10px 0 5px;
+    padding-bottom: 3px;
+    border-bottom: 2px solid #a5d6a7;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   h2 .count {
-    font-size: 12px;
-    color: #57606a;
-    font-weight: 400;
-    margin-left: 8px;
+    font-size: 10px;
+    color: #5a7a63;
+    font-weight: 500;
+    margin-left: 5px;
   }
 
   .charts-grid {
     display: grid;
     grid-template-columns: 2fr 1fr;
-    gap: 12px;
-    margin-bottom: 12px;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .charts-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 6px;
   }
   .chart-box {
     background: #ffffff;
-    border: 1px solid #d0d7de;
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0 1px 0 rgba(27,31,36,0.04);
+    border: 1px solid #c8e6c9;
+    border-radius: 5px;
+    padding: 7px 10px;
+    box-shadow: 0 1px 2px rgba(27,94,32,0.05);
   }
-  .chart-title { font-size: 13px; color: #57606a; margin-bottom: 12px; font-weight: 500; }
-  .chart-box canvas { max-height: 240px; }
+  .chart-title {
+    font-size: 11px;
+    color: #4a6b52;
+    margin-bottom: 4px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .chart-box canvas { max-height: 170px; }
 
-  @media (max-width: 900px) { .charts-grid { grid-template-columns: 1fr; } }
+  .granularity-toggle { display: flex; gap: 3px; }
+  .granularity-toggle button {
+    font-size: 10px;
+    padding: 1px 7px;
+    border-radius: 8px;
+    border: 1px solid #a5d6a7;
+    background: #ffffff;
+    color: #33691e;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .granularity-toggle button.active {
+    background: #2e7d32;
+    color: #ffffff;
+    border-color: #2e7d32;
+  }
+
+  @media (max-width: 900px) {
+    .charts-grid, .charts-grid-3 { grid-template-columns: 1fr; }
+  }
 
   table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13px;
+    font-size: 12px;
     background: #ffffff;
-    border: 1px solid #d0d7de;
-    border-radius: 8px;
+    border: 1px solid #c8e6c9;
+    border-radius: 5px;
     overflow: hidden;
-    box-shadow: 0 1px 0 rgba(27,31,36,0.04);
+    box-shadow: 0 1px 2px rgba(27,94,32,0.05);
   }
   th {
     text-align: left;
-    padding: 10px 12px;
-    background: #f6f8fa;
-    color: #57606a;
-    font-weight: 500;
-    font-size: 12px;
+    padding: 5px 8px;
+    background: #dcedc8;
+    color: #33691e;
+    font-weight: 700;
+    font-size: 10px;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
-    border-bottom: 1px solid #d0d7de;
+    letter-spacing: 0.2px;
+    border-bottom: 1px solid #a5d6a7;
   }
   td {
-    padding: 10px 12px;
-    border-bottom: 1px solid #eaeef2;
+    padding: 5px 8px;
+    border-bottom: 1px solid #e8f5e9;
     vertical-align: middle;
   }
   tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #f6f8fa; }
+  tr:hover td { background: #f1f8e9; }
 
   .pill {
     display: inline-block;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 11px;
-    font-weight: 500;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 700;
     white-space: nowrap;
   }
-  .pill-buy { background: #ddf4ff; color: #0969da; }
-  .pill-sell { background: #ffebe9; color: #cf222e; }
-  .pill-pass { background: #dafbe1; color: #1a7f37; }
-  .pill-skip { background: #eaeef2; color: #57606a; }
-  .pill-tp { background: #dafbe1; color: #1a7f37; }
-  .pill-trail { background: #fff8c5; color: #9a6700; }
-  .pill-be { background: #fbefff; color: #8250df; }
-  .pill-entry { background: #ddf4ff; color: #0969da; }
-  .pill-hold { background: #f6f8fa; color: #57606a; }
+  .pill-buy { background: #bbdefb; color: #0d47a1; }
+  .pill-sell { background: #ffcdd2; color: #b71c1c; }
+  .pill-tp { background: #c8e6c9; color: #1b5e20; }
+  .pill-trail { background: #fff9c4; color: #827717; }
+  .pill-be { background: #e1bee7; color: #4a148c; }
+  .pill-entry { background: #bbdefb; color: #0d47a1; }
+  .pill-hold { background: #dcedc8; color: #33691e; }
 
   .decision {
     background: #ffffff;
-    border: 1px solid #d0d7de;
-    border-radius: 8px;
-    padding: 14px 16px;
-    margin-bottom: 10px;
-    box-shadow: 0 1px 0 rgba(27,31,36,0.04);
+    border: 1px solid #c8e6c9;
+    border-radius: 5px;
+    padding: 7px 10px;
+    margin-bottom: 5px;
+    box-shadow: 0 1px 2px rgba(27,94,32,0.05);
   }
   .decision-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 4px;
   }
-  .decision-symbol { font-size: 15px; font-weight: 600; color: #24292f; }
-  .decision-meta { font-size: 12px; color: #57606a; margin-left: 8px; }
-  .decision-steps { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .decision-symbol { font-size: 13px; font-weight: 700; color: #14321d; }
+  .decision-meta { font-size: 10px; color: #5a7a63; margin-left: 5px; }
+  .decision-steps { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px; }
   .step {
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    padding: 3px 8px;
-    border-radius: 6px;
-    background: #f6f8fa;
-    border: 1px solid #d0d7de;
-    color: #57606a;
+    gap: 2px;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: #f1f8e9;
+    border: 1px solid #dcedc8;
+    color: #5a7a63;
   }
-  .step.pass { color: #1a7f37; border-color: #aceebb; background: #dafbe1; }
-  .step.skip { color: #57606a; }
-  .step.action { color: #0969da; border-color: #b6e3ff; background: #ddf4ff; }
-  .step .icon { font-size: 13px; }
+  .step.pass { color: #1b5e20; border-color: #a5d6a7; background: #c8e6c9; }
+  .step.skip { color: #5a7a63; }
+  .step.action { color: #0d47a1; border-color: #81d4fa; background: #bbdefb; }
+  .step .icon { font-size: 10px; }
 
   .decision-reason {
-    margin-top: 10px;
-    font-size: 12px;
-    color: #57606a;
-    padding: 8px 10px;
-    background: #f6f8fa;
-    border-radius: 6px;
-    border-left: 3px solid #0969da;
+    margin-top: 4px;
+    font-size: 10px;
+    color: #4a6b52;
+    padding: 4px 7px;
+    background: #f1f8e9;
+    border-radius: 4px;
+    border-left: 3px solid #2e7d32;
   }
-  .decision-reason strong { color: #24292f; }
+  .decision-reason strong { color: #14321d; }
 
   .summary-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 10px;
-    margin-bottom: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 5px;
+    margin-bottom: 8px;
   }
   .summary-item {
     background: #ffffff;
-    border: 1px solid #d0d7de;
-    border-radius: 6px;
-    padding: 10px 12px;
-    box-shadow: 0 1px 0 rgba(27,31,36,0.04);
+    border: 1px solid #c8e6c9;
+    border-radius: 4px;
+    padding: 5px 8px;
+    box-shadow: 0 1px 2px rgba(27,94,32,0.05);
   }
-  .summary-item .label { font-size: 11px; color: #57606a; text-transform: uppercase; }
-  .summary-item .value { font-size: 16px; font-weight: 600; color: #24292f; margin-top: 2px; }
+  .summary-item .label { font-size: 9px; color: #5a7a63; text-transform: uppercase; font-weight: 700; }
+  .summary-item .value { font-size: 14px; font-weight: 700; color: #14321d; margin-top: 0; }
 
   .footer {
-    margin-top: 40px;
-    padding-top: 16px;
-    border-top: 1px solid #d8dee4;
-    font-size: 12px;
-    color: #8c959f;
+    margin-top: 12px;
+    padding-top: 6px;
+    border-top: 1px solid #c8e6c9;
+    font-size: 10px;
+    color: #7a9a83;
     text-align: center;
   }
 
   .shadow-banner {
-    background: #fbefff;
-    border: 1px solid #e2c5ff;
-    border-radius: 8px;
-    padding: 12px 16px;
-    margin-bottom: 20px;
-    font-size: 13px;
-    color: #8250df;
+    background: #f3e5f5;
+    border: 1px solid #ce93d8;
+    border-radius: 5px;
+    padding: 6px 10px;
+    margin-bottom: 8px;
+    font-size: 11px;
+    color: #6a1b9a;
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-weight: 500;
+    gap: 5px;
+    font-weight: 600;
   }
 
-  .empty { text-align: center; padding: 30px; color: #8c959f; font-size: 13px; }
+  .period-table td { font-weight: 600; }
+  .period-table .total-row td { background: #dcedc8; font-weight: 700; }
+
+  .empty { text-align: center; padding: 16px; color: #7a9a83; font-size: 12px; }
 </style>
 </head>
 <body>
@@ -260,26 +297,63 @@
       <div class="card-sub" id="equity-sub"></div>
     </div>
     <div class="card green">
-      <div class="card-label">今日已实现盈亏</div>
+      <div class="card-label">今日已实现</div>
       <div class="card-value" id="realized">--</div>
       <div class="card-sub" id="realized-sub"></div>
     </div>
     <div class="card green">
-      <div class="card-label">今日未实现盈亏</div>
+      <div class="card-label">今日未实现</div>
       <div class="card-value" id="unrealized">--</div>
       <div class="card-sub" id="unrealized-sub"></div>
     </div>
     <div class="card">
       <div class="card-label">现金</div>
       <div class="card-value" id="cash">--</div>
-      <div class="card-sub">可用资金</div>
+      <div class="card-sub">可用</div>
     </div>
     <div class="card purple">
-      <div class="card-label">当日交易次数</div>
+      <div class="card-label">今日交易</div>
       <div class="card-value" id="trade-count">--</div>
       <div class="card-sub">上限 8 笔</div>
     </div>
   </div>
+
+  <h2>周期盈亏统计 <span class="count">按标的拆分</span></h2>
+  <div class="charts-grid">
+    <div class="chart-box">
+      <div class="chart-title">📅 各标的月度 / 季度 / 年度盈亏对比</div>
+      <canvas id="periodChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">
+        📊 组合累计盈亏
+        <span class="granularity-toggle">
+          <button class="active" data-gran="month">月</button>
+          <button data-gran="week">周</button>
+          <button data-gran="day">日</button>
+        </span>
+      </div>
+      <canvas id="cumulativeChart"></canvas>
+    </div>
+  </div>
+
+  <table class="period-table">
+    <thead>
+      <tr>
+        <th>标的</th>
+        <th>本月盈亏</th>
+        <th>笔数</th>
+        <th>胜率</th>
+        <th>本季度盈亏</th>
+        <th>笔数</th>
+        <th>胜率</th>
+        <th>本年盈亏</th>
+        <th>笔数</th>
+        <th>胜率</th>
+      </tr>
+    </thead>
+    <tbody id="period-tbody"></tbody>
+  </table>
 
   <h2>可视化</h2>
   <div class="charts-grid">
@@ -292,7 +366,7 @@
       <canvas id="pnlChart"></canvas>
     </div>
   </div>
-  <div class="charts-grid">
+  <div class="charts-grid-3">
     <div class="chart-box">
       <div class="chart-title">📊 成交类型分布</div>
       <canvas id="typeChart"></canvas>
@@ -301,6 +375,10 @@
       <div class="chart-title">🧭 决策过滤漏斗</div>
       <canvas id="funnelChart"></canvas>
     </div>
+    <div class="chart-box">
+      <div class="chart-title">💰 各标的累计盈亏</div>
+      <canvas id="symbolPnlChart"></canvas>
+    </div>
   </div>
 
   <h2>今日统计</h2>
@@ -308,14 +386,12 @@
 
   <div id="shadow-block" style="display:none;">
     <div class="shadow-banner">
-      👻 <strong>影子模式已开启</strong> — 策略只记录信号，不提交订单。以下为今日的假设入场信号。
+      👻 <strong>影子模式已开启</strong> — 策略只记录信号，不提交订单
     </div>
     <h2>👻 今日影子信号 <span class="count" id="shadow-count"></span></h2>
-    <table id="shadow-table">
+    <table>
       <thead>
-        <tr>
-          <th>时间</th><th>标的</th><th>方向</th><th>数量</th><th>假设入场价</th>
-        </tr>
+        <tr><th>时间</th><th>标的</th><th>方向</th><th>数量</th><th>假设入场价</th></tr>
       </thead>
       <tbody id="shadow-body"></tbody>
     </table>
@@ -340,7 +416,7 @@
     <thead>
       <tr>
         <th>标的</th><th>数量</th><th>入场价</th><th>现价</th><th>市值</th>
-        <th>未实现盈亏</th><th>盈亏%</th><th>止损价</th><th>距止损</th><th>持仓时长</th>
+        <th>未实现</th><th>盈亏%</th><th>止损</th><th>距止损</th><th>持仓时长</th>
       </tr>
     </thead>
     <tbody id="positions-body"></tbody>
@@ -361,8 +437,8 @@
   <div class="summary-grid" id="system-grid"></div>
 
   <div class="footer">
-    <p>数据来源: Alpaca Paper Trading · 市场数据: IEX · VIX: Data by Convex</p>
-    <p style="margin-top:4px;">页面数据由策略每次运行后自动更新 · 仅供技术研究，不构成投资建议</p>
+    <p>数据来源: Alpaca Paper · 市场数据: IEX · VIX: Data by Convex</p>
+    <p style="margin-top:2px;">仅供技术研究，不构成投资建议</p>
   </div>
 
 </div>
@@ -371,13 +447,13 @@
 const DATA_URL = 'dashboard_data.json';
 const AUTO_REFRESH_MS = 5 * 60 * 1000;
 
-let equityChart, pnlChart, typeChart, funnelChart;
+let equityChart, pnlChart, typeChart, funnelChart, cumulativeChart, periodChart, symbolPnlChart;
 
-const gridColor = '#eaeef2';
-const textColor = '#57606a';
+const gridColor = '#dcedc8';
+const textColor = '#4a6b52';
 
 Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif';
-Chart.defaults.font.size = 12;
+Chart.defaults.font.size = 10;
 Chart.defaults.color = textColor;
 
 function fmtMoney(v) {
@@ -406,10 +482,10 @@ function plClass(v) { return v > 0 ? 'green-text' : (v < 0 ? 'red-text' : ''); }
 function actionBadge(action) {
   const map = {
     'entry': '<span class="pill pill-buy">✅ 已入场</span>',
-    'skip': '<span class="pill pill-skip">⛔ 已跳过</span>',
+    'skip': '<span class="pill pill-skip" style="background:#eaeef2;color:#57606a;">⛔ 已跳过</span>',
     'hold': '<span class="pill pill-hold">⏸️ 持仓中</span>',
   };
-  return map[action] || '<span class="pill pill-skip">--</span>';
+  return map[action] || '<span class="pill pill-hold">--</span>';
 }
 
 function orderTypeBadge(t) {
@@ -425,16 +501,19 @@ function orderTypeBadge(t) {
   return `<span class="pill ${map[t] || 'pill-hold'}">${t}</span>`;
 }
 
+// ═══════════════════════════════════════════
+// 渲染函数
+// ═══════════════════════════════════════════
 function renderHeader(data) {
   const m = data.market || {};
   const badges = [];
-  if (m.regime === 'bullish') badges.push('<span class="badge badge-bull">📈 市场状态: 看多</span>');
-  else badges.push('<span class="badge badge-bear">📉 市场状态: 看空</span>');
-  if (m.vix != null) badges.push(`<span class="badge badge-info">📊 VIX: ${Number(m.vix).toFixed(2)}</span>`);
+  if (m.regime === 'bullish') badges.push('<span class="badge badge-bull">📈 看多</span>');
+  else badges.push('<span class="badge badge-bear">📉 看空</span>');
+  if (m.vix != null) badges.push(`<span class="badge badge-info">VIX: ${Number(m.vix).toFixed(2)}</span>`);
   badges.push(`<span class="badge badge-neutral">📡 ${m.data_source || 'IEX'}</span>`);
-  badges.push(`<span class="badge badge-neutral">⏰ 平仓 ${m.eod_close || '--'}</span>`);
-  if (data.shadow_mode) badges.push('<span class="badge badge-warn">👻 影子模式: 开启</span>');
-  else badges.push('<span class="badge badge-neutral">👻 影子模式: 关闭</span>');
+  badges.push(`<span class="badge badge-neutral">⏰ ${m.eod_close || '--'}</span>`);
+  if (data.shadow_mode) badges.push('<span class="badge badge-warn">👻 开启</span>');
+  else badges.push('<span class="badge badge-neutral">👻 关闭</span>');
   document.getElementById('badges').innerHTML = badges.join('');
 
   document.getElementById('subtitle').textContent =
@@ -474,22 +553,69 @@ function renderStats(data) {
   const grid = document.getElementById('stats-grid');
   grid.innerHTML = `
     <div class="summary-item"><div class="label">总交易</div><div class="value">${s.total_trades || 0}</div></div>
-    <div class="summary-item"><div class="label">盈利交易</div><div class="value green-text">${s.win_count || 0}</div></div>
-    <div class="summary-item"><div class="label">亏损交易</div><div class="value red-text">${s.loss_count || 0}</div></div>
+    <div class="summary-item"><div class="label">盈利</div><div class="value green-text">${s.win_count || 0}</div></div>
+    <div class="summary-item"><div class="label">亏损</div><div class="value red-text">${s.loss_count || 0}</div></div>
     <div class="summary-item"><div class="label">胜率</div><div class="value">${s.win_rate != null ? s.win_rate + '%' : '--'}</div></div>
     <div class="summary-item"><div class="label">平均盈亏</div><div class="value ${plClass(s.avg_pnl)}">${fmtMoneySigned(s.avg_pnl)}</div></div>
-    <div class="summary-item"><div class="label">最大单笔盈利</div><div class="value green-text">${fmtMoney(s.max_win)}</div></div>
-    <div class="summary-item"><div class="label">最大单笔亏损</div><div class="value red-text">${fmtMoney(s.max_loss)}</div></div>
+    <div class="summary-item"><div class="label">最大盈利</div><div class="value green-text">${fmtMoney(s.max_win)}</div></div>
+    <div class="summary-item"><div class="label">最大亏损</div><div class="value red-text">${fmtMoney(s.max_loss)}</div></div>
     <div class="summary-item"><div class="label">盈亏比</div><div class="value">${s.profit_factor != null ? s.profit_factor : '--'}</div></div>
   `;
 }
 
+function renderPeriodTable(data) {
+  const p = data.period_pnl || {};
+  const month = p.month || {};
+  const quarter = p.quarter || {};
+  const year = p.year || {};
+
+  const symbols = ['TSLA', 'NVDA', 'META', 'AMD'];
+  const tbody = document.getElementById('period-tbody');
+
+  const rowHtml = (sym, label) => {
+    const m = month[sym] || {pnl: 0, trades: 0, win_rate: 0};
+    const q = quarter[sym] || {pnl: 0, trades: 0, win_rate: 0};
+    const y = year[sym] || {pnl: 0, trades: 0, win_rate: 0};
+    return `
+      <tr>
+        <td><strong>${label}</strong></td>
+        <td class="${plClass(m.pnl)}">${fmtMoneySigned(m.pnl)}</td>
+        <td>${m.trades}</td>
+        <td>${m.win_rate}%</td>
+        <td class="${plClass(q.pnl)}">${fmtMoneySigned(q.pnl)}</td>
+        <td>${q.trades}</td>
+        <td>${q.win_rate}%</td>
+        <td class="${plClass(y.pnl)}">${fmtMoneySigned(y.pnl)}</td>
+        <td>${y.trades}</td>
+        <td>${y.win_rate}%</td>
+      </tr>`;
+  };
+
+  let html = symbols.map(s => rowHtml(s, s)).join('');
+
+  const mt = month.__total__ || {pnl: 0, trades: 0, win_rate: 0};
+  const qt = quarter.__total__ || {pnl: 0, trades: 0, win_rate: 0};
+  const yt = year.__total__ || {pnl: 0, trades: 0, win_rate: 0};
+  html += `
+    <tr class="total-row">
+      <td>合计</td>
+      <td class="${plClass(mt.pnl)}">${fmtMoneySigned(mt.pnl)}</td>
+      <td>${mt.trades}</td>
+      <td>${mt.win_rate}%</td>
+      <td class="${plClass(qt.pnl)}">${fmtMoneySigned(qt.pnl)}</td>
+      <td>${qt.trades}</td>
+      <td>${qt.win_rate}%</td>
+      <td class="${plClass(yt.pnl)}">${fmtMoneySigned(yt.pnl)}</td>
+      <td>${yt.trades}</td>
+      <td>${yt.win_rate}%</td>
+    </tr>`;
+
+  tbody.innerHTML = html;
+}
+
 function renderShadow(data) {
   const block = document.getElementById('shadow-block');
-  if (!data.shadow_mode) {
-    block.style.display = 'none';
-    return;
-  }
+  if (!data.shadow_mode) { block.style.display = 'none'; return; }
   block.style.display = 'block';
   const signals = data.shadow_signals || [];
   document.getElementById('shadow-count').textContent = `${signals.length} 条`;
@@ -521,7 +647,7 @@ function renderDecisions(data) {
 
   container.innerHTML = decisions.map(d => {
     const rangeInfo = (d.range_low != null && d.range_high != null)
-      ? `开盘区间: $${d.range_low.toFixed(2)} – $${d.range_high.toFixed(2)}（宽度 $${d.range_width ? d.range_width.toFixed(2) : '--'}, 均量 ${d.range_avg_vol ? d.range_avg_vol.toFixed(0) : '--'}）`
+      ? `区间 $${d.range_low.toFixed(2)} – $${d.range_high.toFixed(2)}（$${d.range_width ? d.range_width.toFixed(2) : '--'}, 均量 ${d.range_avg_vol ? d.range_avg_vol.toFixed(0) : '--'}）`
       : '开盘区间: --';
 
     const steps = (d.steps || []).map(s => {
@@ -611,9 +737,9 @@ function renderRealized(data) {
     </tr>
   `).join('');
   html += `
-    <tr style="background:#f6f8fa;">
-      <td colspan="5" style="text-align:right; font-weight:600;">今日已实现合计</td>
-      <td class="${plClass(total)}" style="font-weight:600;">${fmtMoneySigned(total)}</td>
+    <tr style="background:#dcedc8;">
+      <td colspan="5" style="text-align:right; font-weight:700;">合计</td>
+      <td class="${plClass(total)}" style="font-weight:700;">${fmtMoneySigned(total)}</td>
       <td colspan="2"></td>
     </tr>
   `;
@@ -624,13 +750,89 @@ function renderSystem(data) {
   const m = data.market || {};
   const grid = document.getElementById('system-grid');
   grid.innerHTML = `
-    <div class="summary-item"><div class="label">Alpaca 连接</div><div class="value green-text" style="font-size:14px;">● 正常</div></div>
-    <div class="summary-item"><div class="label">数据源</div><div class="value" style="font-size:14px;">${m.data_source || 'IEX'}</div></div>
-    <div class="summary-item"><div class="label">市场状态</div><div class="value ${m.regime === 'bullish' ? 'green-text' : 'red-text'}" style="font-size:14px;">${m.regime === 'bullish' ? '📈 看多' : '📉 看空'}</div></div>
-    <div class="summary-item"><div class="label">VIX</div><div class="value" style="font-size:14px;">${m.vix != null ? Number(m.vix).toFixed(2) : '--'}</div></div>
-    <div class="summary-item"><div class="label">保证金</div><div class="value" style="font-size:14px;">已禁用</div></div>
-    <div class="summary-item"><div class="label">下次平仓</div><div class="value" style="font-size:14px;">${m.eod_close || '--'} ET</div></div>
+    <div class="summary-item"><div class="label">Alpaca</div><div class="value green-text" style="font-size:12px;">● 正常</div></div>
+    <div class="summary-item"><div class="label">数据源</div><div class="value" style="font-size:12px;">${m.data_source || 'IEX'}</div></div>
+    <div class="summary-item"><div class="label">市场</div><div class="value ${m.regime === 'bullish' ? 'green-text' : 'red-text'}" style="font-size:12px;">${m.regime === 'bullish' ? '📈 看多' : '📉 看空'}</div></div>
+    <div class="summary-item"><div class="label">VIX</div><div class="value" style="font-size:12px;">${m.vix != null ? Number(m.vix).toFixed(2) : '--'}</div></div>
+    <div class="summary-item"><div class="label">保证金</div><div class="value" style="font-size:12px;">已禁用</div></div>
+    <div class="summary-item"><div class="label">平仓</div><div class="value" style="font-size:12px;">${m.eod_close || '--'}</div></div>
   `;
+}
+
+// ═══════════════════════════════════════════
+// 图表
+// ═══════════════════════════════════════════
+function renderPeriodChart(data) {
+  const p = data.period_pnl || {};
+  const symbols = ['TSLA', 'NVDA', 'META', 'AMD'];
+  const monthData = symbols.map(s => (p.month || {})[s]?.pnl || 0);
+  const quarterData = symbols.map(s => (p.quarter || {})[s]?.pnl || 0);
+  const yearData = symbols.map(s => (p.year || {})[s]?.pnl || 0);
+
+  if (periodChart) periodChart.destroy();
+  periodChart = new Chart(document.getElementById('periodChart'), {
+    type: 'bar',
+    data: {
+      labels: symbols,
+      datasets: [
+        { label: '本月', data: monthData, backgroundColor: '#81c784', borderRadius: 2 },
+        { label: '本季度', data: quarterData, backgroundColor: '#4caf50', borderRadius: 2 },
+        { label: '本年', data: yearData, backgroundColor: '#2e7d32', borderRadius: 2 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 8, padding: 4, font: { size: 10 } } },
+        tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ': $' + ctx.parsed.y.toFixed(2) } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 } } },
+        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, callback: (v) => '$' + v } }
+      }
+    }
+  });
+}
+
+let cumulativeDataCache = null;
+
+function renderCumulative(gran) {
+  if (!cumulativeDataCache) return;
+  const d = cumulativeDataCache[gran] || { labels: [], data: [] };
+  if (cumulativeChart) cumulativeChart.destroy();
+  cumulativeChart = new Chart(document.getElementById('cumulativeChart'), {
+    type: 'line',
+    data: {
+      labels: d.labels.length ? d.labels : ['--'],
+      datasets: [{
+        label: '累计盈亏',
+        data: d.data.length ? d.data : [0],
+        borderColor: '#2e7d32',
+        backgroundColor: 'rgba(46,125,50,0.12)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.3,
+        pointRadius: gran === 'day' ? 0 : 2,
+        pointHoverRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: (ctx) => '累计: $' + ctx.parsed.y.toLocaleString() } }
+      },
+      scales: {
+        x: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, maxTicksLimit: 12 } },
+        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, callback: (v) => '$' + (v/1000).toFixed(0) + 'k' } }
+      }
+    }
+  });
+}
+
+function renderCumulativeFromData(data) {
+  cumulativeDataCache = (data.period_pnl || {}).cumulative || {month: {labels: [], data: []}, week: {labels: [], data: []}, day: {labels: [], data: []}};
+  renderCumulative('month');
 }
 
 function renderEquityChart(data) {
@@ -647,11 +849,7 @@ function renderEquityChart(data) {
   });
 
   if (equityChart) equityChart.destroy();
-
-  if (allLabels.length === 0) {
-    allLabels = ['--'];
-    allValues = [0];
-  }
+  if (allLabels.length === 0) { allLabels = ['--']; allValues = [0]; }
 
   equityChart = new Chart(document.getElementById('equityChart'), {
     type: 'line',
@@ -660,35 +858,18 @@ function renderEquityChart(data) {
       datasets: [{
         label: '账户净值',
         data: allValues,
-        borderColor: '#0969da',
-        backgroundColor: 'rgba(9,105,218,0.08)',
-        borderWidth: 2,
-        fill: true,
-        tension: 0.3,
-        pointRadius: 0,
-        pointHoverRadius: 4,
+        borderColor: '#2e7d32',
+        backgroundColor: 'rgba(46,125,50,0.10)',
+        borderWidth: 2, fill: true, tension: 0.3,
+        pointRadius: 0, pointHoverRadius: 4,
       }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: (ctx) => '$' + ctx.parsed.y.toLocaleString()
-          }
-        }
-      },
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => '$' + ctx.parsed.y.toLocaleString() } } },
       scales: {
-        x: { grid: { color: gridColor }, ticks: { color: textColor, maxTicksLimit: 10 } },
-        y: {
-          grid: { color: gridColor },
-          ticks: {
-            color: textColor,
-            callback: (v) => '$' + (v/1000).toFixed(1) + 'k'
-          }
-        }
+        x: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, maxTicksLimit: 10 } },
+        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, callback: (v) => '$' + (v/1000).toFixed(1) + 'k' } }
       }
     }
   });
@@ -697,46 +878,34 @@ function renderEquityChart(data) {
 function renderPnlChart(data) {
   const positions = data.positions || [];
   const realized = data.realized_pnl || [];
-
   const symbols = ['TSLA', 'NVDA', 'META', 'AMD'];
   const realizedBySymbol = {};
   const unrealizedBySymbol = {};
-
   symbols.forEach(s => { realizedBySymbol[s] = 0; unrealizedBySymbol[s] = 0; });
   realized.forEach(t => { realizedBySymbol[t.symbol] = (realizedBySymbol[t.symbol] || 0) + t.pnl; });
   positions.forEach(p => { unrealizedBySymbol[p.symbol] = (unrealizedBySymbol[p.symbol] || 0) + p.unrealized_pl; });
 
   if (pnlChart) pnlChart.destroy();
-
   pnlChart = new Chart(document.getElementById('pnlChart'), {
     type: 'bar',
     data: {
       labels: symbols,
       datasets: [
-        {
-          label: '已实现盈亏',
-          data: symbols.map(s => realizedBySymbol[s]),
-          backgroundColor: symbols.map(s => realizedBySymbol[s] >= 0 ? '#1a7f37' : '#cf222e'),
-          borderRadius: 4,
-        },
-        {
-          label: '未实现盈亏',
-          data: symbols.map(s => unrealizedBySymbol[s]),
-          backgroundColor: symbols.map(s => unrealizedBySymbol[s] >= 0 ? '#aceebb' : '#ffcecb'),
-          borderRadius: 4,
-        }
+        { label: '已实现', data: symbols.map(s => realizedBySymbol[s]),
+          backgroundColor: symbols.map(s => realizedBySymbol[s] >= 0 ? '#2e7d32' : '#c62828'), borderRadius: 2 },
+        { label: '未实现', data: symbols.map(s => unrealizedBySymbol[s]),
+          backgroundColor: symbols.map(s => unrealizedBySymbol[s] >= 0 ? '#81c784' : '#ffcdd2'), borderRadius: 2 }
       ]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       plugins: {
-        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 8 } },
+        legend: { position: 'bottom', labels: { boxWidth: 8, padding: 4, font: { size: 10 } } },
         tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ': $' + ctx.parsed.y.toFixed(2) } }
       },
       scales: {
-        x: { grid: { display: false }, ticks: { color: textColor } },
-        y: { grid: { color: gridColor }, ticks: { color: textColor, callback: (v) => '$' + v } }
+        x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 } } },
+        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, callback: (v) => '$' + v } }
       }
     }
   });
@@ -745,19 +914,12 @@ function renderPnlChart(data) {
 function renderTypeChart(data) {
   const trades = data.today_trades || [];
   const typeCount = {};
-  trades.forEach(t => {
-    typeCount[t.order_type] = (typeCount[t.order_type] || 0) + 1;
-  });
-
+  trades.forEach(t => { typeCount[t.order_type] = (typeCount[t.order_type] || 0) + 1; });
   const labels = Object.keys(typeCount);
   const values = labels.map(l => typeCount[l]);
 
   if (typeChart) typeChart.destroy();
-
-  if (labels.length === 0) {
-    labels.push('暂无成交');
-    values.push(1);
-  }
+  if (labels.length === 0) { labels.push('暂无成交'); values.push(1); }
 
   typeChart = new Chart(document.getElementById('typeChart'), {
     type: 'doughnut',
@@ -765,17 +927,13 @@ function renderTypeChart(data) {
       labels: labels,
       datasets: [{
         data: values,
-        backgroundColor: ['#0969da', '#1a7f37', '#8250df', '#9a6700', '#0969da', '#57606a', '#cf222e'],
-        borderWidth: 2,
-        borderColor: '#ffffff',
+        backgroundColor: ['#1565c0', '#2e7d32', '#6a1b9a', '#9a6700', '#0969da', '#57606a', '#c62828'],
+        borderWidth: 2, borderColor: '#ffffff',
       }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'right', labels: { boxWidth: 10, padding: 8 } },
-      },
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'right', labels: { boxWidth: 8, padding: 4, font: { size: 10 } } } },
       cutout: '60%',
     }
   });
@@ -783,60 +941,88 @@ function renderTypeChart(data) {
 
 function renderFunnelChart(data) {
   const decisions = data.decisions || [];
-
-  const stageNames = ['总标的', '区间过滤', 'ATR过滤', '缺口过滤', 'EMA过滤', 'VIX过滤', '量能过滤', '入场'];
+  const stageNames = ['总标的', '区间', 'ATR', '缺口', 'EMA', 'VIX', '量能', '入场'];
   const stageCounts = [decisions.length, 0, 0, 0, 0, 0, 0, 0];
 
   decisions.forEach(d => {
     const steps = d.steps || [];
-    let passedRange = false, passedAtr = false, passedGap = false,
-        passedEma = false, passedVix = false, passedVol = false, entered = false;
-
+    let pr = false, pa = false, pg = false, pe = false, pv = false, pvol = false, entered = false;
     steps.forEach(s => {
       const label = s.label || '';
-      if (label.includes('区间宽度') && s.passed) passedRange = true;
-      if (label.includes('ATR') && s.passed) passedAtr = true;
-      if (label.includes('缺口') && s.passed && !label.includes('减半')) passedGap = true;
-      if (label.includes('EMA200') && s.passed) passedEma = true;
-      if (label.includes('VIX') && s.passed) passedVix = true;
-      if (label.includes('突破量') && s.passed) passedVol = true;
+      if (label.includes('区间宽度') && s.passed) pr = true;
+      if (label.includes('ATR') && s.passed) pa = true;
+      if (label.includes('缺口') && s.passed && !label.includes('减半')) pg = true;
+      if (label.includes('EMA200') && s.passed) pe = true;
+      if (label.includes('VIX') && s.passed) pv = true;
+      if (label.includes('突破量') && s.passed) pvol = true;
       if (label.includes('突破区间') && s.passed) entered = true;
     });
-
-    if (passedRange) stageCounts[1]++;
-    if (passedRange && passedAtr) stageCounts[2]++;
-    if (passedRange && passedAtr && passedGap) stageCounts[3]++;
-    if (passedRange && passedAtr && passedGap && passedEma) stageCounts[4]++;
-    if (passedRange && passedAtr && passedGap && passedEma && passedVix) stageCounts[5]++;
-    if (passedRange && passedAtr && passedGap && passedEma && passedVix && passedVol) stageCounts[6]++;
+    if (pr) stageCounts[1]++;
+    if (pr && pa) stageCounts[2]++;
+    if (pr && pa && pg) stageCounts[3]++;
+    if (pr && pa && pg && pe) stageCounts[4]++;
+    if (pr && pa && pg && pe && pv) stageCounts[5]++;
+    if (pr && pa && pg && pe && pv && pvol) stageCounts[6]++;
     if (entered) stageCounts[7]++;
   });
 
   if (funnelChart) funnelChart.destroy();
-
   funnelChart = new Chart(document.getElementById('funnelChart'), {
     type: 'bar',
     data: {
       labels: stageNames,
       datasets: [{
         data: stageCounts,
-        backgroundColor: ['#0969da', '#58a6ff', '#79c0ff', '#a5d6ff', '#c8e1ff', '#ddf4ff', '#dafbe1', '#1a7f37'],
-        borderRadius: 4,
+        backgroundColor: ['#2e7d32', '#4caf50', '#66bb6a', '#81c784', '#a5d6a7', '#c8e6c9', '#dcedc8', '#2e7d32'],
+        borderRadius: 2,
       }]
     },
     options: {
       indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        x: { grid: { color: gridColor }, ticks: { color: textColor, stepSize: 1 } },
-        y: { grid: { display: false }, ticks: { color: textColor } }
+        x: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, stepSize: 1 } },
+        y: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 } } }
       }
     }
   });
 }
 
+function renderSymbolPnlChart(data) {
+  const p = data.period_pnl || {};
+  const symbols = ['TSLA', 'NVDA', 'META', 'AMD'];
+  const yearData = symbols.map(s => (p.year || {})[s]?.pnl || 0);
+
+  if (symbolPnlChart) symbolPnlChart.destroy();
+  symbolPnlChart = new Chart(document.getElementById('symbolPnlChart'), {
+    type: 'bar',
+    data: {
+      labels: symbols,
+      datasets: [{
+        label: '本年累计',
+        data: yearData,
+        backgroundColor: ['#4caf50', '#2e7d32', '#81c784', '#66bb6a'],
+        borderRadius: 2,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: (ctx) => '$' + ctx.parsed.y.toLocaleString() } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 } } },
+        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, callback: (v) => '$' + (v/1000).toFixed(0) + 'k' } }
+      }
+    }
+  });
+}
+
+// ═══════════════════════════════════════════
+// 主加载
+// ═══════════════════════════════════════════
 async function loadDashboard() {
   try {
     const resp = await fetch(DATA_URL + '?t=' + Date.now());
@@ -846,6 +1032,7 @@ async function loadDashboard() {
     renderHeader(data);
     renderCards(data);
     renderStats(data);
+    renderPeriodTable(data);
     renderShadow(data);
     renderDecisions(data);
     renderTrades(data);
@@ -853,16 +1040,27 @@ async function loadDashboard() {
     renderRealized(data);
     renderSystem(data);
 
+    renderPeriodChart(data);
+    renderCumulativeFromData(data);
     renderEquityChart(data);
     renderPnlChart(data);
     renderTypeChart(data);
     renderFunnelChart(data);
+    renderSymbolPnlChart(data);
 
   } catch (e) {
     console.error('加载失败:', e);
     document.getElementById('subtitle').textContent = '数据加载失败: ' + e.message;
   }
 }
+
+document.querySelectorAll('.granularity-toggle button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.granularity-toggle button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCumulative(btn.dataset.gran);
+  });
+});
 
 loadDashboard();
 setInterval(loadDashboard, AUTO_REFRESH_MS);
