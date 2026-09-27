@@ -607,9 +607,8 @@ def main():
     if SHADOW_MODE:
         print(" 👻 影子模式已启用")
 
-    # ⚠️ 临时改动：周末测试时改成 if False:
-    # if not is_market_day():
-    if False:
+    # ══ 恢复正式逻辑：非交易日退出 ══
+    if not is_market_day():
         print("非交易日，退出")
         return
 
@@ -622,10 +621,8 @@ def main():
 
     enforce_no_margin(trading_client)
 
-    # 补平仓兜底 + 生成面板
-    # ⚠️ 临时改动：周末测试时改成 if True:
-    # if is_eod():
-    if True:
+    # ══ 恢复正式逻辑：收盘后平仓并生成面板 ══
+    if is_eod():
         try:
             positions = api_call_with_retry(trading_client.get_all_positions)
             if positions:
@@ -646,7 +643,7 @@ def main():
             send_email(f"📊 ORB 面板 {data['date']}", html, html=True)
         return
 
-    # 以下为正常交易时段逻辑（周末测试时不会执行到）
+    # 正常交易时段逻辑
     vix = fetch_vix()
     market_regime = fetch_market_regime(data_client)
 
