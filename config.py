@@ -104,4 +104,6 @@ SYMBOLS = ["TSLA", "NVDA", "META", "AMD"]
 DASHBOARD_DATA_FILE = "dashboard_data.json"
 EQUITY_HISTORY_FILE = "equity_history.json"
 SHADOW_TRADES_FILE = "shadow_trades.jsonl"
+PERIOD_PNL_FILE = "period_pnl.json"
 EQUITY_HISTORY_DAYS = 5
+PERIOD_LOOKBACK_DAYS = 365
