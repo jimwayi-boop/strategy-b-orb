@@ -1,14 +1,13 @@
 # backtest.py
 """
-ORB 策略本地回测脚本
+ORB 策略回测脚本（在 GitHub Actions 上运行）
 
-使用方法：
-  1. pip install -r requirements.txt
-  2. 设置环境变量 ALPACA_API_KEY / ALPACA_SECRET_KEY
-  3. python backtest.py
-
-首次运行会从 Alpaca 拉取 3 年历史数据，缓存到 backtest_cache/。
-之后重跑会直接读缓存，几秒钟完成。
+参数通过环境变量传入：
+  BACKTEST_START    起始日期，默认 2023-01-01
+  BACKTEST_END      结束日期，默认 2025-12-31
+  BACKTEST_CAPITAL  初始资金，默认 100000
+  ALPACA_API_KEY    Alpaca API Key（必填）
+  ALPACA_SECRET_KEY Alpaca Secret Key（必填）
 """
 import os
 import sys
@@ -29,29 +28,26 @@ from config import *
 ET = pytz.timezone("America/New_York")
 
 # ══════════════════════════════════════════════
-# 回测参数（可以在这里改）
+# 参数（支持环境变量覆盖）
 # ══════════════════════════════════════════════
-BACKTEST_START = "2023-01-01"
-BACKTEST_END = "2025-12-31"
-BACKTEST_CAPITAL = 100000
-BACKTEST_SLIPPAGE_ENTRY = 0.0005  # 入场滑点 0.05%
-BACKTEST_SLIPPAGE_EXIT = 0.0010   # 出场滑点 0.10%
-BACKTEST_VIX_ENABLED = False      # Alpaca 无 VIX 历史数据，默认关闭
+BACKTEST_START = os.getenv("BACKTEST_START", "2023-01-01")
+BACKTEST_END = os.getenv("BACKTEST_END", "2025-12-31")
+BACKTEST_CAPITAL = int(os.getenv("BACKTEST_CAPITAL", "100000"))
+BACKTEST_SLIPPAGE_ENTRY = 0.0005
+BACKTEST_SLIPPAGE_EXIT = 0.0010
 
 CACHE_DIR = "backtest_cache"
 RESULT_FILE = "backtest_results.json"
-PROGRESS_FILE = "backtest_progress.json"
 
 
-# ══════════════════════════════════════════════
-# 数据获取 + 缓存
-# ══════════════════════════════════════════════
 def ensure_cache_dir():
     os.makedirs(CACHE_DIR, exist_ok=True)
 
 
+# ══════════════════════════════════════════════
+# 数据拉取 + 缓存
+# ══════════════════════════════════════════════
 def fetch_minute_bars(data_client, symbol, start_date, end_date):
-    """按月拉取分钟 K 线，缓存到本地"""
     ensure_cache_dir()
     symbol_dir = os.path.join(CACHE_DIR, symbol, "minute")
     os.makedirs(symbol_dir, exist_ok=True)
@@ -66,10 +62,17 @@ def fetch_minute_bars(data_client, symbol, start_date, end_date):
         cache_file = os.path.join(symbol_dir, f"{month_str}.pkl")
 
         if os.path.exists(cache_file):
-            with open(cache_file, "rb") as f:
-                df = pickle.load(f)
-            print(f"  📦 缓存命中: {symbol} {month_str}")
+            try:
+                with open(cache_file, "rb") as f:
+                    df = pickle.load(f)
+                print(f"  📦 缓存: {symbol} {month_str} ({len(df)} 条)")
+            except Exception as e:
+                print(f"  ⚠️ 缓存读取失败，重新拉取: {e}")
+                df = None
         else:
+            df = None
+
+        if df is None:
             month_end = month_start + pd.offsets.MonthEnd(0)
             if month_end > end_ts:
                 month_end = end_ts
@@ -88,14 +91,17 @@ def fetch_minute_bars(data_client, symbol, start_date, end_date):
                 if not df.empty and isinstance(df.index, pd.MultiIndex):
                     df = df.xs(symbol, level="symbol")
             except Exception as e:
-                print(f"  ⚠️ {symbol} {month_str} 拉取失败: {e}")
+                print(f"  ⚠️ {symbol} {month_str} 失败: {e}")
                 df = pd.DataFrame()
 
-            with open(cache_file, "wb") as f:
-                pickle.dump(df, f)
+            try:
+                with open(cache_file, "wb") as f:
+                    pickle.dump(df, f)
+            except Exception as e:
+                print(f"  ⚠️ 缓存写入失败: {e}")
             time.sleep(0.3)
 
-        if not df.empty:
+        if df is not None and not df.empty:
             all_dfs.append(df)
 
     if not all_dfs:
@@ -107,21 +113,23 @@ def fetch_minute_bars(data_client, symbol, start_date, end_date):
 
 
 def fetch_daily_bars(data_client, symbol, start_date, end_date):
-    """拉取日线数据（用于 EMA200、ATR14）"""
     ensure_cache_dir()
     symbol_dir = os.path.join(CACHE_DIR, symbol)
     os.makedirs(symbol_dir, exist_ok=True)
     cache_file = os.path.join(symbol_dir, "daily.pkl")
 
     if os.path.exists(cache_file):
-        with open(cache_file, "rb") as f:
-            df = pickle.load(f)
-        if not df.empty:
-            return df
+        try:
+            with open(cache_file, "rb") as f:
+                df = pickle.load(f)
+            if not df.empty:
+                print(f"  📦 日线缓存: {symbol} ({len(df)} 条)")
+                return df
+        except Exception:
+            pass
 
     print(f"  📥 拉取日线: {symbol}")
     try:
-        # 多拉一年，保证 EMA200 有足够数据
         start_ts = pd.Timestamp(start_date) - pd.Timedelta(days=400)
         req = StockBarsRequest(
             symbol_or_symbols=symbol,
@@ -135,11 +143,15 @@ def fetch_daily_bars(data_client, symbol, start_date, end_date):
         if not df.empty and isinstance(df.index, pd.MultiIndex):
             df = df.xs(symbol, level="symbol")
     except Exception as e:
-        print(f"  ⚠️ {symbol} 日线拉取失败: {e}")
+        print(f"  ⚠️ {symbol} 日线失败: {e}")
         df = pd.DataFrame()
 
-    with open(cache_file, "wb") as f:
-        pickle.dump(df, f)
+    try:
+        with open(cache_file, "wb") as f:
+            pickle.dump(df, f)
+    except Exception as e:
+        print(f"  ⚠️ 日线缓存写入失败: {e}")
+
     return df
 
 
@@ -147,19 +159,20 @@ def fetch_daily_bars(data_client, symbol, start_date, end_date):
 # 指标计算
 # ══════════════════════════════════════════════
 def compute_daily_indicators(daily_df):
-    """计算日线 EMA200、ATR14，返回按日期索引的 DataFrame"""
     if daily_df is None or daily_df.empty:
         return pd.DataFrame()
 
     df = daily_df.sort_index().copy()
     df["date"] = pd.to_datetime(df.index).strftime("%Y-%m-%d")
-    df["ema200"] = df["close"].astype(float).ewm(span=200, adjust=False).mean()
+    df["close"] = df["close"].astype(float)
+    df["open"] = df["open"].astype(float)
+    df["ema200"] = df["close"].ewm(span=200, adjust=False).mean()
     df["ema200_prev"] = df["ema200"].shift(TREND_EMA_SLOPE_LOOKBACK)
     df["ema_slope"] = df["ema200"] - df["ema200_prev"]
 
     high = df["high"].astype(float)
     low = df["low"].astype(float)
-    close = df["close"].astype(float)
+    close = df["close"]
     tr = pd.concat([
         high - low,
         (high - close.shift(1)).abs(),
@@ -167,8 +180,6 @@ def compute_daily_indicators(daily_df):
     ], axis=1).max(axis=1)
     df["atr14"] = tr.rolling(14).mean()
     df["prev_close"] = close.shift(1)
-    df["open"] = df["open"].astype(float)
-    df["close"] = close
 
     return df.set_index("date")
 
@@ -177,7 +188,6 @@ def compute_daily_indicators(daily_df):
 # 单标的回测
 # ══════════════════════════════════════════════
 def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
-    """对单个标的回测，返回交易列表和账户曲线"""
     if minute_df is None or minute_df.empty:
         return [], []
 
@@ -196,9 +206,7 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
             equity_curve.append({"date": date, "equity": round(equity, 2)})
             continue
 
-        # 开盘区间 9:30-9:45
-        orb_mask = (day_bars["time"] >= "09:30") & (day_bars["time"] < "09:45")
-        orb_bars = day_bars[orb_mask]
+        orb_bars = day_bars[(day_bars["time"] >= "09:30") & (day_bars["time"] < "09:45")]
         if len(orb_bars) < 5:
             equity_curve.append({"date": date, "equity": round(equity, 2)})
             continue
@@ -208,17 +216,14 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
         range_width = range_high - range_low
         range_avg_vol = float(orb_bars["volume"].mean())
 
-        if range_low <= 0:
-            equity_curve.append({"date": date, "equity": round(equity, 2)})
-            continue
-        if range_width / range_low < MIN_RANGE_PCT:
+        if range_low <= 0 or range_width / range_low < MIN_RANGE_PCT:
             equity_curve.append({"date": date, "equity": round(equity, 2)})
             continue
 
-        # 日线指标
         if date not in daily_ind.index:
             equity_curve.append({"date": date, "equity": round(equity, 2)})
             continue
+
         d = daily_ind.loc[date]
         atr = float(d["atr14"]) if pd.notna(d["atr14"]) else None
         ema200 = float(d["ema200"]) if pd.notna(d["ema200"]) else None
@@ -226,12 +231,10 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
         today_open = float(d["open"])
         prev_close = float(d["prev_close"]) if pd.notna(d["prev_close"]) else None
 
-        # ATR 过滤
         if atr is not None and range_width > MAX_RANGE_ATR_MULTIPLIER * atr:
             equity_curve.append({"date": date, "equity": round(equity, 2)})
             continue
 
-        # 缺口过滤
         size_mult = 1.0
         if prev_close and prev_close > 0:
             gap_pct = abs(today_open - prev_close) / prev_close
@@ -241,15 +244,12 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
             elif gap_pct > GAP_REDUCE_THRESHOLD:
                 size_mult = 0.5
 
-        # 交易时段（9:45 到截止时间）
         cutoff_min = TRADE_CUTOFF_HOUR * 60 + TRADE_CUTOFF_MIN
-        trade_mask = (day_bars["time"] >= "09:45") & (day_bars["time"] <= "15:43")
-        trade_bars = day_bars[trade_mask]
+        trade_bars = day_bars[(day_bars["time"] >= "09:45") & (day_bars["time"] <= "15:43")]
         if trade_bars.empty:
             equity_curve.append({"date": date, "equity": round(equity, 2)})
             continue
 
-        # 逐分钟模拟
         position = None
         trades_today = 0
 
@@ -264,35 +264,28 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
             price_low = float(bar["low"])
             volume = float(bar["volume"])
 
-            # ── 持仓管理 ──
             if position is not None:
                 side = position["side"]
                 entry = position["entry"]
-                stop = position["stop"]
                 qty = position["qty"]
                 rps = position["risk_per_share"]
                 highest = position["highest"]
                 lowest = position["lowest"]
-                tp1_done = position["tp1_done"]
-                tp2_done = position["tp2_done"]
-                be_done = position["be_done"]
                 entry_time = position["entry_time"]
 
-                # 更新最高/最低
                 if side == "buy":
                     highest = max(highest, price_high)
-                else:
-                    lowest = min(lowest, price_low)
-
-                # 检查 TP1 / TP2
-                if side == "buy":
+                    position["highest"] = highest
                     favorable = highest - entry
                 else:
+                    lowest = min(lowest, price_low)
+                    position["lowest"] = lowest
                     favorable = entry - lowest
+
                 r_mult = favorable / rps if rps > 0 else 0
 
                 # TP1
-                if SCALE_OUT_ENABLED and not tp1_done and r_mult >= SCALE_OUT_LEVELS[0]["r_multiple"]:
+                if SCALE_OUT_ENABLED and not position["tp1_done"] and r_mult >= SCALE_OUT_LEVELS[0]["r_multiple"]:
                     exit_qty = max(int(qty * SCALE_OUT_LEVELS[0]["exit_pct"]), 1)
                     exit_qty = min(exit_qty, qty)
                     exit_price = entry + SCALE_OUT_LEVELS[0]["r_multiple"] * rps
@@ -310,12 +303,11 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
                         "entry_time": entry_time, "exit_time": time_str,
                     })
                     qty -= exit_qty
-                    tp1_done = True
                     position["qty"] = qty
                     position["tp1_done"] = True
 
                 # TP2
-                if SCALE_OUT_ENABLED and not tp2_done and r_mult >= SCALE_OUT_LEVELS[1]["r_multiple"]:
+                if SCALE_OUT_ENABLED and not position["tp2_done"] and r_mult >= SCALE_OUT_LEVELS[1]["r_multiple"]:
                     exit_qty = max(int(qty * SCALE_OUT_LEVELS[1]["exit_pct"]), 1)
                     exit_qty = min(exit_qty, qty)
                     exit_price = entry + SCALE_OUT_LEVELS[1]["r_multiple"] * rps
@@ -333,13 +325,11 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
                         "entry_time": entry_time, "exit_time": time_str,
                     })
                     qty -= exit_qty
-                    tp2_done = True
                     position["qty"] = qty
                     position["tp2_done"] = True
 
                 # 自动保本
-                if AUTO_BE_ENABLED and not be_done and r_mult >= AUTO_BE_TRIGGER_R:
-                    be_done = True
+                if AUTO_BE_ENABLED and not position["be_done"] and r_mult >= AUTO_BE_TRIGGER_R:
                     position["be_done"] = True
                     position["trail_pct"] = AUTO_BE_TRAIL_PERCENT
 
@@ -347,7 +337,7 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
                 trail_pct = position.get("trail_pct", TRAIL_PERCENT)
                 if side == "buy":
                     trail_stop = highest * (1 - trail_pct / 100)
-                    if price_low <= trail_stop:
+                    if price_low <= trail_stop and qty > 0:
                         exit_price = trail_stop * (1 - BACKTEST_SLIPPAGE_EXIT)
                         pnl = (exit_price - entry) * qty
                         trades.append({
@@ -363,7 +353,7 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
                         continue
                 else:
                     trail_stop = lowest * (1 + trail_pct / 100)
-                    if price_high >= trail_stop:
+                    if price_high >= trail_stop and qty > 0:
                         exit_price = trail_stop * (1 + BACKTEST_SLIPPAGE_EXIT)
                         pnl = (entry - exit_price) * qty
                         trades.append({
@@ -379,7 +369,7 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
                         continue
 
                 # 时间止损
-                if TIME_STOP_MINUTES > 0:
+                if TIME_STOP_MINUTES > 0 and qty > 0:
                     try:
                         entry_dt = pd.Timestamp(f"{date} {entry_time}").tz_localize(ET)
                         now_dt = pd.Timestamp(f"{date} {time_str}").tz_localize(ET)
@@ -404,9 +394,10 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
                             continue
                     except Exception:
                         pass
+
                 continue
 
-            # ── 无持仓：检查入场 ──
+            # 无持仓：检查入场
             if trades_today >= MAX_TRADES_PER_DAY:
                 continue
             if current_min >= cutoff_min:
@@ -419,7 +410,6 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
             if price_close > range_high:
                 signal_side = "buy"
                 signal_stop = range_low
-                # EMA 过滤
                 if ema200 is not None and today_open <= ema200:
                     continue
                 if ema_slope is not None and ema200 > 0:
@@ -438,12 +428,10 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
             else:
                 continue
 
-            # 仓位计算
             rps = abs(price_close - signal_stop)
             if rps <= 0:
                 continue
 
-            # 波动率调整
             vol_mult = 1.0
             if VOL_ADJUST_ENABLED and atr and price_close > 0:
                 current_vol = atr / price_close
@@ -456,7 +444,6 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
             if qty <= 0:
                 continue
 
-            # 入场价加滑点
             if signal_side == "buy":
                 entry_price = price_close * (1 + BACKTEST_SLIPPAGE_ENTRY)
             else:
@@ -478,29 +465,29 @@ def run_backtest_for_symbol(symbol, minute_df, daily_ind, capital):
             }
 
         # 收盘平仓
-        if position is not None:
+        if position is not None and position["qty"] > 0:
             last_bar = trade_bars.iloc[-1]
             exit_price = float(last_bar["close"])
+            qty = position["qty"]
             if position["side"] == "buy":
                 exit_price *= (1 - BACKTEST_SLIPPAGE_EXIT)
-                pnl = (exit_price - position["entry"]) * position["qty"]
+                pnl = (exit_price - position["entry"]) * qty
             else:
                 exit_price *= (1 + BACKTEST_SLIPPAGE_EXIT)
-                pnl = (position["entry"] - exit_price) * position["qty"]
+                pnl = (position["entry"] - exit_price) * qty
             trades.append({
                 "date": date, "symbol": symbol, "side": position["side"],
                 "entry_price": round(position["entry"], 2),
                 "exit_price": round(exit_price, 2),
-                "qty": position["qty"],
+                "qty": qty,
                 "pnl": round(pnl, 2),
-                "pnl_pct": round(pnl / (position["entry"] * position["qty"]) * 100, 2),
+                "pnl_pct": round(pnl / (position["entry"] * qty) * 100, 2),
                 "exit_reason": "EOD",
                 "entry_time": position["entry_time"],
-                "exit_time": trade_bars.iloc[-1]["time"],
+                "exit_time": last_bar["time"],
             })
             position = None
 
-        # 汇总当日盈亏
         day_pnl = sum(t["pnl"] for t in trades if t["date"] == date)
         equity += day_pnl
         equity_curve.append({"date": date, "equity": round(equity, 2)})
@@ -522,21 +509,15 @@ def compute_metrics(trades, equity_curve, capital):
     total_pnl = sum(pnls)
     total_return = total_pnl / capital * 100
 
-    # 年化收益
     equity_series = pd.Series([e["equity"] for e in equity_curve])
     days = len(equity_curve)
     years = days / 252 if days > 0 else 1
-    if years > 0 and equity_series.iloc[-1] > 0:
-        cagr = ((equity_series.iloc[-1] / capital) ** (1 / years) - 1) * 100
-    else:
-        cagr = 0
+    cagr = ((equity_series.iloc[-1] / capital) ** (1 / years) - 1) * 100 if years > 0 and equity_series.iloc[-1] > 0 else 0
 
-    # 最大回撤
     peak = equity_series.cummax()
     dd = (equity_series - peak) / peak * 100
     max_dd = dd.min()
 
-    # 夏普比率（简化，按日收益算）
     daily_returns = equity_series.pct_change().dropna()
     sharpe = 0
     if len(daily_returns) > 1 and daily_returns.std() > 0:
@@ -547,7 +528,6 @@ def compute_metrics(trades, equity_curve, capital):
     gross_loss = abs(sum(losses)) if losses else 0
     pf = gross_profit / gross_loss if gross_loss > 0 else 0
 
-    # 连续盈亏
     max_win_streak = 0
     max_loss_streak = 0
     cur_win = 0
@@ -591,7 +571,7 @@ def main():
     api_key = os.getenv("ALPACA_API_KEY")
     api_secret = os.getenv("ALPACA_SECRET_KEY")
     if not api_key or not api_secret:
-        print("❌ 请先设置环境变量 ALPACA_API_KEY 和 ALPACA_SECRET_KEY")
+        print("❌ 缺少 ALPACA_API_KEY / ALPACA_SECRET_KEY")
         sys.exit(1)
 
     print("=" * 60)
@@ -604,43 +584,38 @@ def main():
     data_client = StockHistoricalDataClient(api_key, api_secret)
 
     all_trades = []
-    all_equity_curves = {}
     per_symbol_stats = {}
 
     for symbol in SYMBOLS:
         print(f"\n━━━ {symbol} ━━━")
-
-        # 拉取数据
         minute_df = fetch_minute_bars(data_client, symbol, BACKTEST_START, BACKTEST_END)
         if minute_df is None or minute_df.empty:
-            print(f" ⚠️ {symbol} 分钟数据为空，跳过")
+            print(f" ⚠️ {symbol} 无分钟数据，跳过")
+            per_symbol_stats[symbol] = {
+                "trades": 0, "win_rate": 0, "total_pnl": 0,
+                "avg_pnl": 0, "max_win": 0, "max_loss": 0, "profit_factor": 0,
+            }
             continue
 
         daily_df = fetch_daily_bars(data_client, symbol, BACKTEST_START, BACKTEST_END)
         daily_ind = compute_daily_indicators(daily_df)
+        print(f"  📊 分钟 {len(minute_df):,} 条 / 日线 {len(daily_df)} 条")
 
-        print(f"  📊 分钟数据: {len(minute_df):,} 条 / 日线: {len(daily_df)} 条")
+        trades, _ = run_backtest_for_symbol(symbol, minute_df, daily_ind, BACKTEST_CAPITAL)
+        print(f"  ✅ {len(trades)} 笔交易")
 
-        # 回测
-        trades, equity = run_backtest_for_symbol(symbol, minute_df, daily_ind, BACKTEST_CAPITAL)
-        print(f"  ✅ 完成 {len(trades)} 笔交易")
-
-        # 独立计算该标的统计
-        sym_trades = [t for t in trades if t["symbol"] == symbol]
-        if sym_trades:
-            sym_pnls = [t["pnl"] for t in sym_trades]
-            sym_wins = [p for p in sym_pnls if p > 0]
-            sym_losses = [p for p in sym_pnls if p <= 0]
+        if trades:
+            pnls = [t["pnl"] for t in trades]
+            wins = [p for p in pnls if p > 0]
+            losses = [p for p in pnls if p <= 0]
             per_symbol_stats[symbol] = {
-                "trades": len(sym_trades),
-                "win_rate": round(len(sym_wins) / len(sym_trades) * 100, 2) if sym_trades else 0,
-                "total_pnl": round(sum(sym_pnls), 2),
-                "avg_pnl": round(sum(sym_pnls) / len(sym_trades), 2),
-                "max_win": round(max(sym_wins), 2) if sym_wins else 0,
-                "max_loss": round(min(sym_losses), 2) if sym_losses else 0,
-                "profit_factor": round(
-                    sum(sym_wins) / abs(sum(sym_losses)), 2
-                ) if sym_losses and sum(sym_losses) != 0 else 0,
+                "trades": len(trades),
+                "win_rate": round(len(wins) / len(trades) * 100, 2),
+                "total_pnl": round(sum(pnls), 2),
+                "avg_pnl": round(sum(pnls) / len(trades), 2),
+                "max_win": round(max(wins), 2) if wins else 0,
+                "max_loss": round(min(losses), 2) if losses else 0,
+                "profit_factor": round(sum(wins) / abs(sum(losses)), 2) if losses and sum(losses) != 0 else 0,
             }
         else:
             per_symbol_stats[symbol] = {
@@ -649,24 +624,12 @@ def main():
             }
 
         all_trades.extend(trades)
-        all_equity_curves[symbol] = equity
-
-        # 保存中间结果（防止中途出错丢数据）
-        with open(PROGRESS_FILE, "w") as f:
-            json.dump({
-                "completed": symbol,
-                "total_trades": len(all_trades),
-            }, f)
 
     if not all_trades:
-        print("❌ 没有生成任何交易")
+        print("❌ 无交易")
         return
 
-    # 组合净值曲线（按日期合并所有标的的盈亏）
-    print("\n" + "=" * 60)
-    print(" 计算组合统计")
-    print("=" * 60)
-
+    # 组合净值曲线
     trades_by_date = {}
     for t in all_trades:
         trades_by_date.setdefault(t["date"], []).append(t["pnl"])
@@ -678,44 +641,44 @@ def main():
         equity += sum(trades_by_date[d])
         combined_equity.append({"date": d, "equity": round(equity, 2)})
 
-    combined_metrics = compute_metrics(all_trades, combined_equity, BACKTEST_CAPITAL)
-    print(f" 总交易: {combined_metrics['total_trades']}")
-    print(f" 总收益: ${combined_metrics['total_pnl']:,.2f} ({combined_metrics['total_return_pct']:.2f}%)")
-    print(f" 年化: {combined_metrics['cagr_pct']:.2f}%")
-    print(f" 最大回撤: {combined_metrics['max_drawdown_pct']:.2f}%")
-    print(f" 夏普: {combined_metrics['sharpe']:.2f}")
-    print(f" 胜率: {combined_metrics['win_rate']:.2f}%")
-    print(f" 盈亏比: {combined_metrics['profit_factor']:.2f}")
+    metrics = compute_metrics(all_trades, combined_equity, BACKTEST_CAPITAL)
 
-    # 按年份统计
+    print("\n" + "=" * 60)
+    print(" 回测完成")
+    print(f" 总交易: {metrics['total_trades']}")
+    print(f" 总收益: ${metrics['total_pnl']:,.2f} ({metrics['total_return_pct']:.2f}%)")
+    print(f" 年化: {metrics['cagr_pct']:.2f}%")
+    print(f" 最大回撤: {metrics['max_drawdown_pct']:.2f}%")
+    print(f" 夏普: {metrics['sharpe']:.2f}")
+    print(f" 胜率: {metrics['win_rate']:.2f}%")
+    print(f" 盈亏比: {metrics['profit_factor']:.2f}")
+    print("=" * 60)
+
     yearly_stats = {}
     for year in sorted(set(t["date"][:4] for t in all_trades)):
-        year_trades = [t for t in all_trades if t["date"].startswith(year)]
-        year_pnls = [t["pnl"] for t in year_trades]
-        year_wins = [p for p in year_pnls if p > 0]
-        year_capital = BACKTEST_CAPITAL
+        yt = [t for t in all_trades if t["date"].startswith(year)]
+        yp = [t["pnl"] for t in yt]
+        yw = [p for p in yp if p > 0]
+        yl = [p for p in yp if p <= 0]
         yearly_stats[year] = {
-            "trades": len(year_trades),
-            "win_rate": round(len(year_wins) / len(year_trades) * 100, 2) if year_trades else 0,
-            "total_pnl": round(sum(year_pnls), 2),
-            "return_pct": round(sum(year_pnls) / year_capital * 100, 2),
-            "max_win": round(max(year_wins), 2) if year_wins else 0,
-            "max_loss": round(min([p for p in year_pnls if p <= 0]), 2) if [p for p in year_pnls if p <= 0] else 0,
+            "trades": len(yt),
+            "win_rate": round(len(yw) / len(yt) * 100, 2) if yt else 0,
+            "total_pnl": round(sum(yp), 2),
+            "return_pct": round(sum(yp) / BACKTEST_CAPITAL * 100, 2),
+            "max_win": round(max(yw), 2) if yw else 0,
+            "max_loss": round(min(yl), 2) if yl else 0,
         }
 
-    # 月度收益热力图
     monthly_data = {}
     for t in all_trades:
         ym = t["date"][:7]
         monthly_data[ym] = monthly_data.get(ym, 0) + t["pnl"]
 
-    # 出场原因分布
     exit_reasons = {}
     for t in all_trades:
         r = t["exit_reason"]
         exit_reasons[r] = exit_reasons.get(r, 0) + 1
 
-    # 结果汇总
     result = {
         "backtest_info": {
             "start": BACKTEST_START,
@@ -737,7 +700,7 @@ def main():
                 "GAP_REDUCE_THRESHOLD": GAP_REDUCE_THRESHOLD,
             },
         },
-        "metrics": combined_metrics,
+        "metrics": metrics,
         "per_symbol": per_symbol_stats,
         "yearly": yearly_stats,
         "monthly": monthly_data,
@@ -749,18 +712,8 @@ def main():
     with open(RESULT_FILE, "w") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
 
-    # 清理进度文件
-    if os.path.exists(PROGRESS_FILE):
-        os.remove(PROGRESS_FILE)
-
-    print("\n" + "=" * 60)
-    print(f" ✅ 结果已保存到 {RESULT_FILE}")
-    print(f" 文件大小: {os.path.getsize(RESULT_FILE) / 1024:.1f} KB")
-    print("=" * 60)
-    print("\n下一步：")
-    print("  git add backtest_results.json")
-    print("  git commit -m 'Update backtest results'")
-    print("  git push")
+    print(f"\n✅ 结果已保存到 {RESULT_FILE}")
+    print(f"文件大小: {os.path.getsize(RESULT_FILE) / 1024:.1f} KB")
 
 
 if __name__ == "__main__":
