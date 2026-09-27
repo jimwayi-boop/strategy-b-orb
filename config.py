@@ -71,8 +71,8 @@ VOL_TARGET = 0.02
 
 # ── VIX 波动率过滤 ──
 VIX_FILTER_ENABLED = True
-VIX_HIGH_THRESHOLD = 25.0     # VIX > 25 时只做空
-VIX_LOW_THRESHOLD = 15.0      # VIX < 15 时只做多
+VIX_HIGH_THRESHOLD = 25.0
+VIX_LOW_THRESHOLD = 15.0
 VIX_API_URL = "https://convextrade.com/api/public/metrics/vixcls"
 
 # ── 市场状态分类（QQQ EMA200）──
@@ -82,8 +82,8 @@ MARKET_REGIME_EMA_PERIOD = 200
 MARKET_REGIME_BEARISH_SIZE_MULT = 0.5
 
 # ── 交易成本建模（回测用）──
-SLIPPAGE_MARKET_ENTRY = 0.0005   # 市价单入场滑点 0.05%
-SLIPPAGE_TRAIL_STOP = 0.001      # Trailing Stop 触发滑点 0.1%
+SLIPPAGE_MARKET_ENTRY = 0.0005
+SLIPPAGE_TRAIL_STOP = 0.001
 
 # ── API 重试 ──
 API_MAX_RETRIES = 3
@@ -99,3 +99,9 @@ GAP_REDUCE_THRESHOLD = 0.005
 
 # ── 交易标的 ──
 SYMBOLS = ["TSLA", "NVDA", "META", "AMD"]
+
+# ── 面板文件 ──
+DASHBOARD_DATA_FILE = "dashboard_data.json"
+EQUITY_HISTORY_FILE = "equity_history.json"
+SHADOW_TRADES_FILE = "shadow_trades.jsonl"
+EQUITY_HISTORY_DAYS = 5  # 保留最近 5 个交易日
