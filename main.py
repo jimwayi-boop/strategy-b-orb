@@ -29,9 +29,7 @@ from orb_strategy import ORBStrategy
 
 ET = pytz.timezone("America/New_York")
 
-# ══════════════════════════════════════════════
-# 工具
-# ══════════════════════════════════════════════
+
 def api_call_with_retry(func, *args, max_retries=API_MAX_RETRIES,
                         base_delay=API_RETRY_BASE_DELAY, **kwargs):
     for attempt in range(max_retries):
@@ -103,9 +101,6 @@ def is_before_open():
     return (n.hour < ORB_START_HOUR) or (n.hour == ORB_START_HOUR and n.minute < ORB_START_MIN)
 
 
-# ══════════════════════════════════════════════
-# VIX / 市场状态
-# ══════════════════════════════════════════════
 def fetch_vix():
     if not VIX_FILTER_ENABLED:
         return None
@@ -154,9 +149,6 @@ def fetch_market_regime(data_client):
         return "bullish"
 
 
-# ══════════════════════════════════════════════
-# 数据获取
-# ══════════════════════════════════════════════
 def fetch_opening_range_bars(data_client, symbol):
     today = now_et().strftime("%Y-%m-%d")
     try:
@@ -306,9 +298,6 @@ def fetch_today_orders(trading_client, symbol):
         return []
 
 
-# ══════════════════════════════════════════════
-# 订单执行
-# ══════════════════════════════════════════════
 def wait_for_order_filled(trading_client, order_id, max_wait=10, interval=0.5):
     waited = 0
     last_status = None
@@ -470,9 +459,6 @@ def check_scale_out(trading_client, symbol, position, price, entry, initial_stop
     return False
 
 
-# ══════════════════════════════════════════════
-# 净值历史
-# ══════════════════════════════════════════════
 def load_equity_history():
     if not os.path.exists(EQUITY_HISTORY_FILE):
         return {}
@@ -484,7 +470,6 @@ def load_equity_history():
 
 
 def save_equity_history(history):
-    # 只保留最近 EQUITY_HISTORY_DAYS 个交易日
     dates = sorted(history.keys())
     if len(dates) > EQUITY_HISTORY_DAYS:
         for old_date in dates[:-EQUITY_HISTORY_DAYS]:
@@ -501,7 +486,6 @@ def append_equity_snapshot(equity):
     if today not in history:
         history[today] = []
 
-    # 如果最后一分钟已经有了，就不重复记录
     if history[today] and history[today][-1]["time"] == now_str:
         history[today][-1]["equity"] = equity
     else:
@@ -511,11 +495,7 @@ def append_equity_snapshot(equity):
     return history
 
 
-# ══════════════════════════════════════════════
-# 今日状态重建（用于面板）
-# ══════════════════════════════════════════════
 def classify_order_type(order):
-    """从 client_order_id 判断订单类型"""
     cid = order.client_order_id or ""
     if "_TP1" in cid:
         return "TP1 止盈"
@@ -533,9 +513,7 @@ def classify_order_type(order):
 
 
 def rebuild_today_state(trading_client, symbols):
-    """从今日订单重建：每笔成交、已实现盈亏、FIFO 配对"""
     today_str = now_et().strftime("%Y-%m-%d")
-    today_compact = now_et().strftime("%Y%m%d")
 
     all_orders = []
     for sym in symbols:
@@ -544,11 +522,9 @@ def rebuild_today_state(trading_client, symbols):
             if o.status == OrderStatus.FILLED:
                 all_orders.append(o)
 
-    # 按成交时间排序
     all_orders.sort(key=lambda o: o.filled_at if o.filled_at else now_et())
 
-    # FIFO 配对
-    symbol_lots = {}  # symbol -> list of {qty, price, time}
+    symbol_lots = {}
     realized_trades = []
     today_trades = []
 
@@ -585,11 +561,15 @@ def rebuild_today_state(trading_client, symbols):
             remaining = qty
             cost_basis_total = 0
             matched_qty = 0
+            entry_time_for_holding = None
+
             while remaining > 0 and symbol_lots[sym]:
                 lot = symbol_lots[sym][0]
                 take = min(remaining, lot["qty"])
                 cost_basis_total += take * lot["price"]
                 matched_qty += take
+                if entry_time_for_holding is None:
+                    entry_time_for_holding = lot["time"]
                 lot["qty"] -= take
                 remaining -= take
                 if lot["qty"] <= 0:
@@ -599,26 +579,10 @@ def rebuild_today_state(trading_client, symbols):
                 avg_cost = cost_basis_total / matched_qty
                 pnl = (price - avg_cost) * matched_qty
                 pnl_pct = (price - avg_cost) / avg_cost * 100
-                holding_minutes = 0
-                if symbol_lots.get(sym + "_last_entry"):
-                    pass
-
-                # 找对应的入场时间
-                entry_time = None
-                for t in today_trades:
-                    if t["symbol"] == sym and t["side"] == "buy":
-                        entry_time = t["time"]
-                        break
 
                 holding_minutes = 0
-                if entry_time:
-                    try:
-                        entry_dt = datetime.strptime(
-                            f"{today_str} {entry_time}", "%Y-%m-%d %H:%M:%S"
-                        ).replace(tzinfo=ET)
-                        holding_minutes = int((filled_et - entry_dt).total_seconds() / 60)
-                    except Exception:
-                        pass
+                if entry_time_for_holding:
+                    holding_minutes = int((filled_et - entry_time_for_holding).total_seconds() / 60)
 
                 realized_trades.append({
                     "symbol": sym,
@@ -634,9 +598,6 @@ def rebuild_today_state(trading_client, symbols):
     return today_trades, realized_trades
 
 
-# ══════════════════════════════════════════════
-# 生成 dashboard_data.json
-# ══════════════════════════════════════════════
 def generate_dashboard_data(trading_client, data_client, decisions_log,
                              shadow_signals, market_info, equity_history):
     try:
@@ -645,7 +606,6 @@ def generate_dashboard_data(trading_client, data_client, decisions_log,
 
         today_trades, realized_trades = rebuild_today_state(trading_client, SYMBOLS)
 
-        # 统计
         wins = [t for t in realized_trades if t["pnl"] > 0]
         losses = [t for t in realized_trades if t["pnl"] <= 0]
         total_pnl = sum(t["pnl"] for t in realized_trades)
@@ -665,7 +625,6 @@ def generate_dashboard_data(trading_client, data_client, decisions_log,
             "profit_factor": profit_factor,
         }
 
-        # 当前持仓
         position_list = []
         for p in positions:
             entry = float(p.avg_entry_price)
@@ -673,7 +632,6 @@ def generate_dashboard_data(trading_client, data_client, decisions_log,
             qty = abs(int(float(p.qty)))
             side = "buy" if float(p.qty) > 0 else "sell"
 
-            # 从今日订单里找入场时间
             entry_time = None
             for t in today_trades:
                 if t["symbol"] == p.symbol and t["side"] == "buy":
@@ -691,15 +649,14 @@ def generate_dashboard_data(trading_client, data_client, decisions_log,
                 except Exception:
                     pass
 
-            # 找活跃 Trailing Stop 的止损价
             stop_price = None
-            for sym_orders in [fetch_today_orders(trading_client, p.symbol)]:
-                for o in sym_orders:
-                    if (o.client_order_id and "TRAIL" in o.client_order_id
-                            and o.status in (OrderStatus.NEW, OrderStatus.ACCEPTED)
-                            and o.stop_price):
-                        stop_price = float(o.stop_price)
-                        break
+            sym_orders = fetch_today_orders(trading_client, p.symbol)
+            for o in sym_orders:
+                if (o.client_order_id and "TRAIL" in o.client_order_id
+                        and o.status in (OrderStatus.NEW, OrderStatus.ACCEPTED)
+                        and o.stop_price):
+                    stop_price = float(o.stop_price)
+                    break
 
             distance_to_stop_pct = None
             if stop_price and current > 0:
@@ -719,11 +676,9 @@ def generate_dashboard_data(trading_client, data_client, decisions_log,
                 "side": side,
             })
 
-        # 影子信号（今天的）
         today_str = now_et().strftime("%Y-%m-%d")
         today_shadow = [s for s in (shadow_signals or []) if s.get("date") == today_str]
 
-        # 净值历史
         equity_chart = {}
         for d, points in equity_history.items():
             equity_chart[d] = points
@@ -758,9 +713,6 @@ def generate_dashboard_data(trading_client, data_client, decisions_log,
         return None
 
 
-# ══════════════════════════════════════════════
-# 主逻辑
-# ══════════════════════════════════════════════
 def main():
     print("=" * 60)
     print(f" ORB 单次运行 | {now_et().strftime('%Y-%m-%d %H:%M:%S ET')}")
@@ -784,7 +736,6 @@ def main():
 
     enforce_no_margin(trading_client)
 
-    # 获取账户信息
     try:
         account = api_call_with_retry(trading_client.get_account)
         equity = float(account.equity)
@@ -797,11 +748,9 @@ def main():
         send_email("ORB 账户失败", str(e))
         return
 
-    # 记录净值快照
     equity_history = append_equity_snapshot(equity)
     print(f"📈 已记录净值快照 ({len(equity_history)} 个交易日)")
 
-    # 获取市场信息
     vix = fetch_vix()
     market_regime = fetch_market_regime(data_client)
 
@@ -813,7 +762,6 @@ def main():
         "eod_close": f"{EOD_CLOSE_HOUR}:{EOD_CLOSE_MIN:02d}",
     }
 
-    # 获取持仓
     try:
         positions = {p.symbol: p for p in api_call_with_retry(trading_client.get_all_positions)}
     except Exception as e:
@@ -833,10 +781,8 @@ def main():
     current_minute_index = now.hour * 60 + now.minute
     date_str = now_et().strftime('%Y%m%d')
 
-    # 决策日志
     decisions_log = []
 
-    # EOD 特殊处理
     if is_eod():
         try:
             if positions:
@@ -846,7 +792,6 @@ def main():
         except Exception as e:
             print(f"补平仓失败: {e}")
 
-        # 生成面板
         shadow_signals = []
         if SHADOW_MODE and os.path.exists(SHADOW_TRADES_FILE):
             with open(SHADOW_TRADES_FILE) as f:
@@ -856,7 +801,6 @@ def main():
                                         shadow_signals, market_info, equity_history)
         return
 
-    # 正常交易时段
     for sym in SYMBOLS:
         print(f"\n── {sym} ──")
         strat = ORBStrategy(sym)
@@ -903,7 +847,6 @@ def main():
             })
             continue
 
-        # ATR 过滤
         atr = fetch_atr(data_client, sym)
         strat.atr = atr
         if not strat.check_atr_filter():
@@ -919,7 +862,6 @@ def main():
             })
             continue
 
-        # 缺口过滤
         prev_close, today_open = fetch_prev_close_and_open(data_client, sym)
         strat.prev_close = prev_close
         strat.today_open = today_open
@@ -940,12 +882,10 @@ def main():
             })
             continue
 
-        # EMA 过滤
         ema, ema_slope = fetch_daily_ema(data_client, sym)
         strat.daily_ema = ema
         strat.daily_ema_slope = ema_slope
 
-        # 获取最新价格
         latest = fetch_latest_bar(data_client, sym)
         if latest is None:
             strat.log_step(False, "无法获取最新价格")
@@ -989,7 +929,6 @@ def main():
                 if current_minute_index < lm + COOLDOWN_BARS:
                     strat.cooldown_until = lm + COOLDOWN_BARS
 
-        # ── 已有持仓 ──
         if sym in positions:
             pos = positions[sym]
             side = "buy" if float(pos.qty) > 0 else "sell"
@@ -1067,7 +1006,6 @@ def main():
                     print(f" ⚠️补挂失败: {e}")
             continue
 
-        # ── 无持仓：检查入场 ──
         if not strat.traded_today:
             signal = strat.check_entry(latest, current_minute_index)
             if signal:
@@ -1118,7 +1056,6 @@ def main():
                 strat.decision_action = "skip"
                 strat.decision_reason = "无突破信号"
 
-        # 记录决策日志
         if strat.decision_action == "pending":
             strat.decision_action = "hold"
             strat.decision_reason = "持仓管理中"
@@ -1140,7 +1077,6 @@ def main():
             "reason": strat.decision_reason,
         })
 
-    # 生成面板
     shadow_signals = []
     if SHADOW_MODE and os.path.exists(SHADOW_TRADES_FILE):
         with open(SHADOW_TRADES_FILE) as f:
