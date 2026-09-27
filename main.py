@@ -30,6 +30,9 @@ from orb_strategy import ORBStrategy
 ET = pytz.timezone("America/New_York")
 
 
+# ══════════════════════════════════════════════
+# 基础工具
+# ══════════════════════════════════════════════
 def api_call_with_retry(func, *args, max_retries=API_MAX_RETRIES,
                         base_delay=API_RETRY_BASE_DELAY, **kwargs):
     for attempt in range(max_retries):
@@ -101,6 +104,9 @@ def is_before_open():
     return (n.hour < ORB_START_HOUR) or (n.hour == ORB_START_HOUR and n.minute < ORB_START_MIN)
 
 
+# ══════════════════════════════════════════════
+# VIX / 市场状态
+# ══════════════════════════════════════════════
 def fetch_vix():
     if not VIX_FILTER_ENABLED:
         return None
@@ -149,6 +155,9 @@ def fetch_market_regime(data_client):
         return "bullish"
 
 
+# ══════════════════════════════════════════════
+# 数据获取
+# ══════════════════════════════════════════════
 def fetch_opening_range_bars(data_client, symbol):
     today = now_et().strftime("%Y-%m-%d")
     try:
@@ -298,6 +307,9 @@ def fetch_today_orders(trading_client, symbol):
         return []
 
 
+# ══════════════════════════════════════════════
+# 订单执行
+# ══════════════════════════════════════════════
 def wait_for_order_filled(trading_client, order_id, max_wait=10, interval=0.5):
     waited = 0
     last_status = None
@@ -459,6 +471,9 @@ def check_scale_out(trading_client, symbol, position, price, entry, initial_stop
     return False
 
 
+# ══════════════════════════════════════════════
+# 净值历史
+# ══════════════════════════════════════════════
 def load_equity_history():
     if not os.path.exists(EQUITY_HISTORY_FILE):
         return {}
@@ -495,6 +510,219 @@ def append_equity_snapshot(equity):
     return history
 
 
+# ══════════════════════════════════════════════
+# 周期盈亏（新增）
+# ══════════════════════════════════════════════
+def fetch_all_orders_since(trading_client, days=PERIOD_LOOKBACK_DAYS):
+    """拉取过去 N 天的所有已成交订单，自动分页"""
+    start = (now_et() - timedelta(days=days)).strftime("%Y-%m-%dT00:00:00-04:00")
+    all_orders = []
+    seen_ids = set()
+    page = 0
+
+    while page < 20:
+        page += 1
+        try:
+            req = GetOrdersRequest(
+                status=QueryOrderStatus.CLOSED,
+                after=start,
+                limit=500,
+            )
+            orders = api_call_with_retry(trading_client.get_orders, req)
+            if not orders:
+                break
+
+            new_orders = [o for o in orders if o.id not in seen_ids]
+            if not new_orders:
+                break
+
+            all_orders.extend(new_orders)
+            for o in new_orders:
+                seen_ids.add(o.id)
+
+            if len(orders) < 500:
+                break
+
+            last = orders[-1]
+            if last.filled_at:
+                start = (last.filled_at + timedelta(seconds=1)).strftime("%Y-%m-%dT%H:%M:%S%z")
+            else:
+                break
+        except Exception as e:
+            print(f" ⚠️拉取订单第 {page} 页失败: {e}")
+            break
+
+    return all_orders
+
+
+def compute_realized_pnl_all(all_orders):
+    """对订单列表做 FIFO 配对，返回已实现盈亏列表"""
+    filled_orders = [o for o in all_orders if o.status == OrderStatus.FILLED]
+    filled_orders.sort(key=lambda o: o.filled_at if o.filled_at else now_et())
+
+    symbol_lots = {}
+    realized = []
+
+    for o in filled_orders:
+        sym = o.symbol
+        side = str(o.side).replace("OrderSide.", "").lower()
+        qty = int(float(o.filled_qty)) if o.filled_qty else 0
+        price = float(o.filled_avg_price) if o.filled_avg_price else 0
+        filled_et = o.filled_at.astimezone(ET) if o.filled_at else now_et()
+        date_str = filled_et.strftime("%Y-%m-%d")
+
+        if sym not in symbol_lots:
+            symbol_lots[sym] = []
+
+        if side == "buy":
+            symbol_lots[sym].append({"qty": qty, "price": price, "date": date_str})
+        elif side == "sell":
+            remaining = qty
+            cost_basis = 0
+            matched = 0
+            while remaining > 0 and symbol_lots[sym]:
+                lot = symbol_lots[sym][0]
+                take = min(remaining, lot["qty"])
+                cost_basis += take * lot["price"]
+                matched += take
+                lot["qty"] -= take
+                remaining -= take
+                if lot["qty"] <= 0:
+                    symbol_lots[sym].pop(0)
+
+            if matched > 0:
+                avg_cost = cost_basis / matched
+                pnl = (price - avg_cost) * matched
+                realized.append({
+                    "date": date_str,
+                    "symbol": sym,
+                    "pnl": round(pnl, 2),
+                    "entry_price": round(avg_cost, 2),
+                    "exit_price": round(price, 2),
+                    "qty": matched,
+                })
+
+    return realized
+
+
+def aggregate_period(realized, start_date, symbols):
+    """按日期起点聚合已实现盈亏"""
+    result = {}
+    for sym in symbols:
+        result[sym] = {"pnl": 0.0, "trades": 0, "wins": 0, "win_rate": 0.0}
+    result["__total__"] = {"pnl": 0.0, "trades": 0, "wins": 0, "win_rate": 0.0}
+
+    for t in realized:
+        if t["date"] >= start_date:
+            sym = t["symbol"]
+            if sym not in result:
+                result[sym] = {"pnl": 0.0, "trades": 0, "wins": 0, "win_rate": 0.0}
+            result[sym]["pnl"] += t["pnl"]
+            result[sym]["trades"] += 1
+            if t["pnl"] > 0:
+                result[sym]["wins"] += 1
+            result["__total__"]["pnl"] += t["pnl"]
+            result["__total__"]["trades"] += 1
+            if t["pnl"] > 0:
+                result["__total__"]["wins"] += 1
+
+    for k in result:
+        trades = result[k]["trades"]
+        result[k]["win_rate"] = round(result[k]["wins"] / trades * 100, 2) if trades > 0 else 0
+        result[k]["pnl"] = round(result[k]["pnl"], 2)
+
+    return result
+
+
+def compute_cumulative(realized):
+    """按月/周/日生成累计盈亏曲线"""
+    result = {
+        "month": {"labels": [], "data": []},
+        "week": {"labels": [], "data": []},
+        "day": {"labels": [], "data": []},
+    }
+
+    monthly = {}
+    weekly = {}
+    daily = {}
+    for t in realized:
+        month_key = t["date"][:7]
+        monthly[month_key] = monthly.get(month_key, 0) + t["pnl"]
+        try:
+            dt = datetime.strptime(t["date"], "%Y-%m-%d")
+            week_key = dt.strftime("%Y-W%W")
+        except Exception:
+            week_key = t["date"][:7]
+        weekly[week_key] = weekly.get(week_key, 0) + t["pnl"]
+        daily[t["date"]] = daily.get(t["date"], 0) + t["pnl"]
+
+    cum = 0
+    for k in sorted(monthly.keys()):
+        cum += monthly[k]
+        result["month"]["labels"].append(k)
+        result["month"]["data"].append(round(cum, 2))
+
+    cum = 0
+    for k in sorted(weekly.keys()):
+        cum += weekly[k]
+        result["week"]["labels"].append(k)
+        result["week"]["data"].append(round(cum, 2))
+
+    cum = 0
+    for k in sorted(daily.keys()):
+        cum += daily[k]
+        result["day"]["labels"].append(k)
+        result["day"]["data"].append(round(cum, 2))
+
+    return result
+
+
+def load_period_pnl(trading_client, force_refresh=False):
+    """加载周期盈亏数据（带缓存，每天只更新一次）"""
+    today_str = now_et().strftime("%Y-%m-%d")
+
+    if not force_refresh and os.path.exists(PERIOD_PNL_FILE):
+        try:
+            with open(PERIOD_PNL_FILE) as f:
+                cached = json.load(f)
+            if cached.get("last_updated") == today_str:
+                print(f"📦 使用缓存的周期盈亏数据 ({today_str})")
+                return cached
+        except Exception:
+            pass
+
+    print("🔄 重新计算周期盈亏（拉取最近 1 年订单）...")
+    t0 = time.time()
+    all_orders = fetch_all_orders_since(trading_client, days=PERIOD_LOOKBACK_DAYS)
+    print(f"📥 拉取到 {len(all_orders)} 条历史订单（耗时 {time.time()-t0:.1f}s）")
+
+    realized = compute_realized_pnl_all(all_orders)
+    print(f"🧮 已实现盈亏记录: {len(realized)} 条")
+
+    today = now_et()
+    month_start = today.replace(day=1).strftime("%Y-%m-%d")
+    quarter_month = ((today.month - 1) // 3) * 3 + 1
+    quarter_start = today.replace(month=quarter_month, day=1).strftime("%Y-%m-%d")
+    year_start = today.replace(month=1, day=1).strftime("%Y-%m-%d")
+
+    data = {
+        "last_updated": today_str,
+        "month": aggregate_period(realized, month_start, SYMBOLS),
+        "quarter": aggregate_period(realized, quarter_start, SYMBOLS),
+        "year": aggregate_period(realized, year_start, SYMBOLS),
+        "cumulative": compute_cumulative(realized),
+    }
+
+    with open(PERIOD_PNL_FILE, "w") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    print(f"💾 周期盈亏已缓存到 {PERIOD_PNL_FILE}")
+
+    return data
+
+
+# ══════════════════════════════════════════════
+# 今日状态重建
+# ══════════════════════════════════════════════
 def classify_order_type(order):
     cid = order.client_order_id or ""
     if "_TP1" in cid:
@@ -514,7 +742,6 @@ def classify_order_type(order):
 
 def rebuild_today_state(trading_client, symbols):
     today_str = now_et().strftime("%Y-%m-%d")
-
     all_orders = []
     for sym in symbols:
         orders = fetch_today_orders(trading_client, sym)
@@ -552,11 +779,7 @@ def rebuild_today_state(trading_client, symbols):
             symbol_lots[sym] = []
 
         if side == "buy":
-            symbol_lots[sym].append({
-                "qty": qty,
-                "price": price,
-                "time": filled_et,
-            })
+            symbol_lots[sym].append({"qty": qty, "price": price, "time": filled_et})
         elif side == "sell":
             remaining = qty
             cost_basis_total = 0
@@ -598,8 +821,12 @@ def rebuild_today_state(trading_client, symbols):
     return today_trades, realized_trades
 
 
+# ══════════════════════════════════════════════
+# 生成 dashboard_data.json
+# ══════════════════════════════════════════════
 def generate_dashboard_data(trading_client, data_client, decisions_log,
-                             shadow_signals, market_info, equity_history):
+                             shadow_signals, market_info, equity_history,
+                             period_pnl=None):
     try:
         account = api_call_with_retry(trading_client.get_account)
         positions = api_call_with_retry(trading_client.get_all_positions)
@@ -693,6 +920,7 @@ def generate_dashboard_data(trading_client, data_client, decisions_log,
             },
             "market": market_info,
             "equity_history": equity_chart,
+            "period_pnl": period_pnl or {},
             "positions": position_list,
             "today_trades": today_trades,
             "realized_pnl": realized_trades,
@@ -713,6 +941,9 @@ def generate_dashboard_data(trading_client, data_client, decisions_log,
         return None
 
 
+# ══════════════════════════════════════════════
+# 主逻辑
+# ══════════════════════════════════════════════
 def main():
     print("=" * 60)
     print(f" ORB 单次运行 | {now_et().strftime('%Y-%m-%d %H:%M:%S ET')}")
@@ -762,6 +993,13 @@ def main():
         "eod_close": f"{EOD_CLOSE_HOUR}:{EOD_CLOSE_MIN:02d}",
     }
 
+    # 加载周期盈亏（带缓存）
+    try:
+        period_pnl = load_period_pnl(trading_client)
+    except Exception as e:
+        print(f" ⚠️周期盈亏加载失败: {e}")
+        period_pnl = {}
+
     try:
         positions = {p.symbol: p for p in api_call_with_retry(trading_client.get_all_positions)}
     except Exception as e:
@@ -797,8 +1035,9 @@ def main():
             with open(SHADOW_TRADES_FILE) as f:
                 shadow_signals = [json.loads(line) for line in f if line.strip()]
 
-        data = generate_dashboard_data(trading_client, data_client, [],
-                                        shadow_signals, market_info, equity_history)
+        generate_dashboard_data(trading_client, data_client, [],
+                                 shadow_signals, market_info, equity_history,
+                                 period_pnl)
         return
 
     for sym in SYMBOLS:
@@ -1083,7 +1322,8 @@ def main():
             shadow_signals = [json.loads(line) for line in f if line.strip()]
 
     generate_dashboard_data(trading_client, data_client, decisions_log,
-                             shadow_signals, market_info, equity_history)
+                             shadow_signals, market_info, equity_history,
+                             period_pnl)
 
     print("\n 本次运行完成")
 
