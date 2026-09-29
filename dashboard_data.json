@@ -1,6 +1,6 @@
 {
   "date": "2026-09-29",
-  "generated_at": "2026-09-29T11:05:27.611199-04:00",
+  "generated_at": "2026-09-29T11:10:29.791347-04:00",
   "account": {
     "cash": 100265.45,
     "equity": 100265.45,
@@ -788,6 +788,10 @@
       {
         "time": "11:05",
         "equity": 100267.07
+      },
+      {
+        "time": "11:10",
+        "equity": 100265.45
       }
     ]
   },
@@ -1027,7 +1031,7 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "突破量 1233 < 1.5×均量 6250",
+          "label": "突破量 582 < 1.5×均量 6250",
           "detail": ""
         }
       ],
@@ -1068,7 +1072,7 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "突破量 5602 < 1.5×均量 35846",
+          "label": "突破量 5103 < 1.5×均量 35846",
           "detail": ""
         }
       ],
@@ -1109,12 +1113,47 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "突破量 2492 < 1.5×均量 6187",
+          "label": "突破量 5050 < 1.5×均量 6187",
           "detail": ""
         }
       ],
       "action": "skip",
       "reason": "无突破信号"
+    },
+    {
+      "symbol": "AMD",
+      "range_high": 617.06,
+      "range_low": 607.97,
+      "range_width": 9.089999999999918,
+      "range_avg_vol": 1731.5,
+      "atr": 25.96750000000001,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间宽度 1.50% ≥ 0.20%",
+          "detail": "$607.97 – $617.06"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间 $9.09 ≤ 2×ATR $51.94",
+          "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "缺口过滤",
+          "detail": "数据不足，跳过"
+        }
+      ],
+      "action": "hold",
+      "reason": "持仓管理中"
     }
   ],
   "shadow_signals": [],
