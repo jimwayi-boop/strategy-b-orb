@@ -1,6 +1,6 @@
 {
   "date": "2026-09-29",
-  "generated_at": "2026-09-29T12:15:32.967923-04:00",
+  "generated_at": "2026-09-29T12:20:30.049623-04:00",
   "account": {
     "cash": 100265.45,
     "equity": 100265.45,
@@ -844,6 +844,10 @@
       {
         "time": "12:15",
         "equity": 100265.45
+      },
+      {
+        "time": "12:20",
+        "equity": 100265.45
       }
     ]
   },
@@ -1202,16 +1206,10 @@
           "icon": "✔",
           "label": "缺口过滤",
           "detail": "数据不足，跳过"
-        },
-        {
-          "passed": false,
-          "icon": "🚫",
-          "label": "无法获取最新价格",
-          "detail": ""
         }
       ],
-      "action": "skip",
-      "reason": "无最新价"
+      "action": "hold",
+      "reason": "持仓管理中"
     }
   ],
   "shadow_signals": [],
