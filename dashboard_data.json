@@ -1,10 +1,10 @@
 {
   "date": "2026-09-29",
-  "generated_at": "2026-09-29T10:50:38.391085-04:00",
+  "generated_at": "2026-09-29T11:00:41.658879-04:00",
   "account": {
-    "cash": 100479.29,
-    "equity": 100479.29,
-    "buying_power": 100479.29
+    "cash": 457.25,
+    "equity": 100420.16,
+    "buying_power": 457.25
   },
   "market": {
     "regime": "bullish",
@@ -780,6 +780,10 @@
       {
         "time": "10:50",
         "equity": 100479.29
+      },
+      {
+        "time": "11:00",
+        "equity": 100479.29
       }
     ]
   },
@@ -908,7 +912,21 @@
       }
     }
   },
-  "positions": [],
+  "positions": [
+    {
+      "symbol": "AMD",
+      "qty": 162,
+      "avg_entry": 617.42,
+      "current_price": 617.05,
+      "market_value": 99962.91,
+      "unrealized_pl": -59.13,
+      "unrealized_plpc": -0.06,
+      "stop_price": 615.28,
+      "distance_to_stop_pct": 0.29,
+      "holding_minutes": 9,
+      "side": "buy"
+    }
+  ],
   "today_trades": [
     {
       "time": "09:55:29",
@@ -929,6 +947,16 @@
       "amount": 100169.09,
       "order_type": "Trailing 止损",
       "client_order_id": "ORB_AMD_20260929_1790690128_TRAIL"
+    },
+    {
+      "time": "11:00:38",
+      "symbol": "AMD",
+      "side": "buy",
+      "qty": 162,
+      "price": 617.42,
+      "amount": 100022.04,
+      "order_type": "入场",
+      "client_order_id": "ORB_AMD_20260929_1790694032"
     }
   ],
   "realized_pnl": [
@@ -989,7 +1017,7 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "突破量 2614 < 1.5×均量 6250",
+          "label": "突破量 1361 < 1.5×均量 6250",
           "detail": ""
         }
       ],
@@ -1030,7 +1058,7 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "突破量 3552 < 1.5×均量 35846",
+          "label": "突破量 5959 < 1.5×均量 35846",
           "detail": ""
         }
       ],
@@ -1071,7 +1099,7 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "突破量 717 < 1.5×均量 6187",
+          "label": "突破量 948 < 1.5×均量 6187",
           "detail": ""
         }
       ],
@@ -1110,14 +1138,32 @@
           "detail": "数据不足，跳过"
         },
         {
-          "passed": false,
-          "icon": "🚫",
-          "label": "突破量 511 < 1.5×均量 2597",
+          "passed": true,
+          "icon": "✔",
+          "label": "突破量 3411 ≥ 1.5×均量 2597",
           "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "EMA200 对齐",
+          "detail": "数据不足，跳过"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "VIX 过滤",
+          "detail": "数据不足，跳过"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "突破区间高点 $617.06",
+          "detail": "入场 $617.80"
         }
       ],
-      "action": "skip",
-      "reason": "无突破信号"
+      "action": "entry",
+      "reason": "入场 buy 162 股 @ 617.80"
     }
   ],
   "shadow_signals": [],
