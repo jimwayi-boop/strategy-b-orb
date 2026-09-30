@@ -1,10 +1,10 @@
 {
-  "date": "2026-09-29",
-  "generated_at": "2026-09-29T23:55:25.301175-04:00",
+  "date": "2026-09-30",
+  "generated_at": "2026-09-30T09:30:48.408817-04:00",
   "account": {
-    "cash": 100265.45,
-    "equity": 100265.45,
-    "buying_power": 100265.45
+    "cash": 100261.25,
+    "equity": 100261.25,
+    "buying_power": 100261.25
   },
   "market": {
     "regime": "bullish",
@@ -1413,10 +1413,16 @@
         "time": "23:55",
         "equity": 100265.45
       }
+    ],
+    "2026-09-30": [
+      {
+        "time": "09:30",
+        "equity": 100261.25
+      }
     ]
   },
   "period_pnl": {
-    "last_updated": "2026-09-29",
+    "last_updated": "2026-09-30",
     "month": {
       "TSLA": {
         "pnl": 93.57,
@@ -1437,15 +1443,15 @@
         "win_rate": 100.0
       },
       "AMD": {
-        "pnl": -44.78,
-        "trades": 1,
-        "wins": 0,
-        "win_rate": 0.0
+        "pnl": -189.99,
+        "trades": 3,
+        "wins": 1,
+        "win_rate": 33.33
       },
       "__total__": {
-        "pnl": 410.66,
-        "trades": 4,
-        "wins": 2,
+        "pnl": 265.45,
+        "trades": 6,
+        "wins": 3,
         "win_rate": 50.0
       }
     },
@@ -1469,15 +1475,15 @@
         "win_rate": 100.0
       },
       "AMD": {
-        "pnl": -44.78,
-        "trades": 1,
-        "wins": 0,
-        "win_rate": 0.0
+        "pnl": -189.99,
+        "trades": 3,
+        "wins": 1,
+        "win_rate": 33.33
       },
       "__total__": {
-        "pnl": 410.66,
-        "trades": 4,
-        "wins": 2,
+        "pnl": 265.45,
+        "trades": 6,
+        "wins": 3,
         "win_rate": 50.0
       }
     },
@@ -1501,15 +1507,15 @@
         "win_rate": 100.0
       },
       "AMD": {
-        "pnl": -44.78,
-        "trades": 1,
-        "wins": 0,
-        "win_rate": 0.0
+        "pnl": -189.99,
+        "trades": 3,
+        "wins": 1,
+        "win_rate": 33.33
       },
       "__total__": {
-        "pnl": 410.66,
-        "trades": 4,
-        "wins": 2,
+        "pnl": 265.45,
+        "trades": 6,
+        "wins": 3,
         "win_rate": 50.0
       }
     },
@@ -1519,104 +1525,139 @@
           "2026-09"
         ],
         "data": [
-          410.66
+          265.45
         ]
       },
       "week": {
         "labels": [
-          "2026-W38"
+          "2026-W38",
+          "2026-W39"
         ],
         "data": [
-          410.66
+          410.66,
+          265.45
         ]
       },
       "day": {
         "labels": [
-          "2026-09-24"
+          "2026-09-24",
+          "2026-09-29"
         ],
         "data": [
-          410.66
+          410.66,
+          265.45
         ]
       }
     }
   },
   "positions": [],
-  "today_trades": [
-    {
-      "time": "09:55:29",
-      "symbol": "AMD",
-      "side": "buy",
-      "qty": 161,
-      "price": 621.74,
-      "amount": 100100.46,
-      "order_type": "入场",
-      "client_order_id": "ORB_AMD_20260929_1790690128"
-    },
-    {
-      "time": "09:57:25",
-      "symbol": "AMD",
-      "side": "sell",
-      "qty": 161,
-      "price": 622.17,
-      "amount": 100169.09,
-      "order_type": "Trailing 止损",
-      "client_order_id": "ORB_AMD_20260929_1790690128_TRAIL"
-    },
-    {
-      "time": "11:00:38",
-      "symbol": "AMD",
-      "side": "buy",
-      "qty": 162,
-      "price": 617.42,
-      "amount": 100022.04,
-      "order_type": "入场",
-      "client_order_id": "ORB_AMD_20260929_1790694032"
-    },
-    {
-      "time": "11:05:25",
-      "symbol": "AMD",
-      "side": "sell",
-      "qty": 162,
-      "price": 616.1,
-      "amount": 99808.2,
-      "order_type": "Trailing 止损",
-      "client_order_id": "ORB_AMD_20260929_1790694032_TRAIL"
-    }
-  ],
-  "realized_pnl": [
-    {
-      "symbol": "AMD",
-      "entry_price": 621.74,
-      "exit_price": 622.17,
-      "qty": 161,
-      "reason": "Trailing 止损",
-      "pnl": 68.63,
-      "pnl_pct": 0.07,
-      "holding_minutes": 1
-    },
-    {
-      "symbol": "AMD",
-      "entry_price": 617.42,
-      "exit_price": 616.1,
-      "qty": 162,
-      "reason": "Trailing 止损",
-      "pnl": -213.84,
-      "pnl_pct": -0.21,
-      "holding_minutes": 4
-    }
-  ],
+  "today_trades": [],
+  "realized_pnl": [],
   "stats": {
-    "total_trades": 2,
-    "win_count": 1,
-    "loss_count": 1,
-    "win_rate": 50.0,
-    "total_pnl": -145.21,
-    "avg_pnl": -72.61,
-    "max_win": 68.63,
-    "max_loss": -213.84,
-    "profit_factor": 0.32
+    "total_trades": 0,
+    "win_count": 0,
+    "loss_count": 0,
+    "win_rate": 0,
+    "total_pnl": 0,
+    "avg_pnl": 0,
+    "max_win": 0,
+    "max_loss": 0,
+    "profit_factor": null
   },
-  "decisions": [],
+  "decisions": [
+    {
+      "symbol": "TSLA",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
+    },
+    {
+      "symbol": "NVDA",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
+    },
+    {
+      "symbol": "META",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
+    },
+    {
+      "symbol": "AMD",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
+    }
+  ],
   "shadow_signals": [],
   "shadow_mode": false
 }
