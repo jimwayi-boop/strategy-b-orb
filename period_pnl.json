@@ -1,67 +1,67 @@
 {
-  "last_updated": "2026-09-30",
+  "last_updated": "2026-10-01",
   "month": {
     "TSLA": {
-      "pnl": 93.57,
-      "trades": 1,
-      "wins": 1,
-      "win_rate": 100.0
+      "pnl": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "win_rate": 0
     },
     "NVDA": {
-      "pnl": -719.52,
-      "trades": 1,
+      "pnl": 0.0,
+      "trades": 0,
       "wins": 0,
-      "win_rate": 0.0
+      "win_rate": 0
     },
     "META": {
-      "pnl": 1081.39,
-      "trades": 1,
-      "wins": 1,
-      "win_rate": 100.0
+      "pnl": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "win_rate": 0
     },
     "AMD": {
-      "pnl": -189.99,
-      "trades": 3,
-      "wins": 1,
-      "win_rate": 33.33
+      "pnl": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "win_rate": 0
     },
     "__total__": {
-      "pnl": 265.45,
-      "trades": 6,
-      "wins": 3,
-      "win_rate": 50.0
+      "pnl": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "win_rate": 0
     }
   },
   "quarter": {
     "TSLA": {
-      "pnl": 93.57,
-      "trades": 1,
-      "wins": 1,
-      "win_rate": 100.0
+      "pnl": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "win_rate": 0
     },
     "NVDA": {
-      "pnl": -719.52,
-      "trades": 1,
+      "pnl": 0.0,
+      "trades": 0,
       "wins": 0,
-      "win_rate": 0.0
+      "win_rate": 0
     },
     "META": {
-      "pnl": 1081.39,
-      "trades": 1,
-      "wins": 1,
-      "win_rate": 100.0
+      "pnl": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "win_rate": 0
     },
     "AMD": {
-      "pnl": -189.99,
-      "trades": 3,
-      "wins": 1,
-      "win_rate": 33.33
+      "pnl": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "win_rate": 0
     },
     "__total__": {
-      "pnl": 265.45,
-      "trades": 6,
-      "wins": 3,
-      "win_rate": 50.0
+      "pnl": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "win_rate": 0
     }
   },
   "year": {
