@@ -1,6 +1,6 @@
 {
-  "date": "2026-10-01",
-  "generated_at": "2026-10-01T23:55:24.335993-04:00",
+  "date": "2026-10-02",
+  "generated_at": "2026-10-02T09:30:30.517095-04:00",
   "account": {
     "cash": 100261.25,
     "equity": 100261.25,
@@ -2821,10 +2821,16 @@
         "time": "23:55",
         "equity": 100261.25
       }
+    ],
+    "2026-10-02": [
+      {
+        "time": "09:30",
+        "equity": 100261.25
+      }
     ]
   },
   "period_pnl": {
-    "last_updated": "2026-10-01",
+    "last_updated": "2026-10-02",
     "month": {
       "TSLA": {
         "pnl": 0.0,
@@ -2966,7 +2972,100 @@
     "max_loss": 0,
     "profit_factor": null
   },
-  "decisions": [],
+  "decisions": [
+    {
+      "symbol": "TSLA",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
+    },
+    {
+      "symbol": "NVDA",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
+    },
+    {
+      "symbol": "META",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
+    },
+    {
+      "symbol": "AMD",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
+    }
+  ],
   "shadow_signals": [],
   "shadow_mode": false
 }
