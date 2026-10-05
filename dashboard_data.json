@@ -1,10 +1,10 @@
 {
   "date": "2026-10-05",
-  "generated_at": "2026-10-05T10:20:26.269025-04:00",
+  "generated_at": "2026-10-05T10:25:29.602286-04:00",
   "account": {
-    "cash": 100261.25,
-    "equity": 100261.25,
-    "buying_power": 100261.25
+    "cash": 480.08,
+    "equity": 100255.14,
+    "buying_power": 480.08
   },
   "market": {
     "regime": "bullish",
@@ -2874,6 +2874,10 @@
       {
         "time": "10:20",
         "equity": 100261.25
+      },
+      {
+        "time": "10:25",
+        "equity": 100261.25
       }
     ]
   },
@@ -3006,8 +3010,33 @@
       }
     }
   },
-  "positions": [],
-  "today_trades": [],
+  "positions": [
+    {
+      "symbol": "META",
+      "qty": 134,
+      "avg_entry": 744.64,
+      "current_price": 744.59,
+      "market_value": 99775.06,
+      "unrealized_pl": -6.11,
+      "unrealized_plpc": -0.01,
+      "stop_price": 742.36,
+      "distance_to_stop_pct": 0.3,
+      "holding_minutes": -55,
+      "side": "buy"
+    }
+  ],
+  "today_trades": [
+    {
+      "time": "10:25:27",
+      "symbol": "META",
+      "side": "buy",
+      "qty": 134,
+      "price": 744.64,
+      "amount": 99781.17,
+      "order_type": "入场",
+      "client_order_id": "ORB_META_20261005_1791210323"
+    }
+  ],
   "realized_pnl": [],
   "stats": {
     "total_trades": 0,
@@ -3055,7 +3084,7 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "突破量 2827 < 1.5×均量 7070",
+          "label": "突破量 4570 < 1.5×均量 7070",
           "detail": ""
         }
       ],
@@ -3096,7 +3125,7 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "突破量 8925 < 1.5×均量 39296",
+          "label": "突破量 5179 < 1.5×均量 39296",
           "detail": ""
         }
       ],
@@ -3135,14 +3164,32 @@
           "detail": "数据不足，跳过"
         },
         {
-          "passed": false,
-          "icon": "🚫",
-          "label": "突破量 1127 < 1.5×均量 3426",
+          "passed": true,
+          "icon": "✔",
+          "label": "突破量 4208 ≥ 1.5×均量 3426",
           "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "EMA200 对齐",
+          "detail": "数据不足，跳过"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "VIX 过滤",
+          "detail": "数据不足，跳过"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "突破区间高点 $740.70",
+          "detail": "入场 $744.14"
         }
       ],
-      "action": "skip",
-      "reason": "无突破信号"
+      "action": "entry",
+      "reason": "入场 buy 134 股 @ 744.14"
     },
     {
       "symbol": "AMD",
@@ -3178,7 +3225,7 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "突破量 823 < 1.5×均量 3286",
+          "label": "突破量 850 < 1.5×均量 3286",
           "detail": ""
         }
       ],
