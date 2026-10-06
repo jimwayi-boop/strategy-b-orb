@@ -1,10 +1,10 @@
 {
-  "date": "2026-10-05",
-  "generated_at": "2026-10-05T23:55:21.782851-04:00",
+  "date": "2026-10-06",
+  "generated_at": "2026-10-06T09:30:30.076483-04:00",
   "account": {
-    "cash": 100085.6,
-    "equity": 100085.6,
-    "buying_power": 100085.6
+    "cash": 100083.53,
+    "equity": 100083.53,
+    "buying_power": 100083.53
   },
   "market": {
     "regime": "bullish",
@@ -14,708 +14,6 @@
     "eod_close": "15:43"
   },
   "equity_history": {
-    "2026-09-29": [
-      {
-        "time": "09:30",
-        "equity": 100410.66
-      },
-      {
-        "time": "09:35",
-        "equity": 100410.66
-      },
-      {
-        "time": "09:40",
-        "equity": 100410.66
-      },
-      {
-        "time": "09:45",
-        "equity": 100410.66
-      },
-      {
-        "time": "09:50",
-        "equity": 100410.66
-      },
-      {
-        "time": "09:55",
-        "equity": 100410.66
-      },
-      {
-        "time": "10:00",
-        "equity": 100479.29
-      },
-      {
-        "time": "10:05",
-        "equity": 100479.29
-      },
-      {
-        "time": "10:10",
-        "equity": 100479.29
-      },
-      {
-        "time": "10:15",
-        "equity": 100479.29
-      },
-      {
-        "time": "10:20",
-        "equity": 100479.29
-      },
-      {
-        "time": "10:25",
-        "equity": 100479.29
-      },
-      {
-        "time": "10:30",
-        "equity": 100479.29
-      },
-      {
-        "time": "10:35",
-        "equity": 100479.29
-      },
-      {
-        "time": "10:40",
-        "equity": 100479.29
-      },
-      {
-        "time": "10:45",
-        "equity": 100479.29
-      },
-      {
-        "time": "10:50",
-        "equity": 100479.29
-      },
-      {
-        "time": "11:00",
-        "equity": 100479.29
-      },
-      {
-        "time": "11:05",
-        "equity": 100267.07
-      },
-      {
-        "time": "11:10",
-        "equity": 100265.45
-      },
-      {
-        "time": "11:15",
-        "equity": 100265.45
-      },
-      {
-        "time": "11:20",
-        "equity": 100265.45
-      },
-      {
-        "time": "11:25",
-        "equity": 100265.45
-      },
-      {
-        "time": "11:30",
-        "equity": 100265.45
-      },
-      {
-        "time": "11:35",
-        "equity": 100265.45
-      },
-      {
-        "time": "11:40",
-        "equity": 100265.45
-      },
-      {
-        "time": "11:45",
-        "equity": 100265.45
-      },
-      {
-        "time": "11:50",
-        "equity": 100265.45
-      },
-      {
-        "time": "11:55",
-        "equity": 100265.45
-      },
-      {
-        "time": "12:00",
-        "equity": 100265.45
-      },
-      {
-        "time": "12:05",
-        "equity": 100265.45
-      },
-      {
-        "time": "12:10",
-        "equity": 100265.45
-      },
-      {
-        "time": "12:15",
-        "equity": 100265.45
-      },
-      {
-        "time": "12:20",
-        "equity": 100265.45
-      },
-      {
-        "time": "12:25",
-        "equity": 100265.45
-      },
-      {
-        "time": "12:30",
-        "equity": 100265.45
-      },
-      {
-        "time": "12:35",
-        "equity": 100265.45
-      },
-      {
-        "time": "12:40",
-        "equity": 100265.45
-      },
-      {
-        "time": "12:45",
-        "equity": 100265.45
-      },
-      {
-        "time": "12:50",
-        "equity": 100265.45
-      },
-      {
-        "time": "12:55",
-        "equity": 100265.45
-      },
-      {
-        "time": "13:00",
-        "equity": 100265.45
-      },
-      {
-        "time": "13:05",
-        "equity": 100265.45
-      },
-      {
-        "time": "13:10",
-        "equity": 100265.45
-      },
-      {
-        "time": "13:15",
-        "equity": 100265.45
-      },
-      {
-        "time": "13:20",
-        "equity": 100265.45
-      },
-      {
-        "time": "13:25",
-        "equity": 100265.45
-      },
-      {
-        "time": "13:30",
-        "equity": 100265.45
-      },
-      {
-        "time": "13:35",
-        "equity": 100265.45
-      },
-      {
-        "time": "13:40",
-        "equity": 100265.45
-      },
-      {
-        "time": "13:45",
-        "equity": 100265.45
-      },
-      {
-        "time": "13:50",
-        "equity": 100265.45
-      },
-      {
-        "time": "13:55",
-        "equity": 100265.45
-      },
-      {
-        "time": "14:00",
-        "equity": 100265.45
-      },
-      {
-        "time": "14:05",
-        "equity": 100265.45
-      },
-      {
-        "time": "14:10",
-        "equity": 100265.45
-      },
-      {
-        "time": "14:15",
-        "equity": 100265.45
-      },
-      {
-        "time": "14:20",
-        "equity": 100265.45
-      },
-      {
-        "time": "14:25",
-        "equity": 100265.45
-      },
-      {
-        "time": "14:30",
-        "equity": 100265.45
-      },
-      {
-        "time": "14:35",
-        "equity": 100265.45
-      },
-      {
-        "time": "14:40",
-        "equity": 100265.45
-      },
-      {
-        "time": "14:45",
-        "equity": 100265.45
-      },
-      {
-        "time": "14:50",
-        "equity": 100265.45
-      },
-      {
-        "time": "14:55",
-        "equity": 100265.45
-      },
-      {
-        "time": "15:00",
-        "equity": 100265.45
-      },
-      {
-        "time": "15:05",
-        "equity": 100265.45
-      },
-      {
-        "time": "15:10",
-        "equity": 100265.45
-      },
-      {
-        "time": "15:15",
-        "equity": 100265.45
-      },
-      {
-        "time": "15:20",
-        "equity": 100265.45
-      },
-      {
-        "time": "15:26",
-        "equity": 100265.45
-      },
-      {
-        "time": "15:30",
-        "equity": 100265.45
-      },
-      {
-        "time": "15:35",
-        "equity": 100265.45
-      },
-      {
-        "time": "15:40",
-        "equity": 100265.45
-      },
-      {
-        "time": "15:43",
-        "equity": 100265.45
-      },
-      {
-        "time": "15:44",
-        "equity": 100265.45
-      },
-      {
-        "time": "15:45",
-        "equity": 100265.45
-      },
-      {
-        "time": "15:50",
-        "equity": 100265.45
-      },
-      {
-        "time": "15:55",
-        "equity": 100265.45
-      },
-      {
-        "time": "16:00",
-        "equity": 100265.45
-      },
-      {
-        "time": "16:05",
-        "equity": 100265.45
-      },
-      {
-        "time": "16:10",
-        "equity": 100265.45
-      },
-      {
-        "time": "16:15",
-        "equity": 100265.45
-      },
-      {
-        "time": "16:20",
-        "equity": 100265.45
-      },
-      {
-        "time": "16:25",
-        "equity": 100265.45
-      },
-      {
-        "time": "16:30",
-        "equity": 100265.45
-      },
-      {
-        "time": "16:35",
-        "equity": 100265.45
-      },
-      {
-        "time": "16:40",
-        "equity": 100265.45
-      },
-      {
-        "time": "16:45",
-        "equity": 100265.45
-      },
-      {
-        "time": "16:50",
-        "equity": 100265.45
-      },
-      {
-        "time": "16:55",
-        "equity": 100265.45
-      },
-      {
-        "time": "17:00",
-        "equity": 100265.45
-      },
-      {
-        "time": "17:05",
-        "equity": 100265.45
-      },
-      {
-        "time": "17:10",
-        "equity": 100265.45
-      },
-      {
-        "time": "17:15",
-        "equity": 100265.45
-      },
-      {
-        "time": "17:20",
-        "equity": 100265.45
-      },
-      {
-        "time": "17:25",
-        "equity": 100265.45
-      },
-      {
-        "time": "17:30",
-        "equity": 100265.45
-      },
-      {
-        "time": "17:35",
-        "equity": 100265.45
-      },
-      {
-        "time": "17:40",
-        "equity": 100265.45
-      },
-      {
-        "time": "17:45",
-        "equity": 100265.45
-      },
-      {
-        "time": "17:50",
-        "equity": 100265.45
-      },
-      {
-        "time": "17:55",
-        "equity": 100265.45
-      },
-      {
-        "time": "18:00",
-        "equity": 100265.45
-      },
-      {
-        "time": "18:05",
-        "equity": 100265.45
-      },
-      {
-        "time": "18:10",
-        "equity": 100265.45
-      },
-      {
-        "time": "18:15",
-        "equity": 100265.45
-      },
-      {
-        "time": "18:20",
-        "equity": 100265.45
-      },
-      {
-        "time": "18:25",
-        "equity": 100265.45
-      },
-      {
-        "time": "18:30",
-        "equity": 100265.45
-      },
-      {
-        "time": "18:35",
-        "equity": 100265.45
-      },
-      {
-        "time": "18:40",
-        "equity": 100265.45
-      },
-      {
-        "time": "18:45",
-        "equity": 100265.45
-      },
-      {
-        "time": "18:50",
-        "equity": 100265.45
-      },
-      {
-        "time": "18:55",
-        "equity": 100265.45
-      },
-      {
-        "time": "19:00",
-        "equity": 100265.45
-      },
-      {
-        "time": "19:05",
-        "equity": 100265.45
-      },
-      {
-        "time": "19:10",
-        "equity": 100265.45
-      },
-      {
-        "time": "19:15",
-        "equity": 100265.45
-      },
-      {
-        "time": "19:20",
-        "equity": 100265.45
-      },
-      {
-        "time": "19:25",
-        "equity": 100265.45
-      },
-      {
-        "time": "19:30",
-        "equity": 100265.45
-      },
-      {
-        "time": "19:35",
-        "equity": 100265.45
-      },
-      {
-        "time": "19:40",
-        "equity": 100265.45
-      },
-      {
-        "time": "19:45",
-        "equity": 100265.45
-      },
-      {
-        "time": "19:50",
-        "equity": 100265.45
-      },
-      {
-        "time": "19:55",
-        "equity": 100265.45
-      },
-      {
-        "time": "20:00",
-        "equity": 100265.45
-      },
-      {
-        "time": "20:05",
-        "equity": 100265.45
-      },
-      {
-        "time": "20:10",
-        "equity": 100265.45
-      },
-      {
-        "time": "20:16",
-        "equity": 100265.45
-      },
-      {
-        "time": "20:20",
-        "equity": 100265.45
-      },
-      {
-        "time": "20:25",
-        "equity": 100265.45
-      },
-      {
-        "time": "20:30",
-        "equity": 100265.45
-      },
-      {
-        "time": "20:35",
-        "equity": 100265.45
-      },
-      {
-        "time": "20:40",
-        "equity": 100265.45
-      },
-      {
-        "time": "20:45",
-        "equity": 100265.45
-      },
-      {
-        "time": "20:50",
-        "equity": 100265.45
-      },
-      {
-        "time": "20:55",
-        "equity": 100265.45
-      },
-      {
-        "time": "21:01",
-        "equity": 100265.45
-      },
-      {
-        "time": "21:05",
-        "equity": 100265.45
-      },
-      {
-        "time": "21:10",
-        "equity": 100265.45
-      },
-      {
-        "time": "21:15",
-        "equity": 100265.45
-      },
-      {
-        "time": "21:20",
-        "equity": 100265.45
-      },
-      {
-        "time": "21:25",
-        "equity": 100265.45
-      },
-      {
-        "time": "21:30",
-        "equity": 100265.45
-      },
-      {
-        "time": "21:35",
-        "equity": 100265.45
-      },
-      {
-        "time": "21:40",
-        "equity": 100265.45
-      },
-      {
-        "time": "21:46",
-        "equity": 100265.45
-      },
-      {
-        "time": "21:50",
-        "equity": 100265.45
-      },
-      {
-        "time": "21:55",
-        "equity": 100265.45
-      },
-      {
-        "time": "22:00",
-        "equity": 100265.45
-      },
-      {
-        "time": "22:05",
-        "equity": 100265.45
-      },
-      {
-        "time": "22:10",
-        "equity": 100265.45
-      },
-      {
-        "time": "22:15",
-        "equity": 100265.45
-      },
-      {
-        "time": "22:20",
-        "equity": 100265.45
-      },
-      {
-        "time": "22:25",
-        "equity": 100265.45
-      },
-      {
-        "time": "22:30",
-        "equity": 100265.45
-      },
-      {
-        "time": "22:35",
-        "equity": 100265.45
-      },
-      {
-        "time": "22:40",
-        "equity": 100265.45
-      },
-      {
-        "time": "22:45",
-        "equity": 100265.45
-      },
-      {
-        "time": "22:50",
-        "equity": 100265.45
-      },
-      {
-        "time": "22:55",
-        "equity": 100265.45
-      },
-      {
-        "time": "23:00",
-        "equity": 100265.45
-      },
-      {
-        "time": "23:05",
-        "equity": 100265.45
-      },
-      {
-        "time": "23:10",
-        "equity": 100265.45
-      },
-      {
-        "time": "23:15",
-        "equity": 100265.45
-      },
-      {
-        "time": "23:20",
-        "equity": 100265.45
-      },
-      {
-        "time": "23:25",
-        "equity": 100265.45
-      },
-      {
-        "time": "23:30",
-        "equity": 100265.45
-      },
-      {
-        "time": "23:35",
-        "equity": 100265.45
-      },
-      {
-        "time": "23:40",
-        "equity": 100265.45
-      },
-      {
-        "time": "23:45",
-        "equity": 100265.45
-      },
-      {
-        "time": "23:50",
-        "equity": 100265.45
-      },
-      {
-        "time": "23:55",
-        "equity": 100265.45
-      }
-    ],
     "2026-09-30": [
       {
         "time": "09:30",
@@ -3367,10 +2665,16 @@
         "time": "23:55",
         "equity": 100085.6
       }
+    ],
+    "2026-10-06": [
+      {
+        "time": "09:30",
+        "equity": 100083.53
+      }
     ]
   },
   "period_pnl": {
-    "last_updated": "2026-10-05",
+    "last_updated": "2026-10-06",
     "month": {
       "TSLA": {
         "pnl": 0.0,
@@ -3385,10 +2689,10 @@
         "win_rate": 0
       },
       "META": {
-        "pnl": 0.0,
-        "trades": 0,
+        "pnl": -175.65,
+        "trades": 1,
         "wins": 0,
-        "win_rate": 0
+        "win_rate": 0.0
       },
       "AMD": {
         "pnl": 0.0,
@@ -3397,10 +2701,10 @@
         "win_rate": 0
       },
       "__total__": {
-        "pnl": 0.0,
-        "trades": 0,
+        "pnl": -175.65,
+        "trades": 1,
         "wins": 0,
-        "win_rate": 0
+        "win_rate": 0.0
       }
     },
     "quarter": {
@@ -3417,10 +2721,10 @@
         "win_rate": 0
       },
       "META": {
-        "pnl": 0.0,
-        "trades": 0,
+        "pnl": -175.65,
+        "trades": 1,
         "wins": 0,
-        "win_rate": 0
+        "win_rate": 0.0
       },
       "AMD": {
         "pnl": 0.0,
@@ -3429,10 +2733,10 @@
         "win_rate": 0
       },
       "__total__": {
-        "pnl": 0.0,
-        "trades": 0,
+        "pnl": -175.65,
+        "trades": 1,
         "wins": 0,
-        "win_rate": 0
+        "win_rate": 0.0
       }
     },
     "year": {
@@ -3449,10 +2753,10 @@
         "win_rate": 0.0
       },
       "META": {
-        "pnl": 1081.39,
-        "trades": 1,
+        "pnl": 905.74,
+        "trades": 2,
         "wins": 1,
-        "win_rate": 100.0
+        "win_rate": 50.0
       },
       "AMD": {
         "pnl": -189.99,
@@ -3461,90 +2765,157 @@
         "win_rate": 33.33
       },
       "__total__": {
-        "pnl": 265.45,
-        "trades": 6,
+        "pnl": 89.8,
+        "trades": 7,
         "wins": 3,
-        "win_rate": 50.0
+        "win_rate": 42.86
       }
     },
     "cumulative": {
       "month": {
         "labels": [
-          "2026-09"
+          "2026-09",
+          "2026-10"
         ],
         "data": [
-          265.45
+          265.45,
+          89.8
         ]
       },
       "week": {
         "labels": [
           "2026-W38",
-          "2026-W39"
+          "2026-W39",
+          "2026-W40"
         ],
         "data": [
           410.66,
-          265.45
+          265.45,
+          89.8
         ]
       },
       "day": {
         "labels": [
           "2026-09-24",
-          "2026-09-29"
+          "2026-09-29",
+          "2026-10-05"
         ],
         "data": [
           410.66,
-          265.45
+          265.45,
+          89.8
         ]
       }
     }
   },
   "positions": [],
-  "today_trades": [
+  "today_trades": [],
+  "realized_pnl": [],
+  "stats": {
+    "total_trades": 0,
+    "win_count": 0,
+    "loss_count": 0,
+    "win_rate": 0,
+    "total_pnl": 0,
+    "avg_pnl": 0,
+    "max_win": 0,
+    "max_loss": 0,
+    "profit_factor": null
+  },
+  "decisions": [
     {
-      "time": "10:25:27",
-      "symbol": "META",
-      "side": "buy",
-      "qty": 134,
-      "price": 744.64,
-      "amount": 99781.17,
-      "order_type": "入场",
-      "client_order_id": "ORB_META_20261005_1791210323"
+      "symbol": "TSLA",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
     },
     {
-      "time": "10:32:44",
-      "symbol": "META",
-      "side": "sell",
-      "qty": 134,
-      "price": 743.32,
-      "amount": 99605.52,
-      "order_type": "Trailing 止损",
-      "client_order_id": "ORB_META_20261005_1791210323_TRAIL"
-    }
-  ],
-  "realized_pnl": [
+      "symbol": "NVDA",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
+    },
     {
       "symbol": "META",
-      "entry_price": 744.64,
-      "exit_price": 743.32,
-      "qty": 134,
-      "reason": "Trailing 止损",
-      "pnl": -175.65,
-      "pnl_pct": -0.18,
-      "holding_minutes": 7
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
+    },
+    {
+      "symbol": "AMD",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
     }
   ],
-  "stats": {
-    "total_trades": 1,
-    "win_count": 0,
-    "loss_count": 1,
-    "win_rate": 0.0,
-    "total_pnl": -175.65,
-    "avg_pnl": -175.65,
-    "max_win": 0,
-    "max_loss": -175.65,
-    "profit_factor": 0.0
-  },
-  "decisions": [],
   "shadow_signals": [],
   "shadow_mode": false
 }

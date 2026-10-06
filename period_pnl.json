@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-05",
+  "last_updated": "2026-10-06",
   "month": {
     "TSLA": {
       "pnl": 0.0,
@@ -14,10 +14,10 @@
       "win_rate": 0
     },
     "META": {
-      "pnl": 0.0,
-      "trades": 0,
+      "pnl": -175.65,
+      "trades": 1,
       "wins": 0,
-      "win_rate": 0
+      "win_rate": 0.0
     },
     "AMD": {
       "pnl": 0.0,
@@ -26,10 +26,10 @@
       "win_rate": 0
     },
     "__total__": {
-      "pnl": 0.0,
-      "trades": 0,
+      "pnl": -175.65,
+      "trades": 1,
       "wins": 0,
-      "win_rate": 0
+      "win_rate": 0.0
     }
   },
   "quarter": {
@@ -46,10 +46,10 @@
       "win_rate": 0
     },
     "META": {
-      "pnl": 0.0,
-      "trades": 0,
+      "pnl": -175.65,
+      "trades": 1,
       "wins": 0,
-      "win_rate": 0
+      "win_rate": 0.0
     },
     "AMD": {
       "pnl": 0.0,
@@ -58,10 +58,10 @@
       "win_rate": 0
     },
     "__total__": {
-      "pnl": 0.0,
-      "trades": 0,
+      "pnl": -175.65,
+      "trades": 1,
       "wins": 0,
-      "win_rate": 0
+      "win_rate": 0.0
     }
   },
   "year": {
@@ -78,10 +78,10 @@
       "win_rate": 0.0
     },
     "META": {
-      "pnl": 1081.39,
-      "trades": 1,
+      "pnl": 905.74,
+      "trades": 2,
       "wins": 1,
-      "win_rate": 100.0
+      "win_rate": 50.0
     },
     "AMD": {
       "pnl": -189.99,
@@ -90,39 +90,45 @@
       "win_rate": 33.33
     },
     "__total__": {
-      "pnl": 265.45,
-      "trades": 6,
+      "pnl": 89.8,
+      "trades": 7,
       "wins": 3,
-      "win_rate": 50.0
+      "win_rate": 42.86
     }
   },
   "cumulative": {
     "month": {
       "labels": [
-        "2026-09"
+        "2026-09",
+        "2026-10"
       ],
       "data": [
-        265.45
+        265.45,
+        89.8
       ]
     },
     "week": {
       "labels": [
         "2026-W38",
-        "2026-W39"
+        "2026-W39",
+        "2026-W40"
       ],
       "data": [
         410.66,
-        265.45
+        265.45,
+        89.8
       ]
     },
     "day": {
       "labels": [
         "2026-09-24",
-        "2026-09-29"
+        "2026-09-29",
+        "2026-10-05"
       ],
       "data": [
         410.66,
-        265.45
+        265.45,
+        89.8
       ]
     }
   }
