@@ -1,6 +1,6 @@
 {
   "date": "2026-10-15",
-  "generated_at": "2026-10-15T14:10:25.833220-04:00",
+  "generated_at": "2026-10-15T14:15:34.190985-04:00",
   "account": {
     "cash": 100083.53,
     "equity": 100083.53,
@@ -3010,6 +3010,10 @@
       {
         "time": "14:10",
         "equity": 100083.53
+      },
+      {
+        "time": "14:15",
+        "equity": 100083.53
       }
     ]
   },
@@ -3197,12 +3201,12 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "无法获取最新价格",
+          "label": "已过交易截止时间 11:30",
           "detail": ""
         }
       ],
       "action": "skip",
-      "reason": "无最新价"
+      "reason": "无突破信号"
     },
     {
       "symbol": "NVDA",
@@ -3238,12 +3242,12 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "无法获取最新价格",
+          "label": "已过交易截止时间 11:30",
           "detail": ""
         }
       ],
       "action": "skip",
-      "reason": "无最新价"
+      "reason": "无突破信号"
     },
     {
       "symbol": "META",
@@ -3279,12 +3283,12 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "无法获取最新价格",
+          "label": "已过交易截止时间 11:30",
           "detail": ""
         }
       ],
       "action": "skip",
-      "reason": "无最新价"
+      "reason": "无突破信号"
     },
     {
       "symbol": "AMD",
@@ -3320,12 +3324,12 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "无法获取最新价格",
+          "label": "已过交易截止时间 11:30",
           "detail": ""
         }
       ],
       "action": "skip",
-      "reason": "无最新价"
+      "reason": "无突破信号"
     }
   ],
   "shadow_signals": [],
