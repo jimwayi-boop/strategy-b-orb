@@ -1,6 +1,6 @@
 {
   "date": "2026-10-19",
-  "generated_at": "2026-10-19T09:45:23.211036-04:00",
+  "generated_at": "2026-10-19T09:50:27.289783-04:00",
   "account": {
     "cash": 100083.53,
     "equity": 100083.53,
@@ -2830,6 +2830,10 @@
       {
         "time": "09:45",
         "equity": 100083.53
+      },
+      {
+        "time": "09:50",
+        "equity": 100083.53
       }
     ]
   },
@@ -2985,11 +2989,11 @@
   "decisions": [
     {
       "symbol": "TSLA",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
-      "atr": null,
+      "range_high": 362.13,
+      "range_low": 354.76,
+      "range_width": 7.3700000000000045,
+      "range_avg_vol": 6191.5,
+      "atr": 10.761428571428562,
       "gap_pct": null,
       "ema": null,
       "ema_slope": null,
@@ -2997,22 +3001,40 @@
       "market_regime": "bullish",
       "steps": [
         {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间宽度 2.08% ≥ 0.20%",
+          "detail": "$354.76 – $362.13"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间 $7.37 ≤ 2×ATR $21.52",
+          "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "缺口过滤",
+          "detail": "数据不足，跳过"
+        },
+        {
           "passed": false,
           "icon": "🚫",
-          "label": "开盘区间未完成",
+          "label": "突破量 6959 < 1.5×均量 9287",
           "detail": ""
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "无突破信号"
     },
     {
       "symbol": "NVDA",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
-      "atr": null,
+      "range_high": 218.025,
+      "range_low": 214.71,
+      "range_width": 3.3149999999999977,
+      "range_avg_vol": 22686.0625,
+      "atr": 5.719285714285712,
       "gap_pct": null,
       "ema": null,
       "ema_slope": null,
@@ -3020,22 +3042,40 @@
       "market_regime": "bullish",
       "steps": [
         {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间宽度 1.54% ≥ 0.20%",
+          "detail": "$214.71 – $218.03"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间 $3.31 ≤ 2×ATR $11.44",
+          "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "缺口过滤",
+          "detail": "数据不足，跳过"
+        },
+        {
           "passed": false,
           "icon": "🚫",
-          "label": "开盘区间未完成",
+          "label": "突破量 11028 < 1.5×均量 34029",
           "detail": ""
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "无突破信号"
     },
     {
       "symbol": "META",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
-      "atr": null,
+      "range_high": 708.435,
+      "range_low": 698.62,
+      "range_width": 9.81499999999994,
+      "range_avg_vol": 5782.625,
+      "atr": 21.944999999999975,
       "gap_pct": null,
       "ema": null,
       "ema_slope": null,
@@ -3043,22 +3083,40 @@
       "market_regime": "bullish",
       "steps": [
         {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间宽度 1.40% ≥ 0.20%",
+          "detail": "$698.62 – $708.43"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间 $9.81 ≤ 2×ATR $43.89",
+          "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "缺口过滤",
+          "detail": "数据不足，跳过"
+        },
+        {
           "passed": false,
           "icon": "🚫",
-          "label": "开盘区间未完成",
+          "label": "突破量 1779 < 1.5×均量 8674",
           "detail": ""
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "无突破信号"
     },
     {
       "symbol": "AMD",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
-      "atr": null,
+      "range_high": 553.335,
+      "range_low": 545.7,
+      "range_width": 7.634999999999991,
+      "range_avg_vol": 6740.1875,
+      "atr": 25.937142857142867,
       "gap_pct": null,
       "ema": null,
       "ema_slope": null,
@@ -3066,14 +3124,32 @@
       "market_regime": "bullish",
       "steps": [
         {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间宽度 1.40% ≥ 0.20%",
+          "detail": "$545.70 – $553.34"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间 $7.63 ≤ 2×ATR $51.87",
+          "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "缺口过滤",
+          "detail": "数据不足，跳过"
+        },
+        {
           "passed": false,
           "icon": "🚫",
-          "label": "开盘区间未完成",
+          "label": "突破量 2811 < 1.5×均量 10110",
           "detail": ""
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "无突破信号"
     }
   ],
   "shadow_signals": [],
