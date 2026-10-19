@@ -1,10 +1,10 @@
 {
   "date": "2026-10-19",
-  "generated_at": "2026-10-19T10:30:34.223534-04:00",
+  "generated_at": "2026-10-19T10:35:27.311044-04:00",
   "account": {
-    "cash": 110.73,
-    "equity": 99835.65,
-    "buying_power": 110.73
+    "cash": 99767.47,
+    "equity": 99767.47,
+    "buying_power": 99767.47
   },
   "market": {
     "regime": "bullish",
@@ -2866,6 +2866,10 @@
       {
         "time": "10:30",
         "equity": 99858.55
+      },
+      {
+        "time": "10:35",
+        "equity": 99767.47
       }
     ]
   },
@@ -3004,21 +3008,7 @@
       }
     }
   },
-  "positions": [
-    {
-      "symbol": "NVDA",
-      "qty": 458,
-      "avg_entry": 218.28,
-      "current_price": 217.74,
-      "market_value": 99724.92,
-      "unrealized_pl": -247.88,
-      "unrealized_plpc": -0.25,
-      "stop_price": 217.63,
-      "distance_to_stop_pct": 0.05,
-      "holding_minutes": -50,
-      "side": "buy"
-    }
-  ],
+  "positions": [],
   "today_trades": [
     {
       "time": "10:25:29",
@@ -3029,19 +3019,40 @@
       "amount": 99972.8,
       "order_type": "入场",
       "client_order_id": "ORB_NVDA_20261019_1792419927"
+    },
+    {
+      "time": "10:30:53",
+      "symbol": "NVDA",
+      "side": "sell",
+      "qty": 458,
+      "price": 217.59,
+      "amount": 99656.74,
+      "order_type": "Trailing 止损",
+      "client_order_id": "ORB_NVDA_20261019_1792419927_TRAIL"
     }
   ],
-  "realized_pnl": [],
+  "realized_pnl": [
+    {
+      "symbol": "NVDA",
+      "entry_price": 218.28,
+      "exit_price": 217.59,
+      "qty": 458,
+      "reason": "Trailing 止损",
+      "pnl": -316.06,
+      "pnl_pct": -0.32,
+      "holding_minutes": 5
+    }
+  ],
   "stats": {
-    "total_trades": 0,
+    "total_trades": 1,
     "win_count": 0,
-    "loss_count": 0,
-    "win_rate": 0,
-    "total_pnl": 0,
-    "avg_pnl": 0,
+    "loss_count": 1,
+    "win_rate": 0.0,
+    "total_pnl": -316.06,
+    "avg_pnl": -316.06,
     "max_win": 0,
-    "max_loss": 0,
-    "profit_factor": null
+    "max_loss": -316.06,
+    "profit_factor": 0.0
   },
   "decisions": [
     {
@@ -3078,7 +3089,48 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "突破量 1449 < 1.5×均量 9287",
+          "label": "突破量 1290 < 1.5×均量 9287",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "无突破信号"
+    },
+    {
+      "symbol": "NVDA",
+      "range_high": 218.025,
+      "range_low": 214.71,
+      "range_width": 3.3149999999999977,
+      "range_avg_vol": 22686.0625,
+      "atr": 5.719285714285712,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间宽度 1.54% ≥ 0.20%",
+          "detail": "$214.71 – $218.03"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间 $3.31 ≤ 2×ATR $11.44",
+          "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "缺口过滤",
+          "detail": "数据不足，跳过"
+        },
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "突破量 22192 < 1.5×均量 34029",
           "detail": ""
         }
       ],
@@ -3119,7 +3171,7 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "突破量 2805 < 1.5×均量 8674",
+          "label": "突破量 1259 < 1.5×均量 8674",
           "detail": ""
         }
       ],
@@ -3160,7 +3212,7 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "突破量 2028 < 1.5×均量 10110",
+          "label": "突破量 686 < 1.5×均量 10110",
           "detail": ""
         }
       ],
