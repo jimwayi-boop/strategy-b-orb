@@ -1,9 +1,9 @@
 {
   "date": "2026-10-19",
-  "generated_at": "2026-10-19T10:25:34.248624-04:00",
+  "generated_at": "2026-10-19T10:30:34.223534-04:00",
   "account": {
     "cash": 110.73,
-    "equity": 100064.65,
+    "equity": 99835.65,
     "buying_power": 110.73
   },
   "market": {
@@ -2862,6 +2862,10 @@
       {
         "time": "10:25",
         "equity": 100083.53
+      },
+      {
+        "time": "10:30",
+        "equity": 99858.55
       }
     ]
   },
@@ -3005,13 +3009,13 @@
       "symbol": "NVDA",
       "qty": 458,
       "avg_entry": 218.28,
-      "current_price": 218.23,
-      "market_value": 99950.76,
-      "unrealized_pl": -22.04,
-      "unrealized_plpc": -0.02,
+      "current_price": 217.74,
+      "market_value": 99724.92,
+      "unrealized_pl": -247.88,
+      "unrealized_plpc": -0.25,
       "stop_price": 217.63,
-      "distance_to_stop_pct": 0.28,
-      "holding_minutes": -55,
+      "distance_to_stop_pct": 0.05,
+      "holding_minutes": -50,
       "side": "buy"
     }
   ],
@@ -3074,71 +3078,12 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "突破量 1274 < 1.5×均量 9287",
+          "label": "突破量 1449 < 1.5×均量 9287",
           "detail": ""
         }
       ],
       "action": "skip",
       "reason": "无突破信号"
-    },
-    {
-      "symbol": "NVDA",
-      "range_high": 218.025,
-      "range_low": 214.71,
-      "range_width": 3.3149999999999977,
-      "range_avg_vol": 22686.0625,
-      "atr": 5.719285714285712,
-      "gap_pct": null,
-      "ema": null,
-      "ema_slope": null,
-      "vix": null,
-      "market_regime": "bullish",
-      "steps": [
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "区间宽度 1.54% ≥ 0.20%",
-          "detail": "$214.71 – $218.03"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "区间 $3.31 ≤ 2×ATR $11.44",
-          "detail": ""
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "缺口过滤",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破量 46390 ≥ 1.5×均量 34029",
-          "detail": ""
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "EMA200 对齐",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "VIX 过滤",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破区间高点 $218.03",
-          "detail": "入场 $218.26"
-        }
-      ],
-      "action": "entry",
-      "reason": "入场 buy 458 股 @ 218.26"
     },
     {
       "symbol": "META",
@@ -3174,7 +3119,7 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "突破量 1261 < 1.5×均量 8674",
+          "label": "突破量 2805 < 1.5×均量 8674",
           "detail": ""
         }
       ],
@@ -3215,7 +3160,7 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "突破量 4383 < 1.5×均量 10110",
+          "label": "突破量 2028 < 1.5×均量 10110",
           "detail": ""
         }
       ],
