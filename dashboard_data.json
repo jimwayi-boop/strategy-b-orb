@@ -1,10 +1,10 @@
 {
   "date": "2026-10-26",
-  "generated_at": "2026-10-26T11:05:32.016035-04:00",
+  "generated_at": "2026-10-26T11:10:28.362361-04:00",
   "account": {
-    "cash": 337.84,
-    "equity": 99768.86,
-    "buying_power": 337.84
+    "cash": 99561.66,
+    "equity": 99561.66,
+    "buying_power": 99561.66
   },
   "market": {
     "regime": "bullish",
@@ -2890,6 +2890,10 @@
       {
         "time": "11:05",
         "equity": 99765.4
+      },
+      {
+        "time": "11:10",
+        "equity": 99561.66
       }
     ]
   },
@@ -3032,21 +3036,7 @@
       }
     }
   },
-  "positions": [
-    {
-      "symbol": "AMD",
-      "qty": 188,
-      "avg_entry": 528.87,
-      "current_price": 528.89,
-      "market_value": 99431.02,
-      "unrealized_pl": 3.46,
-      "unrealized_plpc": 0.0,
-      "stop_price": 527.06,
-      "distance_to_stop_pct": 0.34,
-      "holding_minutes": -55,
-      "side": "buy"
-    }
-  ],
+  "positions": [],
   "today_trades": [
     {
       "time": "11:05:28",
@@ -3057,19 +3047,40 @@
       "amount": 99427.56,
       "order_type": "入场",
       "client_order_id": "ORB_AMD_20261026_1793027127"
+    },
+    {
+      "time": "11:06:15",
+      "symbol": "AMD",
+      "side": "sell",
+      "qty": 188,
+      "price": 527.79,
+      "amount": 99223.82,
+      "order_type": "Trailing 止损",
+      "client_order_id": "ORB_AMD_20261026_1793027127_TRAIL"
     }
   ],
-  "realized_pnl": [],
+  "realized_pnl": [
+    {
+      "symbol": "AMD",
+      "entry_price": 528.87,
+      "exit_price": 527.79,
+      "qty": 188,
+      "reason": "Trailing 止损",
+      "pnl": -203.74,
+      "pnl_pct": -0.2,
+      "holding_minutes": 0
+    }
+  ],
   "stats": {
-    "total_trades": 0,
+    "total_trades": 1,
     "win_count": 0,
-    "loss_count": 0,
-    "win_rate": 0,
-    "total_pnl": 0,
-    "avg_pnl": 0,
+    "loss_count": 1,
+    "win_rate": 0.0,
+    "total_pnl": -203.74,
+    "avg_pnl": -203.74,
     "max_win": 0,
-    "max_loss": 0,
-    "profit_factor": null
+    "max_loss": -203.74,
+    "profit_factor": 0.0
   },
   "decisions": [
     {
@@ -3106,7 +3117,7 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "突破量 2290 < 1.5×均量 16815",
+          "label": "突破量 1564 < 1.5×均量 16815",
           "detail": ""
         }
       ],
@@ -3147,7 +3158,7 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "突破量 7455 < 1.5×均量 28389",
+          "label": "突破量 15964 < 1.5×均量 28389",
           "detail": ""
         }
       ],
@@ -3188,7 +3199,7 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "突破量 2784 < 1.5×均量 7286",
+          "label": "突破量 350 < 1.5×均量 7286",
           "detail": ""
         }
       ],
@@ -3227,32 +3238,14 @@
           "detail": "数据不足，跳过"
         },
         {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破量 3130 ≥ 1.5×均量 2402",
-          "detail": ""
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "EMA200 对齐",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "VIX 过滤",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破区间高点 $526.60",
-          "detail": "入场 $528.60"
+          "passed": false,
+          "icon": "⚠",
+          "label": "冷却中",
+          "detail": "等待冷却结束"
         }
       ],
-      "action": "entry",
-      "reason": "入场 buy 188 股 @ 528.60"
+      "action": "skip",
+      "reason": "无突破信号"
     }
   ],
   "shadow_signals": [],
