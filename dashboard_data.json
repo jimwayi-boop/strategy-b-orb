@@ -1,10 +1,10 @@
 {
   "date": "2026-11-02",
-  "generated_at": "2026-11-02T10:30:50.587602-05:00",
+  "generated_at": "2026-11-02T11:30:44.686428-05:00",
   "account": {
-    "cash": 390.77,
-    "equity": 100070.59,
-    "buying_power": 390.77
+    "cash": 99823.18,
+    "equity": 99823.18,
+    "buying_power": 129.99
   },
   "market": {
     "regime": "bullish",
@@ -2870,6 +2870,10 @@
       {
         "time": "10:30",
         "equity": 100158.84
+      },
+      {
+        "time": "11:30",
+        "equity": 99823.18
       }
     ]
   },
@@ -3016,21 +3020,7 @@
       }
     }
   },
-  "positions": [
-    {
-      "symbol": "TSLA",
-      "qty": 243,
-      "avg_entry": 410.57,
-      "current_price": 410.17,
-      "market_value": 99670.95,
-      "unrealized_pl": -97.12,
-      "unrealized_plpc": -0.1,
-      "stop_price": 409.24,
-      "distance_to_stop_pct": 0.23,
-      "holding_minutes": 4,
-      "side": "buy"
-    }
-  ],
+  "positions": [],
   "today_trades": [
     {
       "time": "10:05:41",
@@ -3061,6 +3051,16 @@
       "amount": 99768.07,
       "order_type": "入场",
       "client_order_id": "ORB_TSLA_20261102_1793633439"
+    },
+    {
+      "time": "10:34:55",
+      "symbol": "TSLA",
+      "side": "sell",
+      "qty": 243,
+      "price": 409.19,
+      "amount": 99432.41,
+      "order_type": "Trailing 止损",
+      "client_order_id": "ORB_TSLA_20261102_1793633439_TRAIL"
     }
   ],
   "realized_pnl": [
@@ -3073,18 +3073,28 @@
       "pnl": 599.24,
       "pnl_pct": 0.6,
       "holding_minutes": 20
+    },
+    {
+      "symbol": "TSLA",
+      "entry_price": 410.57,
+      "exit_price": 409.19,
+      "qty": 243,
+      "reason": "Trailing 止损",
+      "pnl": -335.66,
+      "pnl_pct": -0.34,
+      "holding_minutes": 4
     }
   ],
   "stats": {
-    "total_trades": 1,
+    "total_trades": 2,
     "win_count": 1,
-    "loss_count": 0,
-    "win_rate": 100.0,
-    "total_pnl": 599.24,
-    "avg_pnl": 599.24,
+    "loss_count": 1,
+    "win_rate": 50.0,
+    "total_pnl": 263.58,
+    "avg_pnl": 131.79,
     "max_win": 599.24,
-    "max_loss": 0,
-    "profit_factor": null
+    "max_loss": -335.66,
+    "profit_factor": 1.79
   },
   "decisions": [
     {
@@ -3119,32 +3129,14 @@
           "detail": "数据不足，跳过"
         },
         {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破量 3400 ≥ 1.5×均量 100",
+          "passed": false,
+          "icon": "🚫",
+          "label": "已过交易截止时间 11:30",
           "detail": ""
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "EMA200 对齐",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "VIX 过滤",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破区间高点 $405.90",
-          "detail": "入场 $410.83"
         }
       ],
-      "action": "entry",
-      "reason": "入场 buy 243 股 @ 410.83"
+      "action": "skip",
+      "reason": "无突破信号"
     },
     {
       "symbol": "NVDA",
@@ -3179,9 +3171,9 @@
         },
         {
           "passed": false,
-          "icon": "⚠",
-          "label": "冷却中",
-          "detail": "等待冷却结束"
+          "icon": "🚫",
+          "label": "已过交易截止时间 11:30",
+          "detail": ""
         }
       ],
       "action": "skip",
