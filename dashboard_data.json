@@ -1,10 +1,10 @@
 {
   "date": "2026-11-02",
-  "generated_at": "2026-11-02T11:40:41.472452-05:00",
+  "generated_at": "2026-11-02T11:45:33.241778-05:00",
   "account": {
-    "cash": 99823.18,
-    "equity": 99823.18,
-    "buying_power": 129.99
+    "cash": 135.28,
+    "equity": 99935.4,
+    "buying_power": 135.28
   },
   "market": {
     "regime": "bullish",
@@ -2882,6 +2882,10 @@
       {
         "time": "11:40",
         "equity": 99823.18
+      },
+      {
+        "time": "11:45",
+        "equity": 99957.25
       }
     ]
   },
@@ -3028,7 +3032,21 @@
       }
     }
   },
-  "positions": [],
+  "positions": [
+    {
+      "symbol": "TSLA",
+      "qty": 243,
+      "avg_entry": 410.24,
+      "current_price": 410.7,
+      "market_value": 99800.12,
+      "unrealized_pl": 112.22,
+      "unrealized_plpc": 0.11,
+      "stop_price": null,
+      "distance_to_stop_pct": null,
+      "holding_minutes": 78,
+      "side": "buy"
+    }
+  ],
   "today_trades": [
     {
       "time": "10:05:41",
@@ -3069,6 +3087,16 @@
       "amount": 99432.41,
       "order_type": "Trailing 止损",
       "client_order_id": "ORB_TSLA_20261102_1793633439_TRAIL"
+    },
+    {
+      "time": "11:43:41",
+      "symbol": "TSLA",
+      "side": "buy",
+      "qty": 243,
+      "price": 410.24,
+      "amount": 99687.9,
+      "order_type": "入场",
+      "client_order_id": "ORB_TSLA_20261102_1793634027"
     }
   ],
   "realized_pnl": [
@@ -3105,47 +3133,6 @@
     "profit_factor": 1.79
   },
   "decisions": [
-    {
-      "symbol": "TSLA",
-      "range_high": 405.9,
-      "range_low": 403.18,
-      "range_width": 2.7199999999999704,
-      "range_avg_vol": 66.66666666666667,
-      "atr": 14.270714285714282,
-      "gap_pct": null,
-      "ema": null,
-      "ema_slope": null,
-      "vix": null,
-      "market_regime": "bullish",
-      "steps": [
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "区间宽度 0.67% ≥ 0.20%",
-          "detail": "$403.18 – $405.90"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "区间 $2.72 ≤ 2×ATR $28.54",
-          "detail": ""
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "缺口过滤",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": false,
-          "icon": "🚫",
-          "label": "已过交易截止时间 11:30",
-          "detail": ""
-        }
-      ],
-      "action": "skip",
-      "reason": "无突破信号"
-    },
     {
       "symbol": "NVDA",
       "range_high": 207.25,
