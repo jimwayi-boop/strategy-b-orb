@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-30",
+  "last_updated": "2026-11-02",
   "month": {
     "TSLA": {
       "pnl": 0.0,
@@ -8,28 +8,28 @@
       "win_rate": 0
     },
     "NVDA": {
-      "pnl": -316.06,
-      "trades": 1,
+      "pnl": 0.0,
+      "trades": 0,
       "wins": 0,
-      "win_rate": 0.0
+      "win_rate": 0
     },
     "META": {
-      "pnl": -175.65,
-      "trades": 1,
+      "pnl": 0.0,
+      "trades": 0,
       "wins": 0,
-      "win_rate": 0.0
+      "win_rate": 0
     },
     "AMD": {
-      "pnl": -203.74,
-      "trades": 1,
+      "pnl": 0.0,
+      "trades": 0,
       "wins": 0,
-      "win_rate": 0.0
+      "win_rate": 0
     },
     "__total__": {
-      "pnl": -695.45,
-      "trades": 3,
+      "pnl": 0.0,
+      "trades": 0,
       "wins": 0,
-      "win_rate": 0.0
+      "win_rate": 0
     }
   },
   "quarter": {
