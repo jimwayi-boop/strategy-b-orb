@@ -1,9 +1,9 @@
 {
   "date": "2026-11-02",
-  "generated_at": "2026-11-02T10:20:38.017019-05:00",
+  "generated_at": "2026-11-02T10:25:32.047288-05:00",
   "account": {
     "cash": 93.04,
-    "equity": 99930.51,
+    "equity": 100250.77,
     "buying_power": 93.04
   },
   "market": {
@@ -2862,6 +2862,10 @@
       {
         "time": "10:20",
         "equity": 99911.39
+      },
+      {
+        "time": "10:25",
+        "equity": 100296.18
       }
     ]
   },
@@ -3013,13 +3017,13 @@
       "symbol": "NVDA",
       "qty": 478,
       "avg_entry": 208.09,
-      "current_price": 208.87,
-      "market_value": 99837.47,
-      "unrealized_pl": 370.91,
-      "unrealized_plpc": 0.37,
-      "stop_price": 208.51,
-      "distance_to_stop_pct": 0.17,
-      "holding_minutes": 18,
+      "current_price": 209.53,
+      "market_value": 100157.73,
+      "unrealized_pl": 691.17,
+      "unrealized_plpc": 0.69,
+      "stop_price": 209.33,
+      "distance_to_stop_pct": 0.1,
+      "holding_minutes": 23,
       "side": "buy"
     }
   ],
@@ -3082,7 +3086,7 @@
         {
           "passed": true,
           "icon": "✔",
-          "label": "突破量 2098 ≥ 1.5×均量 100",
+          "label": "突破量 1679 ≥ 1.5×均量 100",
           "detail": ""
         },
         {
@@ -3101,7 +3105,7 @@
           "passed": true,
           "icon": "✔",
           "label": "突破区间高点 $405.90",
-          "detail": "入场 $408.20"
+          "detail": "入场 $409.05"
         }
       ],
       "action": "skip",
