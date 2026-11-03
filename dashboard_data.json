@@ -1,9 +1,9 @@
 {
   "date": "2026-11-03",
-  "generated_at": "2026-11-03T15:40:34.415549-05:00",
+  "generated_at": "2026-11-03T15:43:30.630582-05:00",
   "account": {
     "cash": 131.16,
-    "equity": 96653.19,
+    "equity": 96509.82,
     "buying_power": 131.16
   },
   "market": {
@@ -3074,6 +3074,10 @@
       {
         "time": "15:40",
         "equity": 96655.62
+      },
+      {
+        "time": "15:43",
+        "equity": 96517.18
       }
     ]
   },
@@ -3231,10 +3235,10 @@
       "symbol": "TSLA",
       "qty": 243,
       "avg_entry": 410.24,
-      "current_price": 397.21,
-      "market_value": 96522.03,
-      "unrealized_pl": -3165.87,
-      "unrealized_plpc": -3.18,
+      "current_price": 396.62,
+      "market_value": 96378.66,
+      "unrealized_pl": -3309.24,
+      "unrealized_plpc": -3.32,
       "stop_price": null,
       "distance_to_stop_pct": null,
       "holding_minutes": 0,
@@ -3254,100 +3258,7 @@
     "max_loss": 0,
     "profit_factor": null
   },
-  "decisions": [
-    {
-      "symbol": "TSLA",
-      "range_high": 406.62,
-      "range_low": 406.6,
-      "range_width": 0.01999999999998181,
-      "range_avg_vol": 0,
-      "atr": null,
-      "gap_pct": null,
-      "ema": null,
-      "ema_slope": null,
-      "vix": null,
-      "market_regime": "bullish",
-      "steps": [
-        {
-          "passed": false,
-          "icon": "⚠",
-          "label": "区间宽度 0.00% < 0.20%",
-          "detail": "过窄"
-        }
-      ],
-      "action": "skip",
-      "reason": "区间过滤未通过"
-    },
-    {
-      "symbol": "NVDA",
-      "range_high": 207.67,
-      "range_low": 207.6,
-      "range_width": 0.06999999999999318,
-      "range_avg_vol": 0,
-      "atr": null,
-      "gap_pct": null,
-      "ema": null,
-      "ema_slope": null,
-      "vix": null,
-      "market_regime": "bullish",
-      "steps": [
-        {
-          "passed": false,
-          "icon": "⚠",
-          "label": "区间宽度 0.03% < 0.20%",
-          "detail": "过窄"
-        }
-      ],
-      "action": "skip",
-      "reason": "区间过滤未通过"
-    },
-    {
-      "symbol": "META",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
-      "atr": null,
-      "gap_pct": null,
-      "ema": null,
-      "ema_slope": null,
-      "vix": null,
-      "market_regime": "bullish",
-      "steps": [
-        {
-          "passed": false,
-          "icon": "🚫",
-          "label": "无法获取开盘区间数据",
-          "detail": ""
-        }
-      ],
-      "action": "skip",
-      "reason": "无区间数据"
-    },
-    {
-      "symbol": "AMD",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
-      "atr": null,
-      "gap_pct": null,
-      "ema": null,
-      "ema_slope": null,
-      "vix": null,
-      "market_regime": "bullish",
-      "steps": [
-        {
-          "passed": false,
-          "icon": "🚫",
-          "label": "无法获取开盘区间数据",
-          "detail": ""
-        }
-      ],
-      "action": "skip",
-      "reason": "无区间数据"
-    }
-  ],
+  "decisions": [],
   "shadow_signals": [],
   "shadow_mode": false
 }
