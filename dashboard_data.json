@@ -1,9 +1,9 @@
 {
   "date": "2026-11-03",
-  "generated_at": "2026-11-03T12:45:31.680652-05:00",
+  "generated_at": "2026-11-03T12:50:32.491447-05:00",
   "account": {
     "cash": 131.16,
-    "equity": 96642.26,
+    "equity": 96760.11,
     "buying_power": 131.16
   },
   "market": {
@@ -2934,6 +2934,10 @@
       {
         "time": "12:45",
         "equity": 96643.47
+      },
+      {
+        "time": "12:50",
+        "equity": 96757.68
       }
     ]
   },
@@ -3091,10 +3095,10 @@
       "symbol": "TSLA",
       "qty": 243,
       "avg_entry": 410.24,
-      "current_price": 397.17,
-      "market_value": 96511.1,
-      "unrealized_pl": -3176.81,
-      "unrealized_plpc": -3.19,
+      "current_price": 397.65,
+      "market_value": 96628.95,
+      "unrealized_pl": -3058.95,
+      "unrealized_plpc": -3.07,
       "stop_price": null,
       "distance_to_stop_pct": null,
       "holding_minutes": 0,
