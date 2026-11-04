@@ -1,9 +1,9 @@
 {
   "date": "2026-11-04",
-  "generated_at": "2026-11-04T10:20:44.016966-05:00",
+  "generated_at": "2026-11-04T10:25:26.690959-05:00",
   "account": {
     "cash": 131.16,
-    "equity": 94599.84,
+    "equity": 94461.33,
     "buying_power": 131.16
   },
   "market": {
@@ -2810,6 +2810,10 @@
       {
         "time": "10:20",
         "equity": 94636.39
+      },
+      {
+        "time": "10:25",
+        "equity": 94449.18
       }
     ]
   },
@@ -2967,10 +2971,10 @@
       "symbol": "TSLA",
       "qty": 243,
       "avg_entry": 410.24,
-      "current_price": 388.76,
-      "market_value": 94468.68,
-      "unrealized_pl": -5219.22,
-      "unrealized_plpc": -5.24,
+      "current_price": 388.19,
+      "market_value": 94330.17,
+      "unrealized_pl": -5357.73,
+      "unrealized_plpc": -5.38,
       "stop_price": null,
       "distance_to_stop_pct": null,
       "holding_minutes": 0,
@@ -3048,7 +3052,7 @@
         {
           "passed": true,
           "icon": "✔",
-          "label": "突破量 11317 ≥ 1.5×均量 236",
+          "label": "突破量 15312 ≥ 1.5×均量 236",
           "detail": ""
         },
         {
@@ -3067,7 +3071,7 @@
           "passed": true,
           "icon": "✔",
           "label": "突破区间高点 $204.40",
-          "detail": "入场 $205.34"
+          "detail": "入场 $204.76"
         }
       ],
       "action": "skip",
@@ -3107,7 +3111,7 @@
         {
           "passed": true,
           "icon": "✔",
-          "label": "突破量 5765 ≥ 1.5×均量 156",
+          "label": "突破量 2967 ≥ 1.5×均量 156",
           "detail": ""
         },
         {
@@ -3126,17 +3130,11 @@
           "passed": true,
           "icon": "✔",
           "label": "突破区间高点 $626.21",
-          "detail": "入场 $637.18"
-        },
-        {
-          "passed": false,
-          "icon": "🚫",
-          "label": "组合风险超限",
-          "detail": ""
+          "detail": "入场 $633.09"
         }
       ],
       "action": "skip",
-      "reason": "组合风险超限"
+      "reason": "仓位为0"
     },
     {
       "symbol": "AMD",
@@ -3172,7 +3170,7 @@
         {
           "passed": true,
           "icon": "✔",
-          "label": "突破量 2952 ≥ 1.5×均量 261",
+          "label": "突破量 5063 ≥ 1.5×均量 261",
           "detail": ""
         },
         {
@@ -3191,17 +3189,11 @@
           "passed": true,
           "icon": "✔",
           "label": "突破区间高点 $486.49",
-          "detail": "入场 $497.70"
-        },
-        {
-          "passed": false,
-          "icon": "🚫",
-          "label": "组合风险超限",
-          "detail": ""
+          "detail": "入场 $490.49"
         }
       ],
       "action": "skip",
-      "reason": "组合风险超限"
+      "reason": "仓位为0"
     }
   ],
   "shadow_signals": [],
