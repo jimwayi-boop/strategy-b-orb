@@ -1,9 +1,9 @@
 {
   "date": "2026-11-04",
-  "generated_at": "2026-11-04T10:40:36.098842-05:00",
+  "generated_at": "2026-11-04T10:45:34.454744-05:00",
   "account": {
     "cash": 131.16,
-    "equity": 94740.78,
+    "equity": 94658.18,
     "buying_power": 131.16
   },
   "market": {
@@ -2826,6 +2826,10 @@
       {
         "time": "10:40",
         "equity": 94743.21
+      },
+      {
+        "time": "10:45",
+        "equity": 94677.6
       }
     ]
   },
@@ -2983,10 +2987,10 @@
       "symbol": "TSLA",
       "qty": 243,
       "avg_entry": 410.24,
-      "current_price": 389.34,
-      "market_value": 94609.62,
-      "unrealized_pl": -5078.28,
-      "unrealized_plpc": -5.09,
+      "current_price": 389.0,
+      "market_value": 94527.02,
+      "unrealized_pl": -5160.88,
+      "unrealized_plpc": -5.18,
       "stop_price": null,
       "distance_to_stop_pct": null,
       "holding_minutes": 0,
@@ -3064,7 +3068,7 @@
         {
           "passed": true,
           "icon": "✔",
-          "label": "突破量 9955 ≥ 1.5×均量 236",
+          "label": "突破量 15849 ≥ 1.5×均量 236",
           "detail": ""
         },
         {
@@ -3082,8 +3086,8 @@
         {
           "passed": true,
           "icon": "✔",
-          "label": "突破区间高点 $204.40",
-          "detail": "入场 $204.76"
+          "label": "突破区间低点 $203.77",
+          "detail": "入场 $203.75"
         }
       ],
       "action": "skip",
@@ -3123,7 +3127,7 @@
         {
           "passed": true,
           "icon": "✔",
-          "label": "突破量 1596 ≥ 1.5×均量 156",
+          "label": "突破量 788 ≥ 1.5×均量 156",
           "detail": ""
         },
         {
@@ -3142,7 +3146,7 @@
           "passed": true,
           "icon": "✔",
           "label": "突破区间高点 $626.21",
-          "detail": "入场 $630.95"
+          "detail": "入场 $632.86"
         }
       ],
       "action": "skip",
@@ -3178,34 +3182,10 @@
           "icon": "✔",
           "label": "缺口过滤",
           "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破量 5685 ≥ 1.5×均量 261",
-          "detail": ""
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "EMA200 对齐",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "VIX 过滤",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破区间高点 $486.49",
-          "detail": "入场 $491.35"
         }
       ],
       "action": "skip",
-      "reason": "仓位为0"
+      "reason": "无突破信号"
     }
   ],
   "shadow_signals": [],
