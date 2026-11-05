@@ -1,9 +1,9 @@
 {
   "date": "2026-11-05",
-  "generated_at": "2026-11-05T09:45:32.192544-05:00",
+  "generated_at": "2026-11-05T09:50:30.138945-05:00",
   "account": {
     "cash": 131.16,
-    "equity": 86009.79,
+    "equity": 85433.88,
     "buying_power": 131.16
   },
   "market": {
@@ -2782,6 +2782,10 @@
       {
         "time": "09:45",
         "equity": 86012.07
+      },
+      {
+        "time": "09:50",
+        "equity": 85471.55
       }
     ]
   },
@@ -2939,12 +2943,12 @@
       "symbol": "TSLA",
       "qty": 243,
       "avg_entry": 410.24,
-      "current_price": 353.41,
-      "market_value": 85878.63,
-      "unrealized_pl": -13809.27,
-      "unrealized_plpc": -13.85,
-      "stop_price": null,
-      "distance_to_stop_pct": null,
+      "current_price": 351.04,
+      "market_value": 85302.72,
+      "unrealized_pl": -14385.18,
+      "unrealized_plpc": -14.43,
+      "stop_price": 350.05,
+      "distance_to_stop_pct": 0.28,
       "holding_minutes": 0,
       "side": "buy"
     }
@@ -2964,34 +2968,11 @@
   },
   "decisions": [
     {
-      "symbol": "TSLA",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
-      "atr": null,
-      "gap_pct": null,
-      "ema": null,
-      "ema_slope": null,
-      "vix": null,
-      "market_regime": "bullish",
-      "steps": [
-        {
-          "passed": false,
-          "icon": "🚫",
-          "label": "开盘区间未完成",
-          "detail": ""
-        }
-      ],
-      "action": "skip",
-      "reason": "开盘区间未完成"
-    },
-    {
       "symbol": "NVDA",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
+      "range_high": 196.35,
+      "range_low": 196.26,
+      "range_width": 0.09000000000000341,
+      "range_avg_vol": 0,
       "atr": null,
       "gap_pct": null,
       "ema": null,
@@ -3001,20 +2982,20 @@
       "steps": [
         {
           "passed": false,
-          "icon": "🚫",
-          "label": "开盘区间未完成",
-          "detail": ""
+          "icon": "⚠",
+          "label": "区间宽度 0.05% < 0.20%",
+          "detail": "过窄"
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "区间过滤未通过"
     },
     {
       "symbol": "META",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
+      "range_high": 635.76,
+      "range_low": 634.7,
+      "range_width": 1.0599999999999454,
+      "range_avg_vol": 0,
       "atr": null,
       "gap_pct": null,
       "ema": null,
@@ -3024,20 +3005,20 @@
       "steps": [
         {
           "passed": false,
-          "icon": "🚫",
-          "label": "开盘区间未完成",
-          "detail": ""
+          "icon": "⚠",
+          "label": "区间宽度 0.17% < 0.20%",
+          "detail": "过窄"
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "区间过滤未通过"
     },
     {
       "symbol": "AMD",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
+      "range_high": 463.02,
+      "range_low": 463.02,
+      "range_width": 0.0,
+      "range_avg_vol": 0,
       "atr": null,
       "gap_pct": null,
       "ema": null,
@@ -3047,13 +3028,13 @@
       "steps": [
         {
           "passed": false,
-          "icon": "🚫",
-          "label": "开盘区间未完成",
-          "detail": ""
+          "icon": "⚠",
+          "label": "区间宽度 0.00% < 0.20%",
+          "detail": "过窄"
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "区间过滤未通过"
     }
   ],
   "shadow_signals": [],
