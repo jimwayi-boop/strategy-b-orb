@@ -1,10 +1,10 @@
 {
   "date": "2026-11-05",
-  "generated_at": "2026-11-05T09:50:30.138945-05:00",
+  "generated_at": "2026-11-05T11:30:38.183826-05:00",
   "account": {
-    "cash": 131.16,
-    "equity": 85433.88,
-    "buying_power": 131.16
+    "cash": 85179.89,
+    "equity": 85179.89,
+    "buying_power": 85179.89
   },
   "market": {
     "regime": "bullish",
@@ -2786,6 +2786,10 @@
       {
         "time": "09:50",
         "equity": 85471.55
+      },
+      {
+        "time": "11:30",
+        "equity": 85179.89
       }
     ]
   },
@@ -2938,22 +2942,19 @@
       }
     }
   },
-  "positions": [
+  "positions": [],
+  "today_trades": [
     {
+      "time": "09:50:37",
       "symbol": "TSLA",
+      "side": "sell",
       "qty": 243,
-      "avg_entry": 410.24,
-      "current_price": 351.04,
-      "market_value": 85302.72,
-      "unrealized_pl": -14385.18,
-      "unrealized_plpc": -14.43,
-      "stop_price": 350.05,
-      "distance_to_stop_pct": 0.28,
-      "holding_minutes": 0,
-      "side": "buy"
+      "price": 349.99,
+      "amount": 85048.73,
+      "order_type": "补挂 Trailing",
+      "client_order_id": "ORB_TSLA_20261105_TRAIL_RE"
     }
   ],
-  "today_trades": [],
   "realized_pnl": [],
   "stats": {
     "total_trades": 0,
@@ -2967,6 +2968,47 @@
     "profit_factor": null
   },
   "decisions": [
+    {
+      "symbol": "TSLA",
+      "range_high": 376.16,
+      "range_low": 375.12,
+      "range_width": 1.0400000000000205,
+      "range_avg_vol": 318.8,
+      "atr": 15.613928571428561,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间宽度 0.28% ≥ 0.20%",
+          "detail": "$375.12 – $376.16"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间 $1.04 ≤ 2×ATR $31.23",
+          "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "缺口过滤",
+          "detail": "数据不足，跳过"
+        },
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "已过交易截止时间 11:30",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "无突破信号"
+    },
     {
       "symbol": "NVDA",
       "range_high": 196.35,
