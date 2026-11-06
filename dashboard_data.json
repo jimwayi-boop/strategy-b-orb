@@ -1,6 +1,6 @@
 {
   "date": "2026-11-06",
-  "generated_at": "2026-11-06T09:45:24.604825-05:00",
+  "generated_at": "2026-11-06T09:50:27.546451-05:00",
   "account": {
     "cash": 85178.12,
     "equity": 85178.12,
@@ -2702,6 +2702,10 @@
       {
         "time": "09:45",
         "equity": 85178.12
+      },
+      {
+        "time": "09:50",
+        "equity": 85178.12
       }
     ]
   },
@@ -2873,10 +2877,10 @@
   "decisions": [
     {
       "symbol": "TSLA",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
+      "range_high": 351.0,
+      "range_low": 351.0,
+      "range_width": 0.0,
+      "range_avg_vol": 0,
       "atr": null,
       "gap_pct": null,
       "ema": null,
@@ -2886,20 +2890,20 @@
       "steps": [
         {
           "passed": false,
-          "icon": "🚫",
-          "label": "开盘区间未完成",
-          "detail": ""
+          "icon": "⚠",
+          "label": "区间宽度 0.00% < 0.20%",
+          "detail": "过窄"
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "区间过滤未通过"
     },
     {
       "symbol": "NVDA",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
+      "range_high": 189.2,
+      "range_low": 188.99,
+      "range_width": 0.20999999999997954,
+      "range_avg_vol": 0,
       "atr": null,
       "gap_pct": null,
       "ema": null,
@@ -2909,13 +2913,13 @@
       "steps": [
         {
           "passed": false,
-          "icon": "🚫",
-          "label": "开盘区间未完成",
-          "detail": ""
+          "icon": "⚠",
+          "label": "区间宽度 0.11% < 0.20%",
+          "detail": "过窄"
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "区间过滤未通过"
     },
     {
       "symbol": "META",
@@ -2933,12 +2937,12 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "开盘区间未完成",
+          "label": "无法获取开盘区间数据",
           "detail": ""
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "无区间数据"
     },
     {
       "symbol": "AMD",
@@ -2956,12 +2960,12 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "开盘区间未完成",
+          "label": "无法获取开盘区间数据",
           "detail": ""
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "无区间数据"
     }
   ],
   "shadow_signals": [],
