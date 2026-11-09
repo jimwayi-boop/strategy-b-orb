@@ -1,10 +1,10 @@
 {
   "date": "2026-11-09",
-  "generated_at": "2026-11-09T13:45:32.338803-05:00",
+  "generated_at": "2026-11-09T13:50:28.850346-05:00",
   "account": {
-    "cash": 58516.95,
-    "equity": 85860.66,
-    "buying_power": 58516.95
+    "cash": 67157.18,
+    "equity": 85957.62,
+    "buying_power": 67157.18
   },
   "market": {
     "regime": "bullish",
@@ -2934,6 +2934,10 @@
       {
         "time": "13:45",
         "equity": 85851.75
+      },
+      {
+        "time": "13:50",
+        "equity": 85971.9
       }
     ]
   },
@@ -3091,15 +3095,15 @@
   "positions": [
     {
       "symbol": "AMD",
-      "qty": 54,
+      "qty": 37,
       "avg_entry": 485.95,
-      "current_price": 506.37,
-      "market_value": 27343.71,
-      "unrealized_pl": 1102.23,
-      "unrealized_plpc": 4.2,
+      "current_price": 508.12,
+      "market_value": 18800.44,
+      "unrealized_pl": 820.17,
+      "unrealized_plpc": 4.56,
       "stop_price": null,
       "distance_to_stop_pct": null,
-      "holding_minutes": 224,
+      "holding_minutes": 228,
       "side": "buy"
     }
   ],
@@ -3173,6 +3177,16 @@
       "amount": 26241.48,
       "order_type": "入场",
       "client_order_id": "ORB_AMD_20261109_1794237026"
+    },
+    {
+      "time": "13:50:26",
+      "symbol": "AMD",
+      "side": "sell",
+      "qty": 17,
+      "price": 508.25,
+      "amount": 8640.23,
+      "order_type": "TP1 止盈",
+      "client_order_id": "ORB_AMD_20261109_TP1"
     }
   ],
   "realized_pnl": [
@@ -3205,18 +3219,28 @@
       "pnl": -67.23,
       "pnl_pct": -0.27,
       "holding_minutes": 0
+    },
+    {
+      "symbol": "AMD",
+      "entry_price": 485.95,
+      "exit_price": 508.25,
+      "qty": 17,
+      "reason": "TP1 止盈",
+      "pnl": 379.02,
+      "pnl_pct": 4.59,
+      "holding_minutes": 219
     }
   ],
   "stats": {
-    "total_trades": 3,
-    "win_count": 0,
+    "total_trades": 4,
+    "win_count": 1,
     "loss_count": 3,
-    "win_rate": 0.0,
-    "total_pnl": -419.69,
-    "avg_pnl": -139.9,
-    "max_win": 0,
+    "win_rate": 25.0,
+    "total_pnl": -40.67,
+    "avg_pnl": -10.17,
+    "max_win": 379.02,
     "max_loss": -205.13,
-    "profit_factor": 0.0
+    "profit_factor": 0.9
   },
   "decisions": [
     {
