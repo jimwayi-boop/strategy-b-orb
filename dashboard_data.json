@@ -1,10 +1,10 @@
 {
   "date": "2026-11-09",
-  "generated_at": "2026-11-09T13:55:24.701602-05:00",
+  "generated_at": "2026-11-09T14:00:33.347309-05:00",
   "account": {
-    "cash": 67157.18,
-    "equity": 85937.64,
-    "buying_power": 67157.18
+    "cash": 85935.42,
+    "equity": 85935.42,
+    "buying_power": 85935.42
   },
   "market": {
     "regime": "bullish",
@@ -2942,6 +2942,10 @@
       {
         "time": "13:55",
         "equity": 85939.12
+      },
+      {
+        "time": "14:00",
+        "equity": 85935.42
       }
     ]
   },
@@ -3096,21 +3100,7 @@
       }
     }
   },
-  "positions": [
-    {
-      "symbol": "AMD",
-      "qty": 37,
-      "avg_entry": 485.95,
-      "current_price": 507.58,
-      "market_value": 18780.46,
-      "unrealized_pl": 800.19,
-      "unrealized_plpc": 4.45,
-      "stop_price": 507.28,
-      "distance_to_stop_pct": 0.06,
-      "holding_minutes": 233,
-      "side": "buy"
-    }
-  ],
+  "positions": [],
   "today_trades": [
     {
       "time": "09:55:20",
@@ -3191,6 +3181,16 @@
       "amount": 8640.23,
       "order_type": "TP1 止盈",
       "client_order_id": "ORB_AMD_20261109_TP1"
+    },
+    {
+      "time": "13:56:22",
+      "symbol": "AMD",
+      "side": "sell",
+      "qty": 37,
+      "price": 507.52,
+      "amount": 18778.24,
+      "order_type": "保本移动",
+      "client_order_id": "ORB_AMD_20261109_BE_TRAIL"
     }
   ],
   "realized_pnl": [
@@ -3233,18 +3233,28 @@
       "pnl": 379.02,
       "pnl_pct": 4.59,
       "holding_minutes": 219
+    },
+    {
+      "symbol": "AMD",
+      "entry_price": 485.95,
+      "exit_price": 507.52,
+      "qty": 37,
+      "reason": "保本移动",
+      "pnl": 797.97,
+      "pnl_pct": 4.44,
+      "holding_minutes": 225
     }
   ],
   "stats": {
-    "total_trades": 4,
-    "win_count": 1,
+    "total_trades": 5,
+    "win_count": 2,
     "loss_count": 3,
-    "win_rate": 25.0,
-    "total_pnl": -40.67,
-    "avg_pnl": -10.17,
-    "max_win": 379.02,
+    "win_rate": 40.0,
+    "total_pnl": 757.3,
+    "avg_pnl": 151.46,
+    "max_win": 797.97,
     "max_loss": -205.13,
-    "profit_factor": 0.9
+    "profit_factor": 2.8
   },
   "decisions": [
     {
@@ -3327,6 +3337,41 @@
       ],
       "action": "skip",
       "reason": "无区间数据"
+    },
+    {
+      "symbol": "AMD",
+      "range_high": 466.68,
+      "range_low": 465.48,
+      "range_width": 1.1999999999999886,
+      "range_avg_vol": 97.5,
+      "atr": 37.91749999999998,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间宽度 0.26% ≥ 0.20%",
+          "detail": "$465.48 – $466.68"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间 $1.20 ≤ 2×ATR $75.83",
+          "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "缺口过滤",
+          "detail": "数据不足，跳过"
+        }
+      ],
+      "action": "hold",
+      "reason": "持仓管理中"
     }
   ],
   "shadow_signals": [],
