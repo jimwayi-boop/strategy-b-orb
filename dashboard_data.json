@@ -1,9 +1,9 @@
 {
   "date": "2026-11-09",
-  "generated_at": "2026-11-09T12:50:30.678433-05:00",
+  "generated_at": "2026-11-09T12:55:26.591299-05:00",
   "account": {
     "cash": 58516.95,
-    "equity": 85684.08,
+    "equity": 85671.9,
     "buying_power": 58516.95
   },
   "market": {
@@ -2898,6 +2898,10 @@
       {
         "time": "12:50",
         "equity": 85678.41
+      },
+      {
+        "time": "12:55",
+        "equity": 85675.44
       }
     ]
   },
@@ -3057,13 +3061,13 @@
       "symbol": "AMD",
       "qty": 54,
       "avg_entry": 485.95,
-      "current_price": 503.1,
-      "market_value": 27167.13,
-      "unrealized_pl": 925.65,
-      "unrealized_plpc": 3.53,
+      "current_price": 502.87,
+      "market_value": 27154.95,
+      "unrealized_pl": 913.47,
+      "unrealized_plpc": 3.48,
       "stop_price": null,
       "distance_to_stop_pct": null,
-      "holding_minutes": 168,
+      "holding_minutes": 173,
       "side": "buy"
     }
   ],
