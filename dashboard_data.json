@@ -1,10 +1,10 @@
 {
   "date": "2026-11-09",
-  "generated_at": "2026-11-09T09:55:24.962545-05:00",
+  "generated_at": "2026-11-09T10:01:01.792068-05:00",
   "account": {
-    "cash": 213.62,
-    "equity": 85034.67,
-    "buying_power": 213.62
+    "cash": 541.66,
+    "equity": 85025.16,
+    "buying_power": 541.66
   },
   "market": {
     "regime": "bullish",
@@ -2758,6 +2758,10 @@
       {
         "time": "09:55",
         "equity": 85178.12
+      },
+      {
+        "time": "10:00",
+        "equity": 85030.79
       }
     ]
   },
@@ -2915,15 +2919,15 @@
   "positions": [
     {
       "symbol": "NVDA",
-      "qty": 478,
-      "avg_entry": 177.75,
-      "current_price": 177.45,
-      "market_value": 84821.05,
-      "unrealized_pl": -143.45,
-      "unrealized_plpc": -0.17,
-      "stop_price": 177.26,
-      "distance_to_stop_pct": 0.11,
-      "holding_minutes": 4,
+      "qty": 475,
+      "avg_entry": 177.87,
+      "current_price": 177.86,
+      "market_value": 84483.5,
+      "unrealized_pl": -5.63,
+      "unrealized_plpc": -0.01,
+      "stop_price": 177.34,
+      "distance_to_stop_pct": 0.29,
+      "holding_minutes": 9,
       "side": "buy"
     }
   ],
@@ -2937,19 +2941,50 @@
       "amount": 84964.5,
       "order_type": "入场",
       "client_order_id": "ORB_NVDA_20261109_1794236120"
+    },
+    {
+      "time": "09:55:34",
+      "symbol": "NVDA",
+      "side": "sell",
+      "qty": 478,
+      "price": 177.44,
+      "amount": 84817.17,
+      "order_type": "Trailing 止损",
+      "client_order_id": "ORB_NVDA_20261109_1794236120_TRAIL"
+    },
+    {
+      "time": "10:00:55",
+      "symbol": "NVDA",
+      "side": "buy",
+      "qty": 475,
+      "price": 177.87,
+      "amount": 84489.13,
+      "order_type": "入场",
+      "client_order_id": "ORB_NVDA_20261109_1794236450"
     }
   ],
-  "realized_pnl": [],
+  "realized_pnl": [
+    {
+      "symbol": "NVDA",
+      "entry_price": 177.75,
+      "exit_price": 177.44,
+      "qty": 478,
+      "reason": "Trailing 止损",
+      "pnl": -147.33,
+      "pnl_pct": -0.17,
+      "holding_minutes": 0
+    }
+  ],
   "stats": {
-    "total_trades": 0,
+    "total_trades": 1,
     "win_count": 0,
-    "loss_count": 0,
-    "win_rate": 0,
-    "total_pnl": 0,
-    "avg_pnl": 0,
+    "loss_count": 1,
+    "win_rate": 0.0,
+    "total_pnl": -147.33,
+    "avg_pnl": -147.33,
     "max_win": 0,
-    "max_loss": 0,
-    "profit_factor": null
+    "max_loss": -147.33,
+    "profit_factor": 0.0
   },
   "decisions": [
     {
@@ -3009,7 +3044,7 @@
         {
           "passed": true,
           "icon": "✔",
-          "label": "突破量 142176 ≥ 1.5×均量 687",
+          "label": "突破量 167079 ≥ 1.5×均量 687",
           "detail": ""
         },
         {
@@ -3028,11 +3063,11 @@
           "passed": true,
           "icon": "✔",
           "label": "突破区间高点 $176.75",
-          "detail": "入场 $177.85"
+          "detail": "入场 $178.75"
         }
       ],
       "action": "entry",
-      "reason": "入场 buy 478 股 @ 177.85"
+      "reason": "入场 buy 475 股 @ 178.75"
     },
     {
       "symbol": "META",
@@ -3091,7 +3126,7 @@
         {
           "passed": true,
           "icon": "✔",
-          "label": "突破量 2854 ≥ 1.5×均量 146",
+          "label": "突破量 7615 ≥ 1.5×均量 146",
           "detail": ""
         },
         {
@@ -3110,7 +3145,7 @@
           "passed": true,
           "icon": "✔",
           "label": "突破区间高点 $466.68",
-          "detail": "入场 $485.72"
+          "detail": "入场 $489.03"
         }
       ],
       "action": "skip",
