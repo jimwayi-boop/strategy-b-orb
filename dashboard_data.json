@@ -1,10 +1,10 @@
 {
   "date": "2026-11-10",
-  "generated_at": "2026-11-10T09:50:38.923588-05:00",
+  "generated_at": "2026-11-10T11:30:38.848045-05:00",
   "account": {
-    "cash": 65.8,
-    "equity": 85897.29,
-    "buying_power": 65.8
+    "cash": 76769.36,
+    "equity": 86168.99,
+    "buying_power": 76769.36
   },
   "market": {
     "regime": "bullish",
@@ -2742,6 +2742,10 @@
       {
         "time": "09:50",
         "equity": 85930.85
+      },
+      {
+        "time": "11:30",
+        "equity": 86175.74
       }
     ]
   },
@@ -2903,15 +2907,15 @@
   "positions": [
     {
       "symbol": "TSLA",
-      "qty": 229,
-      "avg_entry": 374.96,
-      "current_price": 374.81,
-      "market_value": 85831.49,
-      "unrealized_pl": -33.56,
-      "unrealized_plpc": -0.04,
-      "stop_price": 373.68,
-      "distance_to_stop_pct": 0.3,
-      "holding_minutes": 4,
+      "qty": 25,
+      "avg_entry": 376.57,
+      "current_price": 375.99,
+      "market_value": 9399.62,
+      "unrealized_pl": -14.62,
+      "unrealized_plpc": -0.15,
+      "stop_price": null,
+      "distance_to_stop_pct": null,
+      "holding_minutes": 104,
       "side": "buy"
     }
   ],
@@ -2925,80 +2929,72 @@
       "amount": 85865.05,
       "order_type": "入场",
       "client_order_id": "ORB_TSLA_20261110_1794322226"
+    },
+    {
+      "time": "09:52:40",
+      "symbol": "TSLA",
+      "side": "sell",
+      "qty": 229,
+      "price": 376.12,
+      "amount": 86132.02,
+      "order_type": "Trailing 止损",
+      "client_order_id": "ORB_TSLA_20261110_1794322226_TRAIL"
+    },
+    {
+      "time": "10:00:44",
+      "symbol": "TSLA",
+      "side": "buy",
+      "qty": 228,
+      "price": 376.57,
+      "amount": 85857.96,
+      "order_type": "入场",
+      "client_order_id": "ORB_TSLA_20261110_1794322832"
+    },
+    {
+      "time": "10:02:13",
+      "symbol": "TSLA",
+      "side": "sell",
+      "qty": 203,
+      "price": 376.5,
+      "amount": 76429.5,
+      "order_type": "Trailing 止损",
+      "client_order_id": "ORB_TSLA_20261110_1794322832_TRAIL"
     }
   ],
-  "realized_pnl": [],
-  "stats": {
-    "total_trades": 0,
-    "win_count": 0,
-    "loss_count": 0,
-    "win_rate": 0,
-    "total_pnl": 0,
-    "avg_pnl": 0,
-    "max_win": 0,
-    "max_loss": 0,
-    "profit_factor": null
-  },
-  "decisions": [
+  "realized_pnl": [
     {
       "symbol": "TSLA",
-      "range_high": 372.25,
-      "range_low": 370.73,
-      "range_width": 1.5199999999999818,
-      "range_avg_vol": 168.33333333333334,
-      "atr": 18.575357142857136,
-      "gap_pct": null,
-      "ema": null,
-      "ema_slope": null,
-      "vix": null,
-      "market_regime": "bullish",
-      "steps": [
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "区间宽度 0.41% ≥ 0.20%",
-          "detail": "$370.73 – $372.25"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "区间 $1.52 ≤ 2×ATR $37.15",
-          "detail": ""
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "缺口过滤",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破量 3883 ≥ 1.5×均量 252",
-          "detail": ""
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "EMA200 对齐",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "VIX 过滤",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破区间高点 $372.25",
-          "detail": "入场 $374.87"
-        }
-      ],
-      "action": "entry",
-      "reason": "入场 buy 229 股 @ 374.87"
+      "entry_price": 374.96,
+      "exit_price": 376.12,
+      "qty": 229,
+      "reason": "Trailing 止损",
+      "pnl": 266.97,
+      "pnl_pct": 0.31,
+      "holding_minutes": 2
     },
+    {
+      "symbol": "TSLA",
+      "entry_price": 376.57,
+      "exit_price": 376.5,
+      "qty": 203,
+      "reason": "Trailing 止损",
+      "pnl": -14.21,
+      "pnl_pct": -0.02,
+      "holding_minutes": 1
+    }
+  ],
+  "stats": {
+    "total_trades": 2,
+    "win_count": 1,
+    "loss_count": 1,
+    "win_rate": 50.0,
+    "total_pnl": 252.76,
+    "avg_pnl": 126.38,
+    "max_win": 266.97,
+    "max_loss": -14.21,
+    "profit_factor": 18.79
+  },
+  "decisions": [
     {
       "symbol": "NVDA",
       "range_high": 176.68,
@@ -3031,32 +3027,14 @@
           "detail": "数据不足，跳过"
         },
         {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破量 84645 ≥ 1.5×均量 1134",
+          "passed": false,
+          "icon": "🚫",
+          "label": "已过交易截止时间 11:30",
           "detail": ""
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "EMA200 对齐",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "VIX 过滤",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破区间低点 $175.08",
-          "detail": "入场 $171.07"
         }
       ],
       "action": "skip",
-      "reason": "仓位为0"
+      "reason": "无突破信号"
     },
     {
       "symbol": "META",
@@ -3113,32 +3091,14 @@
           "detail": "数据不足，跳过"
         },
         {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破量 4192 ≥ 1.5×均量 154",
+          "passed": false,
+          "icon": "🚫",
+          "label": "已过交易截止时间 11:30",
           "detail": ""
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "EMA200 对齐",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "VIX 过滤",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破区间高点 $497.41",
-          "detail": "入场 $517.42"
         }
       ],
       "action": "skip",
-      "reason": "仓位为0"
+      "reason": "无突破信号"
     }
   ],
   "shadow_signals": [],
