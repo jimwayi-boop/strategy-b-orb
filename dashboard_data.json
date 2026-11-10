@@ -1,9 +1,9 @@
 {
   "date": "2026-11-10",
-  "generated_at": "2026-11-10T15:40:33.834809-05:00",
+  "generated_at": "2026-11-10T15:43:24.779528-05:00",
   "account": {
     "cash": 76769.36,
-    "equity": 86199.24,
+    "equity": 86210.61,
     "buying_power": 76769.36
   },
   "market": {
@@ -2946,6 +2946,10 @@
       {
         "time": "15:40",
         "equity": 86198.36
+      },
+      {
+        "time": "15:43",
+        "equity": 86210.36
       }
     ]
   },
@@ -3109,13 +3113,13 @@
       "symbol": "TSLA",
       "qty": 25,
       "avg_entry": 376.57,
-      "current_price": 377.19,
-      "market_value": 9429.88,
-      "unrealized_pl": 15.62,
-      "unrealized_plpc": 0.17,
+      "current_price": 377.65,
+      "market_value": 9441.25,
+      "unrealized_pl": 27.0,
+      "unrealized_plpc": 0.29,
       "stop_price": null,
       "distance_to_stop_pct": null,
-      "holding_minutes": 353,
+      "holding_minutes": 356,
       "side": "buy"
     }
   ],
@@ -3194,113 +3198,7 @@
     "max_loss": -14.21,
     "profit_factor": 18.79
   },
-  "decisions": [
-    {
-      "symbol": "NVDA",
-      "range_high": 176.68,
-      "range_low": 175.08,
-      "range_width": 1.5999999999999943,
-      "range_avg_vol": 756.0,
-      "atr": 8.752499999999996,
-      "gap_pct": null,
-      "ema": null,
-      "ema_slope": null,
-      "vix": null,
-      "market_regime": "bullish",
-      "steps": [
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "区间宽度 0.91% ≥ 0.20%",
-          "detail": "$175.08 – $176.68"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "区间 $1.60 ≤ 2×ATR $17.50",
-          "detail": ""
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "缺口过滤",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": false,
-          "icon": "🚫",
-          "label": "已过交易截止时间 11:30",
-          "detail": ""
-        }
-      ],
-      "action": "skip",
-      "reason": "无突破信号"
-    },
-    {
-      "symbol": "META",
-      "range_high": 641.0,
-      "range_low": 641.0,
-      "range_width": 0.0,
-      "range_avg_vol": 0,
-      "atr": null,
-      "gap_pct": null,
-      "ema": null,
-      "ema_slope": null,
-      "vix": null,
-      "market_regime": "bullish",
-      "steps": [
-        {
-          "passed": false,
-          "icon": "⚠",
-          "label": "区间宽度 0.00% < 0.20%",
-          "detail": "过窄"
-        }
-      ],
-      "action": "skip",
-      "reason": "区间过滤未通过"
-    },
-    {
-      "symbol": "AMD",
-      "range_high": 497.41,
-      "range_low": 494.96,
-      "range_width": 2.4500000000000455,
-      "range_avg_vol": 102.33333333333333,
-      "atr": 41.09857142857142,
-      "gap_pct": null,
-      "ema": null,
-      "ema_slope": null,
-      "vix": null,
-      "market_regime": "bullish",
-      "steps": [
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "区间宽度 0.49% ≥ 0.20%",
-          "detail": "$494.96 – $497.41"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "区间 $2.45 ≤ 2×ATR $82.20",
-          "detail": ""
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "缺口过滤",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": false,
-          "icon": "🚫",
-          "label": "已过交易截止时间 11:30",
-          "detail": ""
-        }
-      ],
-      "action": "skip",
-      "reason": "无突破信号"
-    }
-  ],
+  "decisions": [],
   "shadow_signals": [],
   "shadow_mode": false
 }
