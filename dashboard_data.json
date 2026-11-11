@@ -1,6 +1,6 @@
 {
   "date": "2026-11-10",
-  "generated_at": "2026-11-10T22:20:24.265177-05:00",
+  "generated_at": "2026-11-10T22:25:28.632203-05:00",
   "account": {
     "cash": 76769.36,
     "equity": 86362.11,
@@ -3274,6 +3274,10 @@
       {
         "time": "22:20",
         "equity": 86362.11
+      },
+      {
+        "time": "22:25",
+        "equity": 86362.11
       }
     ]
   },
@@ -3443,7 +3447,7 @@
       "unrealized_plpc": 1.9,
       "stop_price": null,
       "distance_to_stop_pct": null,
-      "holding_minutes": 753,
+      "holding_minutes": 758,
       "side": "buy"
     }
   ],
