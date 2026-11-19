@@ -1,10 +1,10 @@
 {
   "date": "2026-11-19",
-  "generated_at": "2026-11-19T09:55:23.000028-05:00",
+  "generated_at": "2026-11-19T10:00:41.693973-05:00",
   "account": {
-    "cash": 76576.54,
-    "equity": 86210.79,
-    "buying_power": 76576.54
+    "cash": 13817.84,
+    "equity": 86267.39,
+    "buying_power": 13817.84
   },
   "market": {
     "regime": "bullish",
@@ -2610,6 +2610,10 @@
       {
         "time": "09:55",
         "equity": 86211.17
+      },
+      {
+        "time": "10:00",
+        "equity": 86238.17
       }
     ]
   },
@@ -2776,13 +2780,26 @@
   },
   "positions": [
     {
+      "symbol": "NVDA",
+      "qty": 405,
+      "avg_entry": 154.96,
+      "current_price": 155.01,
+      "market_value": 62779.05,
+      "unrealized_pl": 20.35,
+      "unrealized_plpc": 0.03,
+      "stop_price": 154.45,
+      "distance_to_stop_pct": 0.36,
+      "holding_minutes": 14,
+      "side": "buy"
+    },
+    {
       "symbol": "TSLA",
       "qty": 25,
       "avg_entry": 376.57,
-      "current_price": 385.37,
-      "market_value": 9634.25,
-      "unrealized_pl": 220.0,
-      "unrealized_plpc": 2.34,
+      "current_price": 386.82,
+      "market_value": 9670.5,
+      "unrealized_pl": 256.25,
+      "unrealized_plpc": 2.72,
       "stop_price": null,
       "distance_to_stop_pct": null,
       "holding_minutes": 0,
@@ -2809,6 +2826,16 @@
       "amount": 32901.58,
       "order_type": "Trailing 止损",
       "client_order_id": "ORB_NVDA_20261119_1795099835_TRAIL"
+    },
+    {
+      "time": "10:00:38",
+      "symbol": "NVDA",
+      "side": "buy",
+      "qty": 405,
+      "price": 154.96,
+      "amount": 62758.7,
+      "order_type": "入场",
+      "client_order_id": "ORB_NVDA_20261119_1795100431"
     }
   ],
   "realized_pnl": [
@@ -2890,14 +2917,32 @@
           "detail": "数据不足，跳过"
         },
         {
-          "passed": false,
-          "icon": "⚠",
-          "label": "冷却中",
-          "detail": "等待冷却结束"
+          "passed": true,
+          "icon": "✔",
+          "label": "突破量 19423 ≥ 1.5×均量 512",
+          "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "EMA200 对齐",
+          "detail": "数据不足，跳过"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "VIX 过滤",
+          "detail": "数据不足，跳过"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "突破区间高点 $153.00",
+          "detail": "入场 $154.99"
         }
       ],
-      "action": "skip",
-      "reason": "无突破信号"
+      "action": "entry",
+      "reason": "入场 buy 405 股 @ 154.99"
     },
     {
       "symbol": "META",
