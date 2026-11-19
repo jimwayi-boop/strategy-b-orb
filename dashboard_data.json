@@ -1,9 +1,9 @@
 {
-  "date": "2026-11-18",
-  "generated_at": "2026-11-18T23:55:25.448118-05:00",
+  "date": "2026-11-19",
+  "generated_at": "2026-11-19T09:30:31.816266-05:00",
   "account": {
     "cash": 76602.35,
-    "equity": 86240.6,
+    "equity": 86345.85,
     "buying_power": 76602.35
   },
   "market": {
@@ -14,636 +14,6 @@
     "eod_close": "15:43"
   },
   "equity_history": {
-    "2026-11-12": [
-      {
-        "time": "09:30",
-        "equity": 86512.5
-      },
-      {
-        "time": "09:35",
-        "equity": 86565.5
-      },
-      {
-        "time": "09:40",
-        "equity": 86577.0
-      },
-      {
-        "time": "09:45",
-        "equity": 86577.0
-      },
-      {
-        "time": "09:50",
-        "equity": 86597.75
-      },
-      {
-        "time": "11:30",
-        "equity": 86578.75
-      },
-      {
-        "time": "11:35",
-        "equity": 86556.75
-      },
-      {
-        "time": "11:40",
-        "equity": 86565.13
-      },
-      {
-        "time": "11:45",
-        "equity": 86558.0
-      },
-      {
-        "time": "11:50",
-        "equity": 86562.5
-      },
-      {
-        "time": "11:55",
-        "equity": 86567.5
-      },
-      {
-        "time": "12:00",
-        "equity": 86568.5
-      },
-      {
-        "time": "12:05",
-        "equity": 86563.63
-      },
-      {
-        "time": "12:10",
-        "equity": 86542.33
-      },
-      {
-        "time": "12:15",
-        "equity": 86538.5
-      },
-      {
-        "time": "12:21",
-        "equity": 86537.88
-      },
-      {
-        "time": "12:25",
-        "equity": 86545.63
-      },
-      {
-        "time": "12:30",
-        "equity": 86550.5
-      },
-      {
-        "time": "12:35",
-        "equity": 86569.25
-      },
-      {
-        "time": "12:40",
-        "equity": 86585.75
-      },
-      {
-        "time": "12:45",
-        "equity": 86583.75
-      },
-      {
-        "time": "12:50",
-        "equity": 86577.5
-      },
-      {
-        "time": "12:55",
-        "equity": 86572.0
-      },
-      {
-        "time": "13:00",
-        "equity": 86551.5
-      },
-      {
-        "time": "13:05",
-        "equity": 86554.5
-      },
-      {
-        "time": "13:10",
-        "equity": 86548.5
-      },
-      {
-        "time": "13:15",
-        "equity": 86551.0
-      },
-      {
-        "time": "13:20",
-        "equity": 86549.13
-      },
-      {
-        "time": "13:25",
-        "equity": 86557.88
-      },
-      {
-        "time": "13:30",
-        "equity": 86569.0
-      },
-      {
-        "time": "13:35",
-        "equity": 86573.41
-      },
-      {
-        "time": "13:40",
-        "equity": 86561.8
-      },
-      {
-        "time": "13:45",
-        "equity": 86552.94
-      },
-      {
-        "time": "13:50",
-        "equity": 86528.25
-      },
-      {
-        "time": "13:55",
-        "equity": 86533.25
-      },
-      {
-        "time": "14:00",
-        "equity": 86542.0
-      },
-      {
-        "time": "14:05",
-        "equity": 86518.25
-      },
-      {
-        "time": "14:10",
-        "equity": 86527.03
-      },
-      {
-        "time": "14:15",
-        "equity": 86524.63
-      },
-      {
-        "time": "14:20",
-        "equity": 86533.25
-      },
-      {
-        "time": "14:25",
-        "equity": 86519.63
-      },
-      {
-        "time": "14:30",
-        "equity": 86514.21
-      },
-      {
-        "time": "14:35",
-        "equity": 86521.0
-      },
-      {
-        "time": "14:40",
-        "equity": 86519.25
-      },
-      {
-        "time": "14:45",
-        "equity": 86523.0
-      },
-      {
-        "time": "14:50",
-        "equity": 86529.5
-      },
-      {
-        "time": "14:55",
-        "equity": 86524.63
-      },
-      {
-        "time": "15:00",
-        "equity": 86520.38
-      },
-      {
-        "time": "15:05",
-        "equity": 86517.75
-      },
-      {
-        "time": "15:10",
-        "equity": 86655.0
-      },
-      {
-        "time": "15:15",
-        "equity": 86607.75
-      },
-      {
-        "time": "15:20",
-        "equity": 86668.75
-      },
-      {
-        "time": "15:25",
-        "equity": 86757.0
-      },
-      {
-        "time": "15:30",
-        "equity": 86696.0
-      },
-      {
-        "time": "15:35",
-        "equity": 86733.5
-      },
-      {
-        "time": "15:40",
-        "equity": 86755.0
-      },
-      {
-        "time": "15:43",
-        "equity": 86711.5
-      },
-      {
-        "time": "15:44",
-        "equity": 86709.88
-      },
-      {
-        "time": "15:45",
-        "equity": 86710.5
-      },
-      {
-        "time": "15:50",
-        "equity": 86703.02
-      },
-      {
-        "time": "15:55",
-        "equity": 86678.75
-      },
-      {
-        "time": "16:00",
-        "equity": 86702.25
-      },
-      {
-        "time": "16:05",
-        "equity": 86732.75
-      },
-      {
-        "time": "16:10",
-        "equity": 86710.95
-      },
-      {
-        "time": "16:15",
-        "equity": 86708.5
-      },
-      {
-        "time": "16:20",
-        "equity": 86709.75
-      },
-      {
-        "time": "16:25",
-        "equity": 86713.23
-      },
-      {
-        "time": "16:30",
-        "equity": 86711.0
-      },
-      {
-        "time": "16:35",
-        "equity": 86706.75
-      },
-      {
-        "time": "16:40",
-        "equity": 86708.75
-      },
-      {
-        "time": "16:45",
-        "equity": 86702.06
-      },
-      {
-        "time": "16:50",
-        "equity": 86701.75
-      },
-      {
-        "time": "16:55",
-        "equity": 86701.15
-      },
-      {
-        "time": "17:00",
-        "equity": 86701.75
-      },
-      {
-        "time": "17:05",
-        "equity": 86691.5
-      },
-      {
-        "time": "17:10",
-        "equity": 86682.25
-      },
-      {
-        "time": "17:15",
-        "equity": 86684.0
-      },
-      {
-        "time": "17:20",
-        "equity": 86703.5
-      },
-      {
-        "time": "17:25",
-        "equity": 86699.0
-      },
-      {
-        "time": "17:30",
-        "equity": 86695.0
-      },
-      {
-        "time": "17:35",
-        "equity": 86697.25
-      },
-      {
-        "time": "17:40",
-        "equity": 86701.16
-      },
-      {
-        "time": "17:45",
-        "equity": 86695.75
-      },
-      {
-        "time": "17:50",
-        "equity": 86696.25
-      },
-      {
-        "time": "17:55",
-        "equity": 86693.65
-      },
-      {
-        "time": "18:00",
-        "equity": 86695.5
-      },
-      {
-        "time": "18:05",
-        "equity": 86700.75
-      },
-      {
-        "time": "18:10",
-        "equity": 86707.73
-      },
-      {
-        "time": "18:15",
-        "equity": 86708.49
-      },
-      {
-        "time": "18:20",
-        "equity": 86698.5
-      },
-      {
-        "time": "18:25",
-        "equity": 86706.08
-      },
-      {
-        "time": "18:30",
-        "equity": 86712.0
-      },
-      {
-        "time": "18:35",
-        "equity": 86733.0
-      },
-      {
-        "time": "18:40",
-        "equity": 86750.25
-      },
-      {
-        "time": "18:45",
-        "equity": 86762.5
-      },
-      {
-        "time": "18:50",
-        "equity": 86752.25
-      },
-      {
-        "time": "18:55",
-        "equity": 86759.75
-      },
-      {
-        "time": "19:00",
-        "equity": 86760.25
-      },
-      {
-        "time": "19:05",
-        "equity": 86766.0
-      },
-      {
-        "time": "19:10",
-        "equity": 86774.8
-      },
-      {
-        "time": "19:15",
-        "equity": 86778.88
-      },
-      {
-        "time": "19:20",
-        "equity": 86765.5
-      },
-      {
-        "time": "19:25",
-        "equity": 86758.5
-      },
-      {
-        "time": "19:30",
-        "equity": 86746.25
-      },
-      {
-        "time": "19:35",
-        "equity": 86743.75
-      },
-      {
-        "time": "19:40",
-        "equity": 86738.0
-      },
-      {
-        "time": "19:45",
-        "equity": 86740.0
-      },
-      {
-        "time": "19:50",
-        "equity": 86750.53
-      },
-      {
-        "time": "19:55",
-        "equity": 86760.3
-      },
-      {
-        "time": "20:00",
-        "equity": 86761.25
-      },
-      {
-        "time": "20:05",
-        "equity": 86762.25
-      },
-      {
-        "time": "20:10",
-        "equity": 86766.25
-      },
-      {
-        "time": "20:15",
-        "equity": 86771.5
-      },
-      {
-        "time": "20:20",
-        "equity": 86787.25
-      },
-      {
-        "time": "20:25",
-        "equity": 86796.0
-      },
-      {
-        "time": "20:30",
-        "equity": 86777.25
-      },
-      {
-        "time": "20:35",
-        "equity": 86786.25
-      },
-      {
-        "time": "20:40",
-        "equity": 86794.25
-      },
-      {
-        "time": "20:45",
-        "equity": 86784.75
-      },
-      {
-        "time": "20:50",
-        "equity": 86795.75
-      },
-      {
-        "time": "20:55",
-        "equity": 86804.5
-      },
-      {
-        "time": "21:00",
-        "equity": 86808.0
-      },
-      {
-        "time": "21:05",
-        "equity": 86803.75
-      },
-      {
-        "time": "21:10",
-        "equity": 86794.25
-      },
-      {
-        "time": "21:15",
-        "equity": 86786.0
-      },
-      {
-        "time": "21:20",
-        "equity": 86775.0
-      },
-      {
-        "time": "21:25",
-        "equity": 86772.0
-      },
-      {
-        "time": "21:30",
-        "equity": 86778.5
-      },
-      {
-        "time": "21:35",
-        "equity": 86778.75
-      },
-      {
-        "time": "21:40",
-        "equity": 86780.75
-      },
-      {
-        "time": "21:45",
-        "equity": 86763.5
-      },
-      {
-        "time": "21:50",
-        "equity": 86769.0
-      },
-      {
-        "time": "21:55",
-        "equity": 86761.25
-      },
-      {
-        "time": "22:00",
-        "equity": 86766.0
-      },
-      {
-        "time": "22:05",
-        "equity": 86772.0
-      },
-      {
-        "time": "22:10",
-        "equity": 86758.0
-      },
-      {
-        "time": "22:15",
-        "equity": 86741.0
-      },
-      {
-        "time": "22:20",
-        "equity": 86741.0
-      },
-      {
-        "time": "22:25",
-        "equity": 86728.5
-      },
-      {
-        "time": "22:30",
-        "equity": 86724.75
-      },
-      {
-        "time": "22:35",
-        "equity": 86718.5
-      },
-      {
-        "time": "22:40",
-        "equity": 86723.5
-      },
-      {
-        "time": "22:45",
-        "equity": 86723.5
-      },
-      {
-        "time": "22:50",
-        "equity": 86719.75
-      },
-      {
-        "time": "22:55",
-        "equity": 86710.25
-      },
-      {
-        "time": "23:00",
-        "equity": 86704.25
-      },
-      {
-        "time": "23:05",
-        "equity": 86710.0
-      },
-      {
-        "time": "23:10",
-        "equity": 86702.25
-      },
-      {
-        "time": "23:15",
-        "equity": 86707.5
-      },
-      {
-        "time": "23:20",
-        "equity": 86703.5
-      },
-      {
-        "time": "23:25",
-        "equity": 86712.25
-      },
-      {
-        "time": "23:30",
-        "equity": 86721.25
-      },
-      {
-        "time": "23:35",
-        "equity": 86728.5
-      },
-      {
-        "time": "23:40",
-        "equity": 86726.0
-      },
-      {
-        "time": "23:45",
-        "equity": 86721.5
-      },
-      {
-        "time": "23:50",
-        "equity": 86726.5
-      },
-      {
-        "time": "23:55",
-        "equity": 86734.75
-      }
-    ],
     "2026-11-13": [
       {
         "time": "09:30",
@@ -3215,10 +2585,16 @@
         "time": "23:55",
         "equity": 86240.6
       }
+    ],
+    "2026-11-19": [
+      {
+        "time": "09:30",
+        "equity": 86345.48
+      }
     ]
   },
   "period_pnl": {
-    "last_updated": "2026-11-18",
+    "last_updated": "2026-11-19",
     "month": {
       "TSLA": {
         "pnl": -14722.07,
@@ -3383,10 +2759,10 @@
       "symbol": "TSLA",
       "qty": 25,
       "avg_entry": 376.57,
-      "current_price": 385.53,
-      "market_value": 9638.25,
-      "unrealized_pl": 224.0,
-      "unrealized_plpc": 2.38,
+      "current_price": 389.74,
+      "market_value": 9743.5,
+      "unrealized_pl": 329.25,
+      "unrealized_plpc": 3.5,
       "stop_price": null,
       "distance_to_stop_pct": null,
       "holding_minutes": 0,
@@ -3406,7 +2782,100 @@
     "max_loss": 0,
     "profit_factor": null
   },
-  "decisions": [],
+  "decisions": [
+    {
+      "symbol": "TSLA",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
+    },
+    {
+      "symbol": "NVDA",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
+    },
+    {
+      "symbol": "META",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
+    },
+    {
+      "symbol": "AMD",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
+    }
+  ],
   "shadow_signals": [],
   "shadow_mode": false
 }
