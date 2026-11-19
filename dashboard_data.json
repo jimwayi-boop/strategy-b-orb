@@ -1,10 +1,10 @@
 {
   "date": "2026-11-19",
-  "generated_at": "2026-11-19T09:45:29.152847-05:00",
+  "generated_at": "2026-11-19T09:50:40.772490-05:00",
   "account": {
-    "cash": 76602.35,
-    "equity": 86343.85,
-    "buying_power": 76602.35
+    "cash": 43674.96,
+    "equity": 86342.01,
+    "buying_power": 43674.96
   },
   "market": {
     "regime": "bullish",
@@ -2602,6 +2602,10 @@
       {
         "time": "09:45",
         "equity": 86344.6
+      },
+      {
+        "time": "09:50",
+        "equity": 86327.1
       }
     ]
   },
@@ -2768,20 +2772,44 @@
   },
   "positions": [
     {
+      "symbol": "NVDA",
+      "qty": 210,
+      "avg_entry": 156.8,
+      "current_price": 156.88,
+      "market_value": 32944.8,
+      "unrealized_pl": 17.41,
+      "unrealized_plpc": 0.05,
+      "stop_price": 156.39,
+      "distance_to_stop_pct": 0.31,
+      "holding_minutes": 4,
+      "side": "buy"
+    },
+    {
       "symbol": "TSLA",
       "qty": 25,
       "avg_entry": 376.57,
-      "current_price": 389.66,
-      "market_value": 9741.5,
-      "unrealized_pl": 327.25,
-      "unrealized_plpc": 3.48,
+      "current_price": 388.89,
+      "market_value": 9722.25,
+      "unrealized_pl": 308.0,
+      "unrealized_plpc": 3.27,
       "stop_price": null,
       "distance_to_stop_pct": null,
       "holding_minutes": 0,
       "side": "buy"
     }
   ],
-  "today_trades": [],
+  "today_trades": [
+    {
+      "time": "09:50:38",
+      "symbol": "NVDA",
+      "side": "buy",
+      "qty": 210,
+      "price": 156.8,
+      "amount": 32927.39,
+      "order_type": "入场",
+      "client_order_id": "ORB_NVDA_20261119_1795099835"
+    }
+  ],
   "realized_pnl": [],
   "stats": {
     "total_trades": 0,
@@ -2811,20 +2839,20 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "开盘区间未完成",
+          "label": "无法获取开盘区间数据",
           "detail": ""
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "无区间数据"
     },
     {
       "symbol": "NVDA",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
-      "atr": null,
+      "range_high": 153.0,
+      "range_low": 152.52,
+      "range_width": 0.47999999999998977,
+      "range_avg_vol": 341.2307692307692,
+      "atr": 11.841785714285708,
       "gap_pct": null,
       "ema": null,
       "ema_slope": null,
@@ -2832,21 +2860,57 @@
       "market_regime": "bullish",
       "steps": [
         {
-          "passed": false,
-          "icon": "🚫",
-          "label": "开盘区间未完成",
+          "passed": true,
+          "icon": "✔",
+          "label": "区间宽度 0.31% ≥ 0.20%",
+          "detail": "$152.52 – $153.00"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间 $0.48 ≤ 2×ATR $23.68",
           "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "缺口过滤",
+          "detail": "数据不足，跳过"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "突破量 18553 ≥ 1.5×均量 512",
+          "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "EMA200 对齐",
+          "detail": "数据不足，跳过"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "VIX 过滤",
+          "detail": "数据不足，跳过"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "突破区间高点 $153.00",
+          "detail": "入场 $157.35"
         }
       ],
-      "action": "skip",
-      "reason": "开盘区间未完成"
+      "action": "entry",
+      "reason": "入场 buy 210 股 @ 157.35"
     },
     {
       "symbol": "META",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
+      "range_high": 624.22,
+      "range_low": 624.18,
+      "range_width": 0.04000000000007731,
+      "range_avg_vol": 0,
       "atr": null,
       "gap_pct": null,
       "ema": null,
@@ -2856,13 +2920,13 @@
       "steps": [
         {
           "passed": false,
-          "icon": "🚫",
-          "label": "开盘区间未完成",
-          "detail": ""
+          "icon": "⚠",
+          "label": "区间宽度 0.01% < 0.20%",
+          "detail": "过窄"
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "区间过滤未通过"
     },
     {
       "symbol": "AMD",
@@ -2880,12 +2944,12 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "开盘区间未完成",
+          "label": "无法获取开盘区间数据",
           "detail": ""
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "无区间数据"
     }
   ],
   "shadow_signals": [],
