@@ -1,10 +1,10 @@
 {
   "date": "2026-11-20",
-  "generated_at": "2026-11-20T09:50:31.468772-05:00",
+  "generated_at": "2026-11-20T09:55:27.047593-05:00",
   "account": {
-    "cash": 47394.67,
-    "equity": 86178.56,
-    "buying_power": 47394.67
+    "cash": 86400.91,
+    "equity": 86400.91,
+    "buying_power": 86400.91
   },
   "market": {
     "regime": "bullish",
@@ -2686,6 +2686,10 @@
       {
         "time": "09:50",
         "equity": 86239.34
+      },
+      {
+        "time": "09:55",
+        "equity": 86400.91
       }
     ]
   },
@@ -2852,34 +2856,7 @@
       }
     }
   },
-  "positions": [
-    {
-      "symbol": "AMD",
-      "qty": 64,
-      "avg_entry": 462.78,
-      "current_price": 461.88,
-      "market_value": 29560.64,
-      "unrealized_pl": -57.15,
-      "unrealized_plpc": -0.19,
-      "stop_price": 460.72,
-      "distance_to_stop_pct": 0.25,
-      "holding_minutes": 4,
-      "side": "buy"
-    },
-    {
-      "symbol": "TSLA",
-      "qty": 25,
-      "avg_entry": 376.57,
-      "current_price": 368.93,
-      "market_value": 9223.25,
-      "unrealized_pl": -191.0,
-      "unrealized_plpc": -2.03,
-      "stop_price": 368.37,
-      "distance_to_stop_pct": 0.15,
-      "holding_minutes": 0,
-      "side": "buy"
-    }
-  ],
+  "positions": [],
   "today_trades": [
     {
       "time": "09:50:29",
@@ -2890,21 +2867,93 @@
       "amount": 29617.79,
       "order_type": "入场",
       "client_order_id": "ORB_AMD_20261120_1795186223"
+    },
+    {
+      "time": "09:51:30",
+      "symbol": "AMD",
+      "side": "sell",
+      "qty": 64,
+      "price": 464.91,
+      "amount": 29754.55,
+      "order_type": "Trailing 止损",
+      "client_order_id": "ORB_AMD_20261120_1795186223_TRAIL"
+    },
+    {
+      "time": "09:52:00",
+      "symbol": "TSLA",
+      "side": "sell",
+      "qty": 25,
+      "price": 370.07,
+      "amount": 9251.69,
+      "order_type": "补挂 Trailing",
+      "client_order_id": "ORB_TSLA_20261120_TRAIL_RE"
     }
   ],
-  "realized_pnl": [],
+  "realized_pnl": [
+    {
+      "symbol": "AMD",
+      "entry_price": 462.78,
+      "exit_price": 464.91,
+      "qty": 64,
+      "reason": "Trailing 止损",
+      "pnl": 136.76,
+      "pnl_pct": 0.46,
+      "holding_minutes": 1
+    }
+  ],
   "stats": {
-    "total_trades": 0,
-    "win_count": 0,
+    "total_trades": 1,
+    "win_count": 1,
     "loss_count": 0,
-    "win_rate": 0,
-    "total_pnl": 0,
-    "avg_pnl": 0,
-    "max_win": 0,
+    "win_rate": 100.0,
+    "total_pnl": 136.76,
+    "avg_pnl": 136.76,
+    "max_win": 136.76,
     "max_loss": 0,
     "profit_factor": null
   },
   "decisions": [
+    {
+      "symbol": "TSLA",
+      "range_high": 363.81,
+      "range_low": 362.83,
+      "range_width": 0.9800000000000182,
+      "range_avg_vol": 258.3333333333333,
+      "atr": 18.26071428571428,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间宽度 0.27% ≥ 0.20%",
+          "detail": "$362.83 – $363.81"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间 $0.98 ≤ 2×ATR $36.52",
+          "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "缺口过滤",
+          "detail": "数据不足，跳过"
+        },
+        {
+          "passed": false,
+          "icon": "⚠",
+          "label": "冷却中",
+          "detail": "等待冷却结束"
+        }
+      ],
+      "action": "skip",
+      "reason": "无突破信号"
+    },
     {
       "symbol": "NVDA",
       "range_high": 141.01,
@@ -2995,32 +3044,14 @@
           "detail": "数据不足，跳过"
         },
         {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破量 5555 ≥ 1.5×均量 105",
-          "detail": ""
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "EMA200 对齐",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "VIX 过滤",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破区间高点 $458.25",
-          "detail": "入场 $466.09"
+          "passed": false,
+          "icon": "⚠",
+          "label": "冷却中",
+          "detail": "等待冷却结束"
         }
       ],
-      "action": "entry",
-      "reason": "入场 buy 64 股 @ 466.09"
+      "action": "skip",
+      "reason": "无突破信号"
     }
   ],
   "shadow_signals": [],
