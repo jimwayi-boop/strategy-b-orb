@@ -1,10 +1,10 @@
 {
   "date": "2026-11-23",
-  "generated_at": "2026-11-23T13:25:34.448938-05:00",
+  "generated_at": "2026-11-23T13:30:32.707291-05:00",
   "account": {
-    "cash": 28982.75,
-    "equity": 87751.39,
-    "buying_power": 28982.75
+    "cash": 87692.31,
+    "equity": 87692.31,
+    "buying_power": 87692.31
   },
   "market": {
     "regime": "bullish",
@@ -2814,6 +2814,10 @@
       {
         "time": "13:25",
         "equity": 87749.43
+      },
+      {
+        "time": "13:30",
+        "equity": 87692.31
       }
     ]
   },
@@ -2982,21 +2986,7 @@
       }
     }
   },
-  "positions": [
-    {
-      "symbol": "META",
-      "qty": 98,
-      "avg_entry": 588.47,
-      "current_price": 599.68,
-      "market_value": 58768.64,
-      "unrealized_pl": 1099.0,
-      "unrealized_plpc": 1.91,
-      "stop_price": 599.08,
-      "distance_to_stop_pct": 0.1,
-      "holding_minutes": 219,
-      "side": "buy"
-    }
-  ],
+  "positions": [],
   "today_trades": [
     {
       "time": "09:50:28",
@@ -3077,6 +3067,16 @@
       "amount": 28716.0,
       "order_type": "TP1 止盈",
       "client_order_id": "ORB_META_20261123_TP1"
+    },
+    {
+      "time": "13:26:16",
+      "symbol": "META",
+      "side": "sell",
+      "qty": 98,
+      "price": 599.08,
+      "amount": 58709.56,
+      "order_type": "保本移动",
+      "client_order_id": "ORB_META_20261123_BE_TRAIL"
     }
   ],
   "realized_pnl": [
@@ -3119,18 +3119,28 @@
       "pnl": 469.64,
       "pnl_pct": 1.66,
       "holding_minutes": 199
+    },
+    {
+      "symbol": "META",
+      "entry_price": 588.47,
+      "exit_price": 599.08,
+      "qty": 98,
+      "reason": "保本移动",
+      "pnl": 1039.92,
+      "pnl_pct": 1.8,
+      "holding_minutes": 205
     }
   ],
   "stats": {
-    "total_trades": 4,
-    "win_count": 3,
+    "total_trades": 5,
+    "win_count": 4,
     "loss_count": 1,
-    "win_rate": 75.0,
-    "total_pnl": 527.98,
-    "avg_pnl": 132.0,
-    "max_win": 469.64,
+    "win_rate": 80.0,
+    "total_pnl": 1567.9,
+    "avg_pnl": 313.58,
+    "max_win": 1039.92,
     "max_loss": -38.08,
-    "profit_factor": 14.87
+    "profit_factor": 42.17
   },
   "decisions": [
     {
@@ -3179,6 +3189,41 @@
           "passed": true,
           "icon": "✔",
           "label": "区间 $0.98 ≤ 2×ATR $25.51",
+          "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "缺口过滤",
+          "detail": "数据不足，跳过"
+        }
+      ],
+      "action": "hold",
+      "reason": "持仓管理中"
+    },
+    {
+      "symbol": "META",
+      "range_high": 582.0,
+      "range_low": 579.0,
+      "range_width": 3.0,
+      "range_avg_vol": 78.8,
+      "atr": 23.444285714285733,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间宽度 0.52% ≥ 0.20%",
+          "detail": "$579.00 – $582.00"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间 $3.00 ≤ 2×ATR $46.89",
           "detail": ""
         },
         {
