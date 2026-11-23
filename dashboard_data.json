@@ -1,9 +1,9 @@
 {
   "date": "2026-11-23",
-  "generated_at": "2026-11-23T13:05:28.614322-05:00",
+  "generated_at": "2026-11-23T13:10:32.212824-05:00",
   "account": {
     "cash": 266.75,
-    "equity": 87268.15,
+    "equity": 87304.65,
     "buying_power": 266.75
   },
   "market": {
@@ -2798,6 +2798,10 @@
       {
         "time": "13:05",
         "equity": 87261.58
+      },
+      {
+        "time": "13:10",
+        "equity": 87285.67
       }
     ]
   },
@@ -2971,13 +2975,13 @@
       "symbol": "META",
       "qty": 146,
       "avg_entry": 588.47,
-      "current_price": 595.9,
-      "market_value": 87001.4,
-      "unrealized_pl": 1085.4,
-      "unrealized_plpc": 1.26,
+      "current_price": 596.15,
+      "market_value": 87037.9,
+      "unrealized_pl": 1121.9,
+      "unrealized_plpc": 1.31,
       "stop_price": null,
       "distance_to_stop_pct": null,
-      "holding_minutes": 198,
+      "holding_minutes": 204,
       "side": "buy"
     }
   ],
