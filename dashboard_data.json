@@ -1,10 +1,10 @@
 {
   "date": "2026-11-23",
-  "generated_at": "2026-11-23T09:50:34.705188-05:00",
+  "generated_at": "2026-11-23T09:55:34.459538-05:00",
   "account": {
-    "cash": 372.37,
-    "equity": 86151.22,
-    "buying_power": 372.37
+    "cash": 79824.22,
+    "equity": 86094.41,
+    "buying_power": 79824.22
   },
   "market": {
     "regime": "bullish",
@@ -2642,6 +2642,10 @@
       {
         "time": "09:50",
         "equity": 86124.41
+      },
+      {
+        "time": "09:55",
+        "equity": 86096.88
       }
     ]
   },
@@ -2812,29 +2816,16 @@
   },
   "positions": [
     {
-      "symbol": "META",
-      "qty": 136,
-      "avg_entry": 583.42,
-      "current_price": 583.62,
-      "market_value": 79372.32,
-      "unrealized_pl": 27.2,
-      "unrealized_plpc": 0.03,
-      "stop_price": 581.42,
-      "distance_to_stop_pct": 0.38,
-      "holding_minutes": 4,
-      "side": "buy"
-    },
-    {
       "symbol": "NVDA",
-      "qty": 39,
-      "avg_entry": 164.28,
-      "current_price": 164.27,
-      "market_value": 6406.53,
-      "unrealized_pl": -0.39,
-      "unrealized_plpc": -0.01,
-      "stop_price": 163.75,
-      "distance_to_stop_pct": 0.32,
-      "holding_minutes": 4,
+      "qty": 38,
+      "avg_entry": 165.07,
+      "current_price": 165.0,
+      "market_value": 6270.19,
+      "unrealized_pl": -2.47,
+      "unrealized_plpc": -0.04,
+      "stop_price": 164.56,
+      "distance_to_stop_pct": 0.27,
+      "holding_minutes": 9,
       "side": "buy"
     }
   ],
@@ -2858,19 +2849,70 @@
       "amount": 79345.12,
       "order_type": "入场",
       "client_order_id": "ORB_META_20261123_1795445431"
+    },
+    {
+      "time": "09:50:48",
+      "symbol": "NVDA",
+      "side": "sell",
+      "qty": 39,
+      "price": 164.55,
+      "amount": 6417.47,
+      "order_type": "Trailing 止损",
+      "client_order_id": "ORB_NVDA_20261123_1795445426_TRAIL"
+    },
+    {
+      "time": "09:51:07",
+      "symbol": "META",
+      "side": "sell",
+      "qty": 136,
+      "price": 583.14,
+      "amount": 79307.04,
+      "order_type": "Trailing 止损",
+      "client_order_id": "ORB_META_20261123_1795445431_TRAIL"
+    },
+    {
+      "time": "09:55:31",
+      "symbol": "NVDA",
+      "side": "buy",
+      "qty": 38,
+      "price": 165.07,
+      "amount": 6272.66,
+      "order_type": "入场",
+      "client_order_id": "ORB_NVDA_20261123_1795445730"
     }
   ],
-  "realized_pnl": [],
+  "realized_pnl": [
+    {
+      "symbol": "NVDA",
+      "entry_price": 164.28,
+      "exit_price": 164.55,
+      "qty": 39,
+      "reason": "Trailing 止损",
+      "pnl": 10.55,
+      "pnl_pct": 0.16,
+      "holding_minutes": 0
+    },
+    {
+      "symbol": "META",
+      "entry_price": 583.42,
+      "exit_price": 583.14,
+      "qty": 136,
+      "reason": "Trailing 止损",
+      "pnl": -38.08,
+      "pnl_pct": -0.05,
+      "holding_minutes": 0
+    }
+  ],
   "stats": {
-    "total_trades": 0,
-    "win_count": 0,
-    "loss_count": 0,
-    "win_rate": 0,
-    "total_pnl": 0,
-    "avg_pnl": 0,
-    "max_win": 0,
-    "max_loss": 0,
-    "profit_factor": null
+    "total_trades": 2,
+    "win_count": 1,
+    "loss_count": 1,
+    "win_rate": 50.0,
+    "total_pnl": -27.53,
+    "avg_pnl": -13.76,
+    "max_win": 10.55,
+    "max_loss": -38.08,
+    "profit_factor": 0.28
   },
   "decisions": [
     {
@@ -2930,7 +2972,7 @@
         {
           "passed": true,
           "icon": "✔",
-          "label": "突破量 152900 ≥ 1.5×均量 1504",
+          "label": "突破量 272069 ≥ 1.5×均量 1504",
           "detail": ""
         },
         {
@@ -2949,11 +2991,11 @@
           "passed": true,
           "icon": "✔",
           "label": "突破区间高点 $136.99",
-          "detail": "入场 $164.37"
+          "detail": "入场 $164.96"
         }
       ],
       "action": "entry",
-      "reason": "入场 buy 39 股 @ 164.37"
+      "reason": "入场 buy 38 股 @ 164.96"
     },
     {
       "symbol": "META",
@@ -2987,32 +3029,14 @@
           "detail": "数据不足，跳过"
         },
         {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破量 1709 ≥ 1.5×均量 118",
-          "detail": ""
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "EMA200 对齐",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "VIX 过滤",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破区间高点 $582.00",
-          "detail": "入场 $584.53"
+          "passed": false,
+          "icon": "⚠",
+          "label": "冷却中",
+          "detail": "等待冷却结束"
         }
       ],
-      "action": "entry",
-      "reason": "入场 buy 136 股 @ 584.53"
+      "action": "skip",
+      "reason": "无突破信号"
     },
     {
       "symbol": "AMD",
