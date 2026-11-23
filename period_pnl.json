@@ -1,17 +1,17 @@
 {
-  "last_updated": "2026-11-20",
+  "last_updated": "2026-11-23",
   "month": {
     "TSLA": {
-      "pnl": -14722.07,
-      "trades": 4,
+      "pnl": -15113.31,
+      "trades": 6,
       "wins": 1,
-      "win_rate": 25.0
+      "win_rate": 16.67
     },
     "NVDA": {
-      "pnl": 496.96,
-      "trades": 7,
+      "pnl": 415.41,
+      "trades": 8,
       "wins": 2,
-      "win_rate": 28.57
+      "win_rate": 25.0
     },
     "META": {
       "pnl": 0.0,
@@ -20,30 +20,30 @@
       "win_rate": 0
     },
     "AMD": {
-      "pnl": 1109.76,
-      "trades": 3,
-      "wins": 2,
-      "win_rate": 66.67
+      "pnl": 1283.29,
+      "trades": 5,
+      "wins": 4,
+      "win_rate": 80.0
     },
     "__total__": {
-      "pnl": -13115.35,
-      "trades": 14,
-      "wins": 5,
-      "win_rate": 35.71
+      "pnl": -13414.61,
+      "trades": 19,
+      "wins": 7,
+      "win_rate": 36.84
     }
   },
   "quarter": {
     "TSLA": {
-      "pnl": -14722.07,
-      "trades": 4,
+      "pnl": -15113.31,
+      "trades": 6,
       "wins": 1,
-      "win_rate": 25.0
+      "win_rate": 16.67
     },
     "NVDA": {
-      "pnl": 180.9,
-      "trades": 8,
+      "pnl": 99.35,
+      "trades": 9,
       "wins": 2,
-      "win_rate": 25.0
+      "win_rate": 22.22
     },
     "META": {
       "pnl": -175.65,
@@ -52,30 +52,30 @@
       "win_rate": 0.0
     },
     "AMD": {
-      "pnl": 906.02,
-      "trades": 4,
-      "wins": 2,
-      "win_rate": 50.0
+      "pnl": 1079.55,
+      "trades": 6,
+      "wins": 4,
+      "win_rate": 66.67
     },
     "__total__": {
-      "pnl": -13810.8,
-      "trades": 17,
-      "wins": 5,
-      "win_rate": 29.41
+      "pnl": -14110.06,
+      "trades": 22,
+      "wins": 7,
+      "win_rate": 31.82
     }
   },
   "year": {
     "TSLA": {
-      "pnl": -14628.5,
-      "trades": 5,
+      "pnl": -15019.74,
+      "trades": 7,
       "wins": 2,
-      "win_rate": 40.0
+      "win_rate": 28.57
     },
     "NVDA": {
-      "pnl": -538.62,
-      "trades": 9,
+      "pnl": -620.17,
+      "trades": 10,
       "wins": 2,
-      "win_rate": 22.22
+      "win_rate": 20.0
     },
     "META": {
       "pnl": 905.74,
@@ -84,16 +84,16 @@
       "win_rate": 50.0
     },
     "AMD": {
-      "pnl": 716.03,
-      "trades": 7,
-      "wins": 3,
-      "win_rate": 42.86
+      "pnl": 889.56,
+      "trades": 9,
+      "wins": 5,
+      "win_rate": 55.56
     },
     "__total__": {
-      "pnl": -13545.35,
-      "trades": 23,
-      "wins": 8,
-      "win_rate": 34.78
+      "pnl": -13844.61,
+      "trades": 28,
+      "wins": 10,
+      "win_rate": 35.71
     }
   },
   "cumulative": {
@@ -106,7 +106,7 @@
       "data": [
         265.45,
         -430.0,
-        -13545.35
+        -13844.61
       ]
     },
     "week": {
@@ -128,7 +128,7 @@
         -430.0,
         -14805.59,
         -13795.53,
-        -13545.35
+        -13844.61
       ]
     },
     "day": {
@@ -143,7 +143,8 @@
         "2026-11-09",
         "2026-11-10",
         "2026-11-16",
-        "2026-11-19"
+        "2026-11-19",
+        "2026-11-20"
       ],
       "data": [
         410.66,
@@ -156,7 +157,8 @@
         -14048.29,
         -13795.53,
         -13957.45,
-        -13545.35
+        -13545.35,
+        -13844.61
       ]
     }
   }
