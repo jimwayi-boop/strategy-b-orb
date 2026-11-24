@@ -1,10 +1,10 @@
 {
-  "date": "2026-11-23",
-  "generated_at": "2026-11-23T23:55:26.719439-05:00",
+  "date": "2026-11-24",
+  "generated_at": "2026-11-24T09:30:35.953198-05:00",
   "account": {
-    "cash": 87692.31,
-    "equity": 87692.31,
-    "buying_power": 87692.31
+    "cash": 87688.6,
+    "equity": 87688.6,
+    "buying_power": 87688.6
   },
   "market": {
     "regime": "bullish",
@@ -14,632 +14,6 @@
     "eod_close": "15:43"
   },
   "equity_history": {
-    "2026-11-17": [
-      {
-        "time": "09:30",
-        "equity": 86131.35
-      },
-      {
-        "time": "09:35",
-        "equity": 86126.17
-      },
-      {
-        "time": "09:40",
-        "equity": 86144.1
-      },
-      {
-        "time": "09:45",
-        "equity": 86135.23
-      },
-      {
-        "time": "11:30",
-        "equity": 86101.1
-      },
-      {
-        "time": "11:35",
-        "equity": 86076.75
-      },
-      {
-        "time": "11:40",
-        "equity": 86056.23
-      },
-      {
-        "time": "11:45",
-        "equity": 86052.6
-      },
-      {
-        "time": "11:50",
-        "equity": 86059.35
-      },
-      {
-        "time": "11:55",
-        "equity": 86064.35
-      },
-      {
-        "time": "12:00",
-        "equity": 86104.23
-      },
-      {
-        "time": "12:05",
-        "equity": 86114.6
-      },
-      {
-        "time": "12:10",
-        "equity": 86106.2
-      },
-      {
-        "time": "12:15",
-        "equity": 86141.6
-      },
-      {
-        "time": "12:20",
-        "equity": 86147.98
-      },
-      {
-        "time": "12:25",
-        "equity": 86153.1
-      },
-      {
-        "time": "12:30",
-        "equity": 86124.6
-      },
-      {
-        "time": "12:35",
-        "equity": 86110.35
-      },
-      {
-        "time": "12:40",
-        "equity": 86107.23
-      },
-      {
-        "time": "12:45",
-        "equity": 86102.23
-      },
-      {
-        "time": "12:50",
-        "equity": 86107.48
-      },
-      {
-        "time": "12:55",
-        "equity": 86105.85
-      },
-      {
-        "time": "13:00",
-        "equity": 86105.1
-      },
-      {
-        "time": "13:05",
-        "equity": 86116.85
-      },
-      {
-        "time": "13:10",
-        "equity": 86099.85
-      },
-      {
-        "time": "13:15",
-        "equity": 86085.1
-      },
-      {
-        "time": "13:20",
-        "equity": 86092.1
-      },
-      {
-        "time": "13:25",
-        "equity": 86109.35
-      },
-      {
-        "time": "13:30",
-        "equity": 86112.1
-      },
-      {
-        "time": "13:35",
-        "equity": 86087.6
-      },
-      {
-        "time": "13:40",
-        "equity": 86081.6
-      },
-      {
-        "time": "13:45",
-        "equity": 86075.85
-      },
-      {
-        "time": "13:50",
-        "equity": 86072.85
-      },
-      {
-        "time": "13:55",
-        "equity": 86059.1
-      },
-      {
-        "time": "14:00",
-        "equity": 86058.35
-      },
-      {
-        "time": "14:05",
-        "equity": 86061.84
-      },
-      {
-        "time": "14:10",
-        "equity": 86083.85
-      },
-      {
-        "time": "14:15",
-        "equity": 86097.85
-      },
-      {
-        "time": "14:20",
-        "equity": 86100.23
-      },
-      {
-        "time": "14:25",
-        "equity": 86092.85
-      },
-      {
-        "time": "14:30",
-        "equity": 86095.6
-      },
-      {
-        "time": "14:35",
-        "equity": 86106.1
-      },
-      {
-        "time": "14:40",
-        "equity": 86096.48
-      },
-      {
-        "time": "14:45",
-        "equity": 86097.85
-      },
-      {
-        "time": "14:50",
-        "equity": 86092.23
-      },
-      {
-        "time": "14:55",
-        "equity": 86086.1
-      },
-      {
-        "time": "15:00",
-        "equity": 86066.48
-      },
-      {
-        "time": "15:05",
-        "equity": 86077.23
-      },
-      {
-        "time": "15:10",
-        "equity": 86074.1
-      },
-      {
-        "time": "15:15",
-        "equity": 86064.1
-      },
-      {
-        "time": "15:20",
-        "equity": 86073.98
-      },
-      {
-        "time": "15:25",
-        "equity": 86080.85
-      },
-      {
-        "time": "15:30",
-        "equity": 86075.35
-      },
-      {
-        "time": "15:35",
-        "equity": 86109.48
-      },
-      {
-        "time": "15:40",
-        "equity": 86089.73
-      },
-      {
-        "time": "15:43",
-        "equity": 86099.35
-      },
-      {
-        "time": "15:44",
-        "equity": 86099.98
-      },
-      {
-        "time": "15:45",
-        "equity": 86094.35
-      },
-      {
-        "time": "15:50",
-        "equity": 86069.35
-      },
-      {
-        "time": "15:55",
-        "equity": 86089.1
-      },
-      {
-        "time": "16:01",
-        "equity": 86118.9
-      },
-      {
-        "time": "16:05",
-        "equity": 86122.1
-      },
-      {
-        "time": "16:10",
-        "equity": 86098.6
-      },
-      {
-        "time": "16:15",
-        "equity": 86103.85
-      },
-      {
-        "time": "16:20",
-        "equity": 86111.83
-      },
-      {
-        "time": "16:25",
-        "equity": 86114.45
-      },
-      {
-        "time": "16:30",
-        "equity": 86143.84
-      },
-      {
-        "time": "16:35",
-        "equity": 86137.35
-      },
-      {
-        "time": "16:40",
-        "equity": 86120.1
-      },
-      {
-        "time": "16:45",
-        "equity": 86127.1
-      },
-      {
-        "time": "16:50",
-        "equity": 86112.1
-      },
-      {
-        "time": "16:55",
-        "equity": 86113.09
-      },
-      {
-        "time": "17:00",
-        "equity": 86122.88
-      },
-      {
-        "time": "17:05",
-        "equity": 86102.6
-      },
-      {
-        "time": "17:10",
-        "equity": 86110.6
-      },
-      {
-        "time": "17:15",
-        "equity": 86117.26
-      },
-      {
-        "time": "17:20",
-        "equity": 86121.1
-      },
-      {
-        "time": "17:25",
-        "equity": 86120.6
-      },
-      {
-        "time": "17:30",
-        "equity": 86133.32
-      },
-      {
-        "time": "17:35",
-        "equity": 86143.9
-      },
-      {
-        "time": "17:40",
-        "equity": 86159.85
-      },
-      {
-        "time": "17:45",
-        "equity": 86202.35
-      },
-      {
-        "time": "17:50",
-        "equity": 86179.85
-      },
-      {
-        "time": "17:55",
-        "equity": 86197.85
-      },
-      {
-        "time": "18:00",
-        "equity": 86187.35
-      },
-      {
-        "time": "18:05",
-        "equity": 86214.85
-      },
-      {
-        "time": "18:10",
-        "equity": 86234.85
-      },
-      {
-        "time": "18:15",
-        "equity": 86234.9
-      },
-      {
-        "time": "18:20",
-        "equity": 86221.1
-      },
-      {
-        "time": "18:25",
-        "equity": 86211.6
-      },
-      {
-        "time": "18:30",
-        "equity": 86202.6
-      },
-      {
-        "time": "18:35",
-        "equity": 86214.85
-      },
-      {
-        "time": "18:40",
-        "equity": 86227.35
-      },
-      {
-        "time": "18:45",
-        "equity": 86214.85
-      },
-      {
-        "time": "18:50",
-        "equity": 86207.91
-      },
-      {
-        "time": "18:55",
-        "equity": 86196.35
-      },
-      {
-        "time": "19:00",
-        "equity": 86197.35
-      },
-      {
-        "time": "19:05",
-        "equity": 86202.6
-      },
-      {
-        "time": "19:10",
-        "equity": 86206.85
-      },
-      {
-        "time": "19:15",
-        "equity": 86192.6
-      },
-      {
-        "time": "19:20",
-        "equity": 86198.85
-      },
-      {
-        "time": "19:25",
-        "equity": 86189.85
-      },
-      {
-        "time": "19:30",
-        "equity": 86181.1
-      },
-      {
-        "time": "19:35",
-        "equity": 86193.93
-      },
-      {
-        "time": "19:40",
-        "equity": 86202.31
-      },
-      {
-        "time": "19:45",
-        "equity": 86191.1
-      },
-      {
-        "time": "19:50",
-        "equity": 86207.35
-      },
-      {
-        "time": "19:55",
-        "equity": 86208.85
-      },
-      {
-        "time": "20:00",
-        "equity": 86206.35
-      },
-      {
-        "time": "20:05",
-        "equity": 86221.1
-      },
-      {
-        "time": "20:10",
-        "equity": 86191.1
-      },
-      {
-        "time": "20:15",
-        "equity": 86194.85
-      },
-      {
-        "time": "20:20",
-        "equity": 86190.85
-      },
-      {
-        "time": "20:25",
-        "equity": 86188.85
-      },
-      {
-        "time": "20:30",
-        "equity": 86195.1
-      },
-      {
-        "time": "20:35",
-        "equity": 86203.85
-      },
-      {
-        "time": "20:40",
-        "equity": 86173.6
-      },
-      {
-        "time": "20:45",
-        "equity": 86167.6
-      },
-      {
-        "time": "20:50",
-        "equity": 86152.35
-      },
-      {
-        "time": "20:55",
-        "equity": 86152.35
-      },
-      {
-        "time": "21:00",
-        "equity": 86142.6
-      },
-      {
-        "time": "21:05",
-        "equity": 86160.85
-      },
-      {
-        "time": "21:10",
-        "equity": 86149.35
-      },
-      {
-        "time": "21:15",
-        "equity": 86172.1
-      },
-      {
-        "time": "21:20",
-        "equity": 86137.35
-      },
-      {
-        "time": "21:25",
-        "equity": 86144.85
-      },
-      {
-        "time": "21:30",
-        "equity": 86176.1
-      },
-      {
-        "time": "21:35",
-        "equity": 86166.1
-      },
-      {
-        "time": "21:40",
-        "equity": 86177.35
-      },
-      {
-        "time": "21:45",
-        "equity": 86177.35
-      },
-      {
-        "time": "21:50",
-        "equity": 86135.35
-      },
-      {
-        "time": "21:55",
-        "equity": 86134.85
-      },
-      {
-        "time": "22:00",
-        "equity": 86147.6
-      },
-      {
-        "time": "22:05",
-        "equity": 86152.35
-      },
-      {
-        "time": "22:10",
-        "equity": 86152.35
-      },
-      {
-        "time": "22:15",
-        "equity": 86152.35
-      },
-      {
-        "time": "22:20",
-        "equity": 86152.35
-      },
-      {
-        "time": "22:25",
-        "equity": 86152.35
-      },
-      {
-        "time": "22:30",
-        "equity": 86152.35
-      },
-      {
-        "time": "22:35",
-        "equity": 86152.35
-      },
-      {
-        "time": "22:40",
-        "equity": 86175.85
-      },
-      {
-        "time": "22:45",
-        "equity": 86175.85
-      },
-      {
-        "time": "22:50",
-        "equity": 86173.35
-      },
-      {
-        "time": "22:55",
-        "equity": 86173.35
-      },
-      {
-        "time": "23:00",
-        "equity": 86173.35
-      },
-      {
-        "time": "23:05",
-        "equity": 86173.35
-      },
-      {
-        "time": "23:10",
-        "equity": 86154.1
-      },
-      {
-        "time": "23:15",
-        "equity": 86169.35
-      },
-      {
-        "time": "23:20",
-        "equity": 86180.35
-      },
-      {
-        "time": "23:25",
-        "equity": 86174.85
-      },
-      {
-        "time": "23:30",
-        "equity": 86174.1
-      },
-      {
-        "time": "23:35",
-        "equity": 86169.85
-      },
-      {
-        "time": "23:40",
-        "equity": 86166.35
-      },
-      {
-        "time": "23:45",
-        "equity": 86166.35
-      },
-      {
-        "time": "23:50",
-        "equity": 86166.35
-      },
-      {
-        "time": "23:55",
-        "equity": 86166.35
-      }
-    ],
     "2026-11-18": [
       {
         "time": "09:30",
@@ -3327,10 +2701,16 @@
         "time": "23:55",
         "equity": 87692.31
       }
+    ],
+    "2026-11-24": [
+      {
+        "time": "09:30",
+        "equity": 87688.6
+      }
     ]
   },
   "period_pnl": {
-    "last_updated": "2026-11-23",
+    "last_updated": "2026-11-24",
     "month": {
       "TSLA": {
         "pnl": -15113.31,
@@ -3339,16 +2719,16 @@
         "win_rate": 16.67
       },
       "NVDA": {
-        "pnl": 415.41,
-        "trades": 8,
-        "wins": 2,
-        "win_rate": 25.0
+        "pnl": 511.83,
+        "trades": 10,
+        "wins": 4,
+        "win_rate": 40.0
       },
       "META": {
-        "pnl": 0.0,
-        "trades": 0,
-        "wins": 0,
-        "win_rate": 0
+        "pnl": 1471.48,
+        "trades": 3,
+        "wins": 2,
+        "win_rate": 66.67
       },
       "AMD": {
         "pnl": 1283.29,
@@ -3357,10 +2737,10 @@
         "win_rate": 80.0
       },
       "__total__": {
-        "pnl": -13414.61,
-        "trades": 19,
-        "wins": 7,
-        "win_rate": 36.84
+        "pnl": -11846.71,
+        "trades": 24,
+        "wins": 11,
+        "win_rate": 45.83
       }
     },
     "quarter": {
@@ -3371,16 +2751,16 @@
         "win_rate": 16.67
       },
       "NVDA": {
-        "pnl": 99.35,
-        "trades": 9,
-        "wins": 2,
-        "win_rate": 22.22
+        "pnl": 195.77,
+        "trades": 11,
+        "wins": 4,
+        "win_rate": 36.36
       },
       "META": {
-        "pnl": -175.65,
-        "trades": 1,
-        "wins": 0,
-        "win_rate": 0.0
+        "pnl": 1295.83,
+        "trades": 4,
+        "wins": 2,
+        "win_rate": 50.0
       },
       "AMD": {
         "pnl": 1079.55,
@@ -3389,10 +2769,10 @@
         "win_rate": 66.67
       },
       "__total__": {
-        "pnl": -14110.06,
-        "trades": 22,
-        "wins": 7,
-        "win_rate": 31.82
+        "pnl": -12542.16,
+        "trades": 27,
+        "wins": 11,
+        "win_rate": 40.74
       }
     },
     "year": {
@@ -3403,16 +2783,16 @@
         "win_rate": 28.57
       },
       "NVDA": {
-        "pnl": -620.17,
-        "trades": 10,
-        "wins": 2,
-        "win_rate": 20.0
+        "pnl": -523.75,
+        "trades": 12,
+        "wins": 4,
+        "win_rate": 33.33
       },
       "META": {
-        "pnl": 905.74,
-        "trades": 2,
-        "wins": 1,
-        "win_rate": 50.0
+        "pnl": 2377.22,
+        "trades": 5,
+        "wins": 3,
+        "win_rate": 60.0
       },
       "AMD": {
         "pnl": 889.56,
@@ -3421,10 +2801,10 @@
         "win_rate": 55.56
       },
       "__total__": {
-        "pnl": -13844.61,
-        "trades": 28,
-        "wins": 10,
-        "win_rate": 35.71
+        "pnl": -12276.71,
+        "trades": 33,
+        "wins": 14,
+        "win_rate": 42.42
       }
     },
     "cumulative": {
@@ -3437,7 +2817,7 @@
         "data": [
           265.45,
           -430.0,
-          -13844.61
+          -12276.71
         ]
       },
       "week": {
@@ -3449,7 +2829,8 @@
           "2026-W43",
           "2026-W44",
           "2026-W45",
-          "2026-W46"
+          "2026-W46",
+          "2026-W47"
         ],
         "data": [
           410.66,
@@ -3459,7 +2840,8 @@
           -430.0,
           -14805.59,
           -13795.53,
-          -13844.61
+          -13844.61,
+          -12276.71
         ]
       },
       "day": {
@@ -3475,7 +2857,8 @@
           "2026-11-10",
           "2026-11-16",
           "2026-11-19",
-          "2026-11-20"
+          "2026-11-20",
+          "2026-11-23"
         ],
         "data": [
           410.66,
@@ -3489,168 +2872,120 @@
           -13795.53,
           -13957.45,
           -13545.35,
-          -13844.61
+          -13844.61,
+          -12276.71
         ]
       }
     }
   },
   "positions": [],
-  "today_trades": [
-    {
-      "time": "09:50:28",
-      "symbol": "NVDA",
-      "side": "buy",
-      "qty": 39,
-      "price": 164.28,
-      "amount": 6406.92,
-      "order_type": "入场",
-      "client_order_id": "ORB_NVDA_20261123_1795445426"
-    },
-    {
-      "time": "09:50:32",
-      "symbol": "META",
-      "side": "buy",
-      "qty": 136,
-      "price": 583.42,
-      "amount": 79345.12,
-      "order_type": "入场",
-      "client_order_id": "ORB_META_20261123_1795445431"
-    },
-    {
-      "time": "09:50:48",
-      "symbol": "NVDA",
-      "side": "sell",
-      "qty": 39,
-      "price": 164.55,
-      "amount": 6417.47,
-      "order_type": "Trailing 止损",
-      "client_order_id": "ORB_NVDA_20261123_1795445426_TRAIL"
-    },
-    {
-      "time": "09:51:07",
-      "symbol": "META",
-      "side": "sell",
-      "qty": 136,
-      "price": 583.14,
-      "amount": 79307.04,
-      "order_type": "Trailing 止损",
-      "client_order_id": "ORB_META_20261123_1795445431_TRAIL"
-    },
-    {
-      "time": "09:55:31",
-      "symbol": "NVDA",
-      "side": "buy",
-      "qty": 38,
-      "price": 165.07,
-      "amount": 6272.66,
-      "order_type": "入场",
-      "client_order_id": "ORB_NVDA_20261123_1795445730"
-    },
-    {
-      "time": "09:57:36",
-      "symbol": "NVDA",
-      "side": "sell",
-      "qty": 38,
-      "price": 167.33,
-      "amount": 6358.53,
-      "order_type": "Trailing 止损",
-      "client_order_id": "ORB_NVDA_20261123_1795445730_TRAIL"
-    },
-    {
-      "time": "10:00:59",
-      "symbol": "META",
-      "side": "buy",
-      "qty": 146,
-      "price": 588.47,
-      "amount": 85916.0,
-      "order_type": "入场",
-      "client_order_id": "ORB_META_20261123_1795446039"
-    },
-    {
-      "time": "13:20:28",
-      "symbol": "META",
-      "side": "sell",
-      "qty": 48,
-      "price": 598.25,
-      "amount": 28716.0,
-      "order_type": "TP1 止盈",
-      "client_order_id": "ORB_META_20261123_TP1"
-    },
-    {
-      "time": "13:26:16",
-      "symbol": "META",
-      "side": "sell",
-      "qty": 98,
-      "price": 599.08,
-      "amount": 58709.56,
-      "order_type": "保本移动",
-      "client_order_id": "ORB_META_20261123_BE_TRAIL"
-    }
-  ],
-  "realized_pnl": [
-    {
-      "symbol": "NVDA",
-      "entry_price": 164.28,
-      "exit_price": 164.55,
-      "qty": 39,
-      "reason": "Trailing 止损",
-      "pnl": 10.55,
-      "pnl_pct": 0.16,
-      "holding_minutes": 0
-    },
-    {
-      "symbol": "META",
-      "entry_price": 583.42,
-      "exit_price": 583.14,
-      "qty": 136,
-      "reason": "Trailing 止损",
-      "pnl": -38.08,
-      "pnl_pct": -0.05,
-      "holding_minutes": 0
-    },
-    {
-      "symbol": "NVDA",
-      "entry_price": 165.07,
-      "exit_price": 167.33,
-      "qty": 38,
-      "reason": "Trailing 止损",
-      "pnl": 85.87,
-      "pnl_pct": 1.37,
-      "holding_minutes": 2
-    },
-    {
-      "symbol": "META",
-      "entry_price": 588.47,
-      "exit_price": 598.25,
-      "qty": 48,
-      "reason": "TP1 止盈",
-      "pnl": 469.64,
-      "pnl_pct": 1.66,
-      "holding_minutes": 199
-    },
-    {
-      "symbol": "META",
-      "entry_price": 588.47,
-      "exit_price": 599.08,
-      "qty": 98,
-      "reason": "保本移动",
-      "pnl": 1039.92,
-      "pnl_pct": 1.8,
-      "holding_minutes": 205
-    }
-  ],
+  "today_trades": [],
+  "realized_pnl": [],
   "stats": {
-    "total_trades": 5,
-    "win_count": 4,
-    "loss_count": 1,
-    "win_rate": 80.0,
-    "total_pnl": 1567.9,
-    "avg_pnl": 313.58,
-    "max_win": 1039.92,
-    "max_loss": -38.08,
-    "profit_factor": 42.17
+    "total_trades": 0,
+    "win_count": 0,
+    "loss_count": 0,
+    "win_rate": 0,
+    "total_pnl": 0,
+    "avg_pnl": 0,
+    "max_win": 0,
+    "max_loss": 0,
+    "profit_factor": null
   },
-  "decisions": [],
+  "decisions": [
+    {
+      "symbol": "TSLA",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
+    },
+    {
+      "symbol": "NVDA",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
+    },
+    {
+      "symbol": "META",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
+    },
+    {
+      "symbol": "AMD",
+      "range_high": null,
+      "range_low": null,
+      "range_width": null,
+      "range_avg_vol": null,
+      "atr": null,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "开盘区间未完成",
+          "detail": ""
+        }
+      ],
+      "action": "skip",
+      "reason": "开盘区间未完成"
+    }
+  ],
   "shadow_signals": [],
   "shadow_mode": false
 }
