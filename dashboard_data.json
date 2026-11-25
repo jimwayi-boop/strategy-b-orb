@@ -1,6 +1,6 @@
 {
   "date": "2026-11-25",
-  "generated_at": "2026-11-25T09:45:26.110007-05:00",
+  "generated_at": "2026-11-25T11:30:38.802565-05:00",
   "account": {
     "cash": 87688.6,
     "equity": 87688.6,
@@ -2722,6 +2722,10 @@
       {
         "time": "09:45",
         "equity": 87688.6
+      },
+      {
+        "time": "11:30",
+        "equity": 87688.6
       }
     ]
   },
@@ -2925,20 +2929,20 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "开盘区间未完成",
+          "label": "无法获取开盘区间数据",
           "detail": ""
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "无区间数据"
     },
     {
       "symbol": "NVDA",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
-      "atr": null,
+      "range_high": 146.85,
+      "range_low": 146.15,
+      "range_width": 0.6999999999999886,
+      "range_avg_vol": 444.2857142857143,
+      "atr": 16.079999999999995,
       "gap_pct": null,
       "ema": null,
       "ema_slope": null,
@@ -2946,14 +2950,32 @@
       "market_regime": "bullish",
       "steps": [
         {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间宽度 0.48% ≥ 0.20%",
+          "detail": "$146.15 – $146.85"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间 $0.70 ≤ 2×ATR $32.16",
+          "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "缺口过滤",
+          "detail": "数据不足，跳过"
+        },
+        {
           "passed": false,
           "icon": "🚫",
-          "label": "开盘区间未完成",
+          "label": "已过交易截止时间 11:30",
           "detail": ""
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "无突破信号"
     },
     {
       "symbol": "META",
@@ -2971,19 +2993,19 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "开盘区间未完成",
+          "label": "无法获取开盘区间数据",
           "detail": ""
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "无区间数据"
     },
     {
       "symbol": "AMD",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
+      "range_high": 387.3,
+      "range_low": 387.3,
+      "range_width": 0.0,
+      "range_avg_vol": 0,
       "atr": null,
       "gap_pct": null,
       "ema": null,
@@ -2993,13 +3015,13 @@
       "steps": [
         {
           "passed": false,
-          "icon": "🚫",
-          "label": "开盘区间未完成",
-          "detail": ""
+          "icon": "⚠",
+          "label": "区间宽度 0.00% < 0.20%",
+          "detail": "过窄"
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "区间过滤未通过"
     }
   ],
   "shadow_signals": [],
