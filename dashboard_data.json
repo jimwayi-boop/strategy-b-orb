@@ -1,6 +1,6 @@
 {
   "date": "2026-11-26",
-  "generated_at": "2026-11-26T15:40:31.391443-05:00",
+  "generated_at": "2026-11-26T15:43:23.042515-05:00",
   "account": {
     "cash": 87688.6,
     "equity": 87688.6,
@@ -2926,6 +2926,10 @@
       {
         "time": "15:40",
         "equity": 87688.6
+      },
+      {
+        "time": "15:43",
+        "equity": 87688.6
       }
     ]
   },
@@ -3112,100 +3116,7 @@
     "max_loss": 0,
     "profit_factor": null
   },
-  "decisions": [
-    {
-      "symbol": "TSLA",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
-      "atr": null,
-      "gap_pct": null,
-      "ema": null,
-      "ema_slope": null,
-      "vix": null,
-      "market_regime": "bullish",
-      "steps": [
-        {
-          "passed": false,
-          "icon": "🚫",
-          "label": "无法获取开盘区间数据",
-          "detail": ""
-        }
-      ],
-      "action": "skip",
-      "reason": "无区间数据"
-    },
-    {
-      "symbol": "NVDA",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
-      "atr": null,
-      "gap_pct": null,
-      "ema": null,
-      "ema_slope": null,
-      "vix": null,
-      "market_regime": "bullish",
-      "steps": [
-        {
-          "passed": false,
-          "icon": "🚫",
-          "label": "无法获取开盘区间数据",
-          "detail": ""
-        }
-      ],
-      "action": "skip",
-      "reason": "无区间数据"
-    },
-    {
-      "symbol": "META",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
-      "atr": null,
-      "gap_pct": null,
-      "ema": null,
-      "ema_slope": null,
-      "vix": null,
-      "market_regime": "bullish",
-      "steps": [
-        {
-          "passed": false,
-          "icon": "🚫",
-          "label": "无法获取开盘区间数据",
-          "detail": ""
-        }
-      ],
-      "action": "skip",
-      "reason": "无区间数据"
-    },
-    {
-      "symbol": "AMD",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
-      "atr": null,
-      "gap_pct": null,
-      "ema": null,
-      "ema_slope": null,
-      "vix": null,
-      "market_regime": "bullish",
-      "steps": [
-        {
-          "passed": false,
-          "icon": "🚫",
-          "label": "无法获取开盘区间数据",
-          "detail": ""
-        }
-      ],
-      "action": "skip",
-      "reason": "无区间数据"
-    }
-  ],
+  "decisions": [],
   "shadow_signals": [],
   "shadow_mode": false
 }
