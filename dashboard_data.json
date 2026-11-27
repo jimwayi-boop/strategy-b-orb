@@ -1,10 +1,10 @@
 {
   "date": "2026-11-27",
-  "generated_at": "2026-11-27T10:25:23.287677-05:00",
+  "generated_at": "2026-11-27T10:30:32.013058-05:00",
   "account": {
-    "cash": 323.28,
-    "equity": 88234.17,
-    "buying_power": 323.28
+    "cash": 29396.99,
+    "equity": 88731.77,
+    "buying_power": 29396.99
   },
   "market": {
     "regime": "bullish",
@@ -2726,6 +2726,10 @@
       {
         "time": "10:25",
         "equity": 88257.48
+      },
+      {
+        "time": "10:30",
+        "equity": 88742.55
       }
     ]
   },
@@ -2901,15 +2905,15 @@
   "positions": [
     {
       "symbol": "TSLA",
-      "qty": 222,
+      "qty": 149,
       "avg_entry": 393.01,
-      "current_price": 396.0,
-      "market_value": 87910.89,
-      "unrealized_pl": 662.67,
-      "unrealized_plpc": 0.76,
+      "current_price": 398.22,
+      "market_value": 59334.78,
+      "unrealized_pl": 776.29,
+      "unrealized_plpc": 1.33,
       "stop_price": null,
       "distance_to_stop_pct": null,
-      "holding_minutes": 29,
+      "holding_minutes": 34,
       "side": "buy"
     }
   ],
@@ -2943,6 +2947,16 @@
       "amount": 87248.22,
       "order_type": "入场",
       "client_order_id": "ORB_TSLA_20261127_1795792231"
+    },
+    {
+      "time": "10:30:28",
+      "symbol": "TSLA",
+      "side": "sell",
+      "qty": 73,
+      "price": 398.27,
+      "amount": 29073.71,
+      "order_type": "TP1 止盈",
+      "client_order_id": "ORB_TSLA_20261127_TP1"
     }
   ],
   "realized_pnl": [
@@ -2955,18 +2969,28 @@
       "pnl": -117.1,
       "pnl_pct": -0.13,
       "holding_minutes": 3
+    },
+    {
+      "symbol": "TSLA",
+      "entry_price": 393.01,
+      "exit_price": 398.27,
+      "qty": 73,
+      "reason": "TP1 止盈",
+      "pnl": 383.98,
+      "pnl_pct": 1.34,
+      "holding_minutes": 18
     }
   ],
   "stats": {
-    "total_trades": 1,
-    "win_count": 0,
+    "total_trades": 2,
+    "win_count": 1,
     "loss_count": 1,
-    "win_rate": 0.0,
-    "total_pnl": -117.1,
-    "avg_pnl": -117.1,
-    "max_win": 0,
+    "win_rate": 50.0,
+    "total_pnl": 266.88,
+    "avg_pnl": 133.44,
+    "max_win": 383.98,
     "max_loss": -117.1,
-    "profit_factor": 0.0
+    "profit_factor": 3.28
   },
   "decisions": [
     {
