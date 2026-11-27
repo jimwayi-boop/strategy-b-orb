@@ -1,6 +1,6 @@
 {
   "date": "2026-11-27",
-  "generated_at": "2026-11-27T13:40:25.922591-05:00",
+  "generated_at": "2026-11-27T13:45:28.147160-05:00",
   "account": {
     "cash": 88880.4,
     "equity": 88880.4,
@@ -2882,6 +2882,10 @@
       {
         "time": "13:40",
         "equity": 88880.4
+      },
+      {
+        "time": "13:45",
+        "equity": 88880.4
       }
     ]
   },
@@ -3181,10 +3185,16 @@
           "icon": "✔",
           "label": "缺口过滤",
           "detail": "数据不足，跳过"
+        },
+        {
+          "passed": false,
+          "icon": "🚫",
+          "label": "无法获取最新价格",
+          "detail": ""
         }
       ],
-      "action": "hold",
-      "reason": "持仓管理中"
+      "action": "skip",
+      "reason": "无最新价"
     },
     {
       "symbol": "NVDA",
