@@ -1,10 +1,10 @@
 {
   "date": "2026-11-27",
-  "generated_at": "2026-11-27T09:50:38.355657-05:00",
+  "generated_at": "2026-11-27T10:00:36.933054-05:00",
   "account": {
-    "cash": 87688.6,
-    "equity": 87688.6,
-    "buying_power": 8.27
+    "cash": 15.0,
+    "equity": 87547.48,
+    "buying_power": 15.0
   },
   "market": {
     "regime": "bullish",
@@ -2702,6 +2702,10 @@
       {
         "time": "09:50",
         "equity": 87688.6
+      },
+      {
+        "time": "10:00",
+        "equity": 87547.48
       }
     ]
   },
@@ -2874,8 +2878,33 @@
       }
     }
   },
-  "positions": [],
-  "today_trades": [],
+  "positions": [
+    {
+      "symbol": "TSLA",
+      "qty": 224,
+      "avg_entry": 391.4,
+      "current_price": 390.77,
+      "market_value": 87532.48,
+      "unrealized_pl": -141.12,
+      "unrealized_plpc": -0.16,
+      "stop_price": 389.7,
+      "distance_to_stop_pct": 0.27,
+      "holding_minutes": 4,
+      "side": "buy"
+    }
+  ],
+  "today_trades": [
+    {
+      "time": "10:00:17",
+      "symbol": "TSLA",
+      "side": "buy",
+      "qty": 224,
+      "price": 391.4,
+      "amount": 87673.6,
+      "order_type": "入场",
+      "client_order_id": "ORB_TSLA_20261127_1795791024"
+    }
+  ],
   "realized_pnl": [],
   "stats": {
     "total_trades": 0,
@@ -2889,65 +2918,6 @@
     "profit_factor": null
   },
   "decisions": [
-    {
-      "symbol": "TSLA",
-      "range_high": 390.62,
-      "range_low": 389.74,
-      "range_width": 0.8799999999999955,
-      "range_avg_vol": 65.0,
-      "atr": 19.926428571428566,
-      "gap_pct": null,
-      "ema": null,
-      "ema_slope": null,
-      "vix": null,
-      "market_regime": "bullish",
-      "steps": [
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "区间宽度 0.23% ≥ 0.20%",
-          "detail": "$389.74 – $390.62"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "区间 $0.88 ≤ 2×ATR $39.85",
-          "detail": ""
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "缺口过滤",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破量 2625 ≥ 1.5×均量 98",
-          "detail": ""
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "EMA200 对齐",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "VIX 过滤",
-          "detail": "数据不足，跳过"
-        },
-        {
-          "passed": true,
-          "icon": "✔",
-          "label": "突破区间高点 $390.62",
-          "detail": "入场 $391.04"
-        }
-      ],
-      "action": "entry",
-      "reason": "入场 buy 224 股 @ 391.04"
-    },
     {
       "symbol": "NVDA",
       "range_high": 152.85,
