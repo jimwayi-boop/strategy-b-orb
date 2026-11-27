@@ -1,10 +1,10 @@
 {
   "date": "2026-11-27",
-  "generated_at": "2026-11-27T10:35:21.207623-05:00",
+  "generated_at": "2026-11-27T10:40:29.495995-05:00",
   "account": {
-    "cash": 29396.99,
-    "equity": 88818.74,
-    "buying_power": 29396.99
+    "cash": 88880.4,
+    "equity": 88880.4,
+    "buying_power": 88880.4
   },
   "market": {
     "regime": "bullish",
@@ -2734,6 +2734,10 @@
       {
         "time": "10:35",
         "equity": 88810.0
+      },
+      {
+        "time": "10:40",
+        "equity": 88880.4
       }
     ]
   },
@@ -2906,21 +2910,7 @@
       }
     }
   },
-  "positions": [
-    {
-      "symbol": "TSLA",
-      "qty": 149,
-      "avg_entry": 393.01,
-      "current_price": 398.8,
-      "market_value": 59421.75,
-      "unrealized_pl": 863.26,
-      "unrealized_plpc": 1.47,
-      "stop_price": 398.39,
-      "distance_to_stop_pct": 0.1,
-      "holding_minutes": 39,
-      "side": "buy"
-    }
-  ],
+  "positions": [],
   "today_trades": [
     {
       "time": "10:00:17",
@@ -2961,6 +2951,16 @@
       "amount": 29073.71,
       "order_type": "TP1 止盈",
       "client_order_id": "ORB_TSLA_20261127_TP1"
+    },
+    {
+      "time": "10:36:11",
+      "symbol": "TSLA",
+      "side": "sell",
+      "qty": 149,
+      "price": 399.22,
+      "amount": 59483.41,
+      "order_type": "保本移动",
+      "client_order_id": "ORB_TSLA_20261127_BE_TRAIL"
     }
   ],
   "realized_pnl": [
@@ -2983,20 +2983,65 @@
       "pnl": 383.98,
       "pnl_pct": 1.34,
       "holding_minutes": 18
+    },
+    {
+      "symbol": "TSLA",
+      "entry_price": 393.01,
+      "exit_price": 399.22,
+      "qty": 149,
+      "reason": "保本移动",
+      "pnl": 924.92,
+      "pnl_pct": 1.58,
+      "holding_minutes": 23
     }
   ],
   "stats": {
-    "total_trades": 2,
-    "win_count": 1,
+    "total_trades": 3,
+    "win_count": 2,
     "loss_count": 1,
-    "win_rate": 50.0,
-    "total_pnl": 266.88,
-    "avg_pnl": 133.44,
-    "max_win": 383.98,
+    "win_rate": 66.67,
+    "total_pnl": 1191.8,
+    "avg_pnl": 397.27,
+    "max_win": 924.92,
     "max_loss": -117.1,
-    "profit_factor": 3.28
+    "profit_factor": 11.18
   },
   "decisions": [
+    {
+      "symbol": "TSLA",
+      "range_high": 390.62,
+      "range_low": 389.74,
+      "range_width": 0.8799999999999955,
+      "range_avg_vol": 65.0,
+      "atr": 19.926428571428566,
+      "gap_pct": null,
+      "ema": null,
+      "ema_slope": null,
+      "vix": null,
+      "market_regime": "bullish",
+      "steps": [
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间宽度 0.23% ≥ 0.20%",
+          "detail": "$389.74 – $390.62"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间 $0.88 ≤ 2×ATR $39.85",
+          "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "缺口过滤",
+          "detail": "数据不足，跳过"
+        }
+      ],
+      "action": "hold",
+      "reason": "持仓管理中"
+    },
     {
       "symbol": "NVDA",
       "range_high": 152.85,
