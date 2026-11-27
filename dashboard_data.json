@@ -1,10 +1,10 @@
 {
   "date": "2026-11-27",
-  "generated_at": "2026-11-27T09:45:34.320561-05:00",
+  "generated_at": "2026-11-27T09:50:38.355657-05:00",
   "account": {
     "cash": 87688.6,
     "equity": 87688.6,
-    "buying_power": 87688.6
+    "buying_power": 8.27
   },
   "market": {
     "regime": "bullish",
@@ -2698,6 +2698,10 @@
       {
         "time": "09:45",
         "equity": 87688.6
+      },
+      {
+        "time": "09:50",
+        "equity": 87688.6
       }
     ]
   },
@@ -2887,11 +2891,11 @@
   "decisions": [
     {
       "symbol": "TSLA",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
-      "atr": null,
+      "range_high": 390.62,
+      "range_low": 389.74,
+      "range_width": 0.8799999999999955,
+      "range_avg_vol": 65.0,
+      "atr": 19.926428571428566,
       "gap_pct": null,
       "ema": null,
       "ema_slope": null,
@@ -2899,21 +2903,57 @@
       "market_regime": "bullish",
       "steps": [
         {
-          "passed": false,
-          "icon": "🚫",
-          "label": "开盘区间未完成",
+          "passed": true,
+          "icon": "✔",
+          "label": "区间宽度 0.23% ≥ 0.20%",
+          "detail": "$389.74 – $390.62"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "区间 $0.88 ≤ 2×ATR $39.85",
           "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "缺口过滤",
+          "detail": "数据不足，跳过"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "突破量 2625 ≥ 1.5×均量 98",
+          "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "EMA200 对齐",
+          "detail": "数据不足，跳过"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "VIX 过滤",
+          "detail": "数据不足，跳过"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "突破区间高点 $390.62",
+          "detail": "入场 $391.04"
         }
       ],
-      "action": "skip",
-      "reason": "开盘区间未完成"
+      "action": "entry",
+      "reason": "入场 buy 224 股 @ 391.04"
     },
     {
       "symbol": "NVDA",
-      "range_high": null,
-      "range_low": null,
-      "range_width": null,
-      "range_avg_vol": null,
+      "range_high": 152.85,
+      "range_low": 152.85,
+      "range_width": 0.0,
+      "range_avg_vol": 0,
       "atr": null,
       "gap_pct": null,
       "ema": null,
@@ -2923,13 +2963,13 @@
       "steps": [
         {
           "passed": false,
-          "icon": "🚫",
-          "label": "开盘区间未完成",
-          "detail": ""
+          "icon": "⚠",
+          "label": "区间宽度 0.00% < 0.20%",
+          "detail": "过窄"
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "区间过滤未通过"
     },
     {
       "symbol": "META",
@@ -2947,12 +2987,12 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "开盘区间未完成",
+          "label": "无法获取开盘区间数据",
           "detail": ""
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "无区间数据"
     },
     {
       "symbol": "AMD",
@@ -2970,12 +3010,12 @@
         {
           "passed": false,
           "icon": "🚫",
-          "label": "开盘区间未完成",
+          "label": "无法获取开盘区间数据",
           "detail": ""
         }
       ],
       "action": "skip",
-      "reason": "开盘区间未完成"
+      "reason": "无区间数据"
     }
   ],
   "shadow_signals": [],
