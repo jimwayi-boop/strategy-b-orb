@@ -1,10 +1,10 @@
 {
   "date": "2026-11-27",
-  "generated_at": "2026-11-27T10:05:25.703769-05:00",
+  "generated_at": "2026-11-27T10:10:45.416685-05:00",
   "account": {
     "cash": 87571.5,
     "equity": 87571.5,
-    "buying_power": 87571.5
+    "buying_power": 289.97
   },
   "market": {
     "regime": "bullish",
@@ -2710,6 +2710,10 @@
       {
         "time": "10:05",
         "equity": 87571.5
+      },
+      {
+        "time": "10:10",
+        "equity": 87571.5
       }
     ]
   },
@@ -2961,14 +2965,32 @@
           "detail": "数据不足，跳过"
         },
         {
-          "passed": false,
-          "icon": "⚠",
-          "label": "冷却中",
-          "detail": "等待冷却结束"
+          "passed": true,
+          "icon": "✔",
+          "label": "突破量 2269 ≥ 1.5×均量 98",
+          "detail": ""
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "EMA200 对齐",
+          "detail": "数据不足，跳过"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "VIX 过滤",
+          "detail": "数据不足，跳过"
+        },
+        {
+          "passed": true,
+          "icon": "✔",
+          "label": "突破区间高点 $390.62",
+          "detail": "入场 $392.77"
         }
       ],
-      "action": "skip",
-      "reason": "无突破信号"
+      "action": "entry",
+      "reason": "入场 buy 222 股 @ 392.77"
     },
     {
       "symbol": "NVDA",
